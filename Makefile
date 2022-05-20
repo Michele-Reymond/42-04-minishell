@@ -1,9 +1,10 @@
 NAME = minishell
-FLAGS = -Wall -Wextra -Werror
+FLAGS = -g3 -Wall -Wextra -Werror
 INC = -Iincludes/ -I$(LIB_DIR)/includes 
 
 SRC_NAME = 	minishell.c \
-			ms-b-echo.c
+			ms-b-echo.c \
+			ms-parsing.c
 
 OBJ_NAME = $(SRC_NAME:.c=.o)
 OBJ = $(addprefix $(OBJ_DIR),$(OBJ_NAME))
