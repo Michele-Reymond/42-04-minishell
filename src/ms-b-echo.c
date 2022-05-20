@@ -6,7 +6,7 @@
 /*   By: mreymond <mreymond@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/20 10:43:17 by mreymond          #+#    #+#             */
-/*   Updated: 2022/05/20 14:38:38 by mreymond         ###   ########.fr       */
+/*   Updated: 2022/05/20 17:20:32 by mreymond         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,15 +36,15 @@ void	echo_print(char **args, char **var)
 	}
 }
 
-int	echo(unsigned int nbr_arg, char flag, char **args, char **var)
+int	echo(t_builtins elem)
 {
-	if (nbr_arg == 0 && flag != 'n')
+	if (elem.nbr_args == 0 && elem.flag != 'n')
 		printf("\n");
-	else if (nbr_arg > 0 && flag == 'n')
-		echo_print(args, var);
-	else if (nbr_arg > 0 && flag != 'n')
+	else if (elem.nbr_args > 0 && elem.flag == 'n')
+		echo_print(elem.args, elem.vars);
+	else if (elem.nbr_args > 0 && elem.flag != 'n')
 	{
-		echo_print(args, var);
+		echo_print(elem.args, elem.vars);
 		printf("\n");
 	}
 	else

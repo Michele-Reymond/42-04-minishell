@@ -6,7 +6,7 @@
 /*   By: mreymond <mreymond@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/20 10:48:46 by mreymond          #+#    #+#             */
-/*   Updated: 2022/05/20 14:35:46 by mreymond         ###   ########.fr       */
+/*   Updated: 2022/05/20 17:22:06 by mreymond         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,14 +16,22 @@
 # include <stdio.h>
 # include "libft/libft.h"
 
-typedef struct s_builtins {
+typedef struct s_echo {
 	char			*cmd;
 	unsigned int	nbr_args;
-	char			*flags;
+	char			flag;
 	char			**args;
-}	t_builtins;
+	char			**vars;
+}	t_echo;
+
+typedef struct s_hash
+{
+	char	*key;
+	char	*value;
+}	t_hash;
 
 void	echo_print(char **args, char **var);
-int		echo(unsigned int nbr_arg, char flag, char **args, char **var);
+int		echo(t_echo elem);
+t_hash	ft_export(char **args);
 
 #endif

@@ -1,31 +1,24 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   minishell.c                                        :+:      :+:    :+:   */
+/*   ms-b-export.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: mreymond <mreymond@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2022/05/20 10:47:58 by mreymond          #+#    #+#             */
-/*   Updated: 2022/05/20 17:22:30 by mreymond         ###   ########.fr       */
+/*   Created: 2022/05/20 10:43:17 by mreymond          #+#    #+#             */
+/*   Updated: 2022/05/20 16:46:10 by mreymond         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-int	main(int argc, char **argv)
-{
-	t_echo	test;
+//pour le parsing voir l'onglet parsing de Notion
 
-	(void)argc;
-	(void)argv;
-	test.cmd = "echo";
-	test.nbr_args = 3;
-	test.flag = ' ';
-	test.vars = NULL;
-	test.args = malloc(sizeof(char *) * 4);
-	test.args[0] = "bonjour";
-	test.args[1] = "les";
-	test.args[2] = "copains";
-	test.args[3] = NULL;
-	echo(test);
+t_hash	ft_export(char **args)
+{
+	t_hash	new_hash;
+
+	new_hash.key = args[0];
+	new_hash.value = args[1];
+	return (new_hash);
 }
