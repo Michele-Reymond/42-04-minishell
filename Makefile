@@ -1,8 +1,9 @@
-NAME = minishel
+NAME = minishell
 FLAGS = -Wall -Wextra -Werror
 INC = -Iincludes/ -I$(LIB_DIR)/includes 
 
-SRC_NAME = main.c
+SRC_NAME = 	minishell.c \
+			ms-b-echo.c
 
 OBJ_NAME = $(SRC_NAME:.c=.o)
 OBJ = $(addprefix $(OBJ_DIR),$(OBJ_NAME))
@@ -12,7 +13,6 @@ SRC_DIR = src/
 OBJ_DIR = obj/
 
 all: $(NAME)
-
 
 $(NAME): $(OBJ)
 	@make -C $(LIB_DIR) --silent 
@@ -34,6 +34,9 @@ $(OBJ_DIR)%.o: $(SRC_DIR)%.c
 	@echo "##### Creating" [ $@ ] " #####"
 	@gcc $(FLAGS) -o $@ -c $< $(INC)
 
+run:
+	./$(NAME)
+
 clean:
 	@make -C $(LIB_DIR) clean --silent
 	@rm -f $(OBJ)
@@ -46,4 +49,4 @@ fclean: clean
 
 re: fclean all
 
-.PHONY: all clean fclean re
+.PHONY: all clean fclean re run
