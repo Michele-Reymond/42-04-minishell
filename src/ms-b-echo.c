@@ -6,7 +6,7 @@
 /*   By: mreymond <mreymond@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/20 10:43:17 by mreymond          #+#    #+#             */
-/*   Updated: 2022/05/20 17:20:32 by mreymond         ###   ########.fr       */
+/*   Updated: 2022/05/20 17:29:24 by mreymond         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,7 +36,7 @@ void	echo_print(char **args, char **var)
 	}
 }
 
-int	echo(t_builtins elem)
+int	echo(t_echo elem)
 {
 	if (elem.nbr_args == 0 && elem.flag != 'n')
 		printf("\n");
