@@ -6,7 +6,7 @@
 /*   By: mreymond <mreymond@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/20 10:48:46 by mreymond          #+#    #+#             */
-/*   Updated: 2022/05/20 17:22:06 by mreymond         ###   ########.fr       */
+/*   Updated: 2022/05/23 19:51:28 by mreymond         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,5 +33,9 @@ typedef struct s_hash
 void	echo_print(char **args, char **var);
 int		echo(t_echo elem);
 t_hash	ft_export(char **args);
+void sort_env(char **env);
 
 #endif
+
+// liste des malloc à free à la fin :
+// - dans la fonction sort_env
