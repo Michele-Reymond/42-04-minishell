@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ms-b-echo.c                                        :+:      :+:    :+:   */
+/*   ms-b-export.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: mreymond <mreymond@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/20 10:43:17 by mreymond          #+#    #+#             */
-/*   Updated: 2022/05/20 17:29:24 by mreymond         ###   ########.fr       */
+/*   Updated: 2022/05/23 20:00:19 by mreymond         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,40 +14,52 @@
 
 //pour le parsing voir l'onglet parsing de Notion
 
-void	echo_print(char **args, char **var)
+void sort_env(char **env)
 {
-	int	i;
-	int	j;
+	char	alphabet;
+	char	**sorted;
+	int		i;
+	int		j;
 
 	i = 0;
 	j = 0;
-	while (args[i] != NULL)
+	alphabet = 'A';
+	while (env[i])
+		i++;
+	sorted = malloc(sizeof(char *) * i);
+	while (alphabet != 'Z')
 	{
-		if (args[i][0] == '$' && ft_strlen(args[i]) == 1)
+		i = 0;
+		while (env[i])
 		{
-			printf("%s", var[j]);
+			if (env[i][0] == alphabet)
+			{
+				sorted[j] = ft_strdup(env[i]);
+				printf("env %d :%s\n", j, sorted[j]);
+				j++;
+			}
+			i++;
+		}
+		alphabet++;
+	}
+	i = 0;
+	while (env[i])
+	{
+		if (!(env[i][0] >= 'A' && env[i][0] <= 'Z'))
+		{
+			sorted[j] = ft_strdup(env[i]);
+			printf("env %d :%s\n", j, sorted[j]);
 			j++;
 		}
-		else
-			printf("%s", args[i]);
-		if (args[i + 1] != NULL)
-			printf(" ");
 		i++;
 	}
 }
 
-int	echo(t_echo elem)
+t_hash	ft_export(char **args)
 {
-	if (elem.nbr_args == 0 && elem.flag != 'n')
-		printf("\n");
-	else if (elem.nbr_args > 0 && elem.flag == 'n')
-		echo_print(elem.args, elem.vars);
-	else if (elem.nbr_args > 0 && elem.flag != 'n')
-	{
-		echo_print(elem.args, elem.vars);
-		printf("\n");
-	}
-	else
-		return (0);
-	return (0);
+	t_hash	new_hash;
+
+	new_hash.key = args[0];
+	new_hash.value = args[1];
+	return (new_hash);
 }
