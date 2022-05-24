@@ -6,7 +6,7 @@
 /*   By: mreymond <mreymond@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/20 10:43:17 by mreymond          #+#    #+#             */
-/*   Updated: 2022/05/24 15:01:20 by mreymond         ###   ########.fr       */
+/*   Updated: 2022/05/24 15:03:41 by mreymond         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -101,7 +101,7 @@ void	display_env(char **env)
 char	**update_env(char **old, char *var)
 {
 	char	**new;
-	
+
 }
 
 // void	ft_export(char **env, t_env_var new_var)
