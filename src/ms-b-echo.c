@@ -6,7 +6,7 @@
 /*   By: mreymond <mreymond@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/20 10:43:17 by mreymond          #+#    #+#             */
-/*   Updated: 2022/05/20 17:29:24 by mreymond         ###   ########.fr       */
+/*   Updated: 2022/05/24 13:52:10 by mreymond         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,14 +40,12 @@ int	echo(t_echo elem)
 {
 	if (elem.nbr_args == 0 && elem.flag != 'n')
 		printf("\n");
-	else if (elem.nbr_args > 0 && elem.flag == 'n')
+	if (elem.nbr_args > 0 && elem.flag == 'n')
 		echo_print(elem.args, elem.vars);
-	else if (elem.nbr_args > 0 && elem.flag != 'n')
+	if (elem.nbr_args > 0 && elem.flag != 'n')
 	{
 		echo_print(elem.args, elem.vars);
 		printf("\n");
 	}
-	else
-		return (0);
 	return (0);
 }
