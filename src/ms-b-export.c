@@ -6,7 +6,7 @@
 /*   By: mreymond <mreymond@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/20 10:43:17 by mreymond          #+#    #+#             */
-/*   Updated: 2022/05/24 15:03:41 by mreymond         ###   ########.fr       */
+/*   Updated: 2022/05/24 18:05:51 by mreymond         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -98,10 +98,48 @@ void	display_env(char **env)
 	}
 }
 
-char	**update_env(char **old, char *var)
+int	var_exist(char **env, char *var)
+{
+	int	i;
+
+	i = 0;
+	while (env[i])
+	{
+		if (ft_strncmp(env[i], var, ft_strlen(var)) == 0)
+			return (i);
+		i++;
+	}
+	return (0);
+}
+
+char	**update_var(char **old, t_env_var *var, int pos)
+{
+	// char *updated;
+
+	// updated = malloc(sizeof)
+	// updated = ft_memcpy(updated, old[pos], msize);
+	// free(old[pos]);
+	// old[pos] = malloc(sizeof(char) * )
+}
+
+char	**add_var(char **old, t_env_var *var)
+{
+	// to do
+}
+
+char	**update_env(char **old, t_env_var *var)
 {
 	char	**new;
+	int		var_pos;
 
+	if (var->key == NULL)
+		return (old);
+	var_pos = var_exist(old, var->key);
+	if (var_pos != 0)
+		new = update_var(old, var, var_pos);
+	else
+		new = add_var(old, var);
+	return (new);
 }
 
 // void	ft_export(char **env, t_env_var new_var)
@@ -151,6 +189,3 @@ t_env_var	str_to_var(char *str)
 //	4.3 sinon ajouter la variable
 
 // !!! echo doit aller chercher dans les variables qui sont dans env (evec export) et dans les variables stockees localement
-
-// _
-// commence par u
