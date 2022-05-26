@@ -6,7 +6,7 @@
 /*   By: mreymond <mreymond@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/20 10:43:17 by mreymond          #+#    #+#             */
-/*   Updated: 2022/05/24 18:05:51 by mreymond         ###   ########.fr       */
+/*   Updated: 2022/05/26 16:30:05 by mreymond         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,13 +66,11 @@ void	sort_small(char **env, char **sorted, int j)
 
 char	**sort_env(char **env)
 {
-	char	alphabet;
 	char	**sorted;
 	int		i;
 	int		j;
 
 	j = -1;
-	alphabet = 'A';
 	sorted = malloc(sizeof(char *) * tab_len(env));
 	j = sort_caps(env, sorted);
 	i = -1;
@@ -86,7 +84,7 @@ char	**sort_env(char **env)
 	return (sorted);
 }
 
-void	display_env(char **env)
+void	display_export(char **env)
 {
 	int	i;
 
@@ -94,6 +92,18 @@ void	display_env(char **env)
 	while (env[i])
 	{
 		printf("declare -x %s\n", env[i]);
+		i++;
+	}
+}
+
+void	display_env(char **env)
+{
+	int	i;
+
+	i = 0;
+	while (env[i])
+	{
+		printf("%s\n", env[i]);
 		i++;
 	}
 }
@@ -112,19 +122,67 @@ int	var_exist(char **env, char *var)
 	return (0);
 }
 
-char	**update_var(char **old, t_env_var *var, int pos)
+char *var_to_str(t_env_var *var)
 {
-	// char *updated;
+	char *varstr;
+	char *tmp;
 
-	// updated = malloc(sizeof)
-	// updated = ft_memcpy(updated, old[pos], msize);
-	// free(old[pos]);
-	// old[pos] = malloc(sizeof(char) * )
+	tmp = ft_strjoin("=", var->value);
+	varstr = ft_strjoin(var->key, tmp);
+	free(tmp);
+	return (varstr);
 }
+
+char **update_var(char **old, t_env_var *var, int pos)
+{
+	char *tmp;
+
+	tmp = old[pos];
+	old[pos] = var_to_str(var);
+	free(tmp);
+	return (old);
+}
+
+char	**tabdup(char **tab)
+{
+	char **new;
+	int i;
+
+	i = 0;
+	new = malloc(sizeof(char *) * (tab_len(tab) + 1));
+	while (tab[i])
+	{
+		new[i] = strdup(tab[i]);
+		i++;
+	}
+	new[i] = NULL;
+	return(new);
+}
+
 
 char	**add_var(char **old, t_env_var *var)
 {
-	// to do
+	char **new;
+	int i;
+
+	i = 0;
+	new = malloc(sizeof(char *) * (tab_len(old) + 2));
+	while (old[i])
+	{
+		new[i] = strdup(old[i]);
+		i++;
+	}
+	new[i] = var_to_str(var);
+	i++;
+	new[i] = NULL;
+	i = 0;
+	while(old[i])
+	{
+		free(old[i]);
+		i++;
+	}
+	free(old);
+	return(new);
 }
 
 char	**update_env(char **old, t_env_var *var)
@@ -141,15 +199,6 @@ char	**update_env(char **old, t_env_var *var)
 		new = add_var(old, var);
 	return (new);
 }
-
-// void	ft_export(char **env, t_env_var new_var)
-// {
-// 	char	**new_env;
-
-// 	if (new_var.key == NULL)
-// 		new_env = sort_env(env);
-// 	display_env(new_env);
-// }
 
 t_env_var	str_to_var(char *str)
 {
