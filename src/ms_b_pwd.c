@@ -1,7 +1,7 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ms_b_cd.c                                          :+:      :+:    :+:   */
+/*   ms_b_pwd.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: vroch <vroch@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
@@ -13,43 +13,15 @@
 #include "minishell.h"
 /* **************************************************************************
  *  parameter : arg = full line from readline.
- *  buf is going to be separated from "cd " --> param
- *  and re-created in case of :
- *   ~ --> usage of value from variable HOME
+ *  no action on buf
+ *   
  */
-int ms_b_cd(char *buf)
+int ms_b_pwd(void)
 {
-	char	*param;
 	char	*home;
-	int		len;
-	int		i;
-	int		j;
-
+	
 	home = getenv("HOME");
-	len = ft_strlen(buf) + ft_strlen(home);
-	param = malloc(len * sizeof(char));
-	i = 0;
-	while (i < len)
-		param[i++] = '\0';
-	i = 3;
-	j = 0;
-		if (buf[i] == '~')
-	{
-		while (home[j] != '\0')
-		{
-			param[j] = home[j];
-			j++;
-		}
-		i = 4;
-	}
-	while(buf[i] != '\0')
-	{
-		param [j] = buf[i];
-		i++;
-		j++;
-	}
-	if (chdir(param) == -1)
-		ft_putendl_fd("no such file or directory", 2);
-	free(param);
+	
+	ft_putendl_fd(home, 2);
     return (0);
 }
