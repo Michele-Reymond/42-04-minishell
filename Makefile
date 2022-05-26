@@ -4,7 +4,8 @@ INC = -Iincludes/ -I$(LIB_DIR)/includes
 
 SRC_NAME = 	minishell.c \
 			ms-b-echo.c \
-			ms-parsing.c
+			ms-parsing.c \
+			ms-b-export.c
 
 OBJ_NAME = $(SRC_NAME:.c=.o)
 OBJ = $(addprefix $(OBJ_DIR),$(OBJ_NAME))
