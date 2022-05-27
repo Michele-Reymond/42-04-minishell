@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mreymond <mreymond@student.42.fr>          +#+  +:+       +#+        */
+/*   By: vroch <vroch@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/20 10:47:58 by mreymond          #+#    #+#             */
-/*   Updated: 2022/05/27 16:21:55 by mreymond         ###   ########.fr       */
+/*   Updated: 2022/05/27 15:10:52 by vroch            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,7 @@
 int	main(int argc, char **argv, char **envp)
 {
 	t_tab		t;
+	char* 		cmd;
 	char		*test;
 	int			i;
 
@@ -24,6 +25,21 @@ int	main(int argc, char **argv, char **envp)
 	t.env = tabdup(envp);
 	t.exp = sort_env(envp);
 	t.var = new_tab();
+
+	while ((cmd = readline("🌸 >> ")) != NULL) 
+	{
+		if (strlen(cmd) > 0) 
+		{
+			add_history(cmd);
+			if (!strcmp(cmd, "exit"))
+				break;
+			launch_builtins(cmd, t);
+
+		}
+  	  free(cmd);
+	}
+  
+  
 	t.token = tokenize(test);
 	i = how_many_in_tab(t.token, '!');
 	printf("%d\n", i);

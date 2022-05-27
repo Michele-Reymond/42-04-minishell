@@ -25,14 +25,8 @@ int main(int argc, char** argv)
     if (strlen(buf) > 0) 
     {
       add_history(buf);
+      ms-bultins(buf);
     }
-    if (!strcmp(buf, "date")) 
-        {
-            system("date");
-        }
-    else if (!strcmp(buf, "ls")) 
-        {
-            system("ls");
         }
     else if (!strcmp(buf, "exit")) 
         {
