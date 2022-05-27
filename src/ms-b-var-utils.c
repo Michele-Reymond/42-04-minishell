@@ -1,25 +1,38 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   minishell.c                                        :+:      :+:    :+:   */
+/*   ms-b-var-utils.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: mreymond <mreymond@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2022/05/20 10:47:58 by mreymond          #+#    #+#             */
-/*   Updated: 2022/05/27 13:26:52 by mreymond         ###   ########.fr       */
+/*   Created: 2022/05/27 11:49:03 by mreymond          #+#    #+#             */
+/*   Updated: 2022/05/27 11:53:04 by mreymond         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-int	main(int argc, char **argv, char **envp)
+char	*var_to_str(t_var *var)
 {
-	t_tab		t;
+	char	*varstr;
+	char	*tmp;
 
-	(void) argc;
-	(void) argv;
-	t.env = tabdup(envp);
-	t.exp = sort_env(envp);
-	t.var = new_tab();
+	tmp = ft_strjoin("=", var->value);
+	varstr = ft_strjoin(var->key, tmp);
+	free(tmp);
+	return (varstr);
+}
+
+int	var_exist(char **env, char *var)
+{
+	int	i;
+
+	i = 0;
+	while (env[i])
+	{
+		if (ft_strncmp(env[i], var, ft_strlen(var)) == 0)
+			return (i);
+		i++;
+	}
 	return (0);
 }

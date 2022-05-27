@@ -3,7 +3,12 @@ FLAGS = -g3 -Wall -Wextra -Werror
 INC = -Iincludes/ -I$(LIB_DIR)/includes 
 
 SRC_NAME = 	minishell.c \
+			ms-builtins.c \
 			ms-b-echo.c \
+			ms-b-tabs.c \
+			ms-b-tabsort.c \
+			ms-b-variables.c \
+			ms-b-var-utils.c \
 			ms-parsing.c \
 			ms-b-export.c
 

@@ -6,7 +6,7 @@
 /*   By: mreymond <mreymond@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/20 10:43:17 by mreymond          #+#    #+#             */
-/*   Updated: 2022/05/24 13:52:10 by mreymond         ###   ########.fr       */
+/*   Updated: 2022/05/27 13:27:17 by mreymond         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,3 +49,15 @@ int	echo(t_echo elem)
 	}
 	return (0);
 }
+
+	// t_echo		test;
+
+	// test.cmd = "echo";
+	// test.nbr_args = 3;
+	// test.flag = ' ';
+	// test.vars = NULL;
+	// test.args = malloc(sizeof(char *) * 4);
+	// test.args[0] = "bonjour";
+	// test.args[1] = "les";
+	// test.args[2] = "copains";
+	// test.args[3] = NULL;
