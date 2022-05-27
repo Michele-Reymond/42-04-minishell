@@ -1,6 +1,13 @@
+# For compilers to find readline you may need to set:
+# export LDFLAGS="-L/Users/vroch/.brew/opt/readline/lib"
+# export CPPFLAGS="-I/Users/vroch/.brew/opt/readline/include"
+
+
 NAME = minishell
+CC = gcc
 FLAGS = -g3 -Wall -Wextra -Werror
-INC = -Iincludes/ -I$(LIB_DIR)/includes 
+INC = -I inc -I src/libft/inc -I$(HOME)/.brew/opt/readline/include
+LFT = -L src/libft -lft -lreadline -L$(HOME)/.brew/opt/readline/lib
 
 SRC_NAME = 	minishell.c \
 			ms-builtins.c \
@@ -10,7 +17,11 @@ SRC_NAME = 	minishell.c \
 			ms-b-variables.c \
 			ms-b-var-utils.c \
 			ms-parsing.c \
-			ms-b-export.c
+			ms-b-export.c \
+			ms_b_cd.c \
+			ms_b_pwd.c \
+			ms_b_other.c 
+
 
 OBJ_NAME = $(SRC_NAME:.c=.o)
 OBJ = $(addprefix $(OBJ_DIR),$(OBJ_NAME))
@@ -23,7 +34,7 @@ all: $(NAME)
 
 $(NAME): $(OBJ)
 	@make -C $(LIB_DIR) --silent 
-	@gcc -o $(NAME) $(OBJ) -L $(LIB_DIR) -lft
+	@gcc -o $(NAME) $(OBJ) -L $(LIB_DIR) -lft -lreadline
 	@echo "##### minishell compiling finished! #####"
 	@echo "   (¯\`v´¯)"
 	@echo "  (¯\`(█)´¯)  (¯\`v´¯)"
@@ -39,7 +50,7 @@ $(NAME): $(OBJ)
 $(OBJ_DIR)%.o: $(SRC_DIR)%.c
 	@mkdir -p $(OBJ_DIR)
 	@echo "##### Creating" [ $@ ] " #####"
-	@gcc $(FLAGS) -o $@ -c $< $(INC)
+	@gcc $(FLAGS) -o $@ -c $< $(INC) 
 
 run:
 	./$(NAME)

@@ -6,7 +6,7 @@
 /*   By: vroch <vroch@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/26 12:37:07 by vroch             #+#    #+#             */
-/*   Updated: 2022/05/27 13:26:58 by vroch            ###   ########.fr       */
+/*   Updated: 2022/05/27 15:34:00 by vroch            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,8 +16,10 @@
  *  only execute in case of child
  */
 
-int ms_b_other(char *buf, char **envp)
+int ms_b_other(char *buf)
 {
+    (void) buf;
+    
     int         err;
     char *const parm_list[] = {"/bin/ls", "-la", NULL};
     char *const env_parms[] = {"/bin/", NULL};
