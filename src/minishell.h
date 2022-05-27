@@ -6,7 +6,7 @@
 /*   By: mreymond <mreymond@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/20 10:48:46 by mreymond          #+#    #+#             */
-/*   Updated: 2022/05/27 13:08:31 by mreymond         ###   ########.fr       */
+/*   Updated: 2022/05/27 16:20:48 by mreymond         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,6 +43,7 @@ typedef struct s_tab
 	char	**env;
 	char	**exp;
 	char	**var;
+	char	**token;
 }	t_tab;
 
 void		echo_print(char **args, char **var);
@@ -65,6 +66,9 @@ char		**sort_env(char **env);
 void		display_tab(char **tab);
 char		**new_tab(void);
 int			launch_builtins(char *cmd);
+char		**tokenize(char *buff);
+int			how_many_in_str(char *str, char c);
+int			how_many_in_tab(char **str, char c);
 
 #endif
 
