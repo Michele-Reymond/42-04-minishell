@@ -16,7 +16,10 @@ int	main(int argc, char **argv, char **envp)
 {
 	t_tab		t;
 	char* 		cmd;
+	char		*test;
+	int			i;
 
+	test = ft_strdup("coucou !les! poulets!!!");
 	(void) argc;
 	(void) argv;
 	t.env = tabdup(envp);
@@ -35,5 +38,10 @@ int	main(int argc, char **argv, char **envp)
 		}
   	  free(cmd);
 	}
+  
+  
+	t.token = tokenize(test);
+	i = how_many_in_tab(t.token, '!');
+	printf("%d\n", i);
 	return (0);
 }

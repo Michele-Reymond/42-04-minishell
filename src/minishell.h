@@ -41,6 +41,7 @@ typedef struct s_tab
 	char	**env;
 	char	**exp;
 	char	**var;
+	char	**token;
 }	t_tab;
 
 typedef struct s_ms_b_cd
@@ -77,6 +78,9 @@ int			ms_b_cd(char *buf);
 int			ms_b_other(char *buf);
 void		rl_replace_line (const char *text, int clear_undo);
 void		rl_redisplay (void);
+char		**tokenize(char *buff);
+int			how_many_in_str(char *str, char c);
+int			how_many_in_tab(char **str, char c);
 
 #endif
 
