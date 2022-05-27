@@ -6,7 +6,7 @@
 /*   By: mreymond <mreymond@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/20 10:48:46 by mreymond          #+#    #+#             */
-/*   Updated: 2022/05/24 15:01:09 by mreymond         ###   ########.fr       */
+/*   Updated: 2022/05/27 13:08:31 by mreymond         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,14 @@
 # include <stdio.h>
 # include "libft/libft.h"
 
+# define ECHO	"echo"
+# define CD		"cd"
+# define PWD	"pwd"
+# define EXPORT	"export"
+# define UNSET	"unset"
+# define ENV	"env"
+# define EXIT	"exit"
+
 typedef struct s_echo {
 	char			*cmd;
 	unsigned int	nbr_args;
@@ -24,19 +32,39 @@ typedef struct s_echo {
 	char			**vars;
 }	t_echo;
 
-typedef struct s_env_var
+typedef struct s_var
 {
 	char	*key;
 	char	*value;
-}	t_env_var;
+}	t_var;
+
+typedef struct s_tab
+{
+	char	**env;
+	char	**exp;
+	char	**var;
+}	t_tab;
 
 void		echo_print(char **args, char **var);
 int			echo(t_echo elem);
-void		ft_export(char **env, t_env_var new_var);
+void		ft_export(char **env, t_var *var);
+char		**sort(char **env);
+void		display(char **env);
+t_var		str_to_var(char *str);
+char		**update(char **old, t_var *var);
+char		**update_var(char **old, t_var *var, int pos);
+void		display_export(char **env);
+char		**tabdup(char **tab);
+void		tabfree(char **tab);
+int			tab_len(char **tab);
+char		*var_to_str(t_var *var);
+int			var_exist(char **env, char *var);
+char		**add_var(char **old, t_var *var);
+char		**remove_var(char **old, t_var *var);
 char		**sort_env(char **env);
-void		display_env(char **env);
-t_env_var	str_to_var(char *str);
-char		**update_env(char **old, char *var);
+void		display_tab(char **tab);
+char		**new_tab(void);
+int			launch_builtins(char *cmd);
 
 #endif
 
