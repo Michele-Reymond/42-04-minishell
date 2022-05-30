@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: vroch <vroch@student.42.fr>                +#+  +:+       +#+        */
+/*   By: mreymond <mreymond@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/20 10:47:58 by mreymond          #+#    #+#             */
-/*   Updated: 2022/05/27 15:10:52 by vroch            ###   ########.fr       */
+/*   Updated: 2022/05/30 19:28:56 by mreymond         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,18 +16,26 @@ int	main(int argc, char **argv, char **envp)
 {
 	t_tab		t;
 	char* 		cmd;
-	char		*test;
-	int			i;
+	t_var		first;
+	t_var		test;
 
-	test = ft_strdup("coucou !les! poulets!!!");
 	(void) argc;
 	(void) argv;
 	t.env = tabdup(envp);
 	t.exp = sort_env(envp);
-	t.var = new_tab();
+
+	// test
+	first.key = "FIRST";
+	first.value = "0";
+	test.key = "test";
+	test.value = "Vartest";
+	t.var = add_var(new_tab(), &first);
+	t.var = add_var(t.var, &test);
+	// fin du test
 
 	while ((cmd = readline("🌸 >> ")) != NULL) 
 	{
+		t.token = tokenize(cmd);
 		if (strlen(cmd) > 0) 
 		{
 			add_history(cmd);
@@ -36,12 +44,8 @@ int	main(int argc, char **argv, char **envp)
 			launch_builtins(cmd, t);
 
 		}
-  	  free(cmd);
+  	  	free(cmd);
+		free(t.token);
 	}
-  
-  
-	t.token = tokenize(test);
-	i = how_many_in_tab(t.token, '!');
-	printf("%d\n", i);
 	return (0);
 }
