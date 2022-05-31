@@ -6,12 +6,13 @@
 /*   By: mreymond <mreymond@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/27 13:06:22 by mreymond          #+#    #+#             */
-/*   Updated: 2022/05/31 15:59:51 by mreymond         ###   ########.fr       */
+/*   Updated: 2022/05/31 17:56:52 by mreymond         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
+// parse the redirections caracteres > >> < <<
 int	*check_redir(char *cmd, char redir)
 {
 	char	*tmp;
@@ -63,6 +64,7 @@ t_parse	stock_parsing_infos(char *cmd)
 	p.redir_in_d = 0;
 	p.redir_out_d = 0;
 	p.pipes = how_many_in_str(cmd, '|');
+	p.nbr_cmd = p.pipes + 1;
 	p.double_q = how_many_in_str(cmd, '\"');
 	p.single_q = how_many_in_str(cmd, '\'');
 	p.dollar = how_many_in_str(cmd, '$');
@@ -77,6 +79,7 @@ t_parse	stock_parsing_infos(char *cmd)
 
 int	pre_parsing_errors(char *cmd, t_parse p)
 {
+	(void) cmd;
 	if (!(p.redir_in >= 0 && p.redir_out >= 0))
 		return (1);
 	if (p.double_q % 2 != 0)
@@ -92,23 +95,48 @@ int	pre_parsing_errors(char *cmd, t_parse p)
 	return (0);
 }
 
+// créer un tableau de commandes
+char	**clean_cmds(char *cmd, t_parse p)
+{
+	char	**cmds;
+	char	**tmp;
+	int		i;
+
+	i = 0;
+	(void) p;
+	tmp = ft_split(cmd, '|');
+	cmds = malloc(sizeof(char *) * tab_len(tmp) + 1);
+	while (tmp[i])
+	{
+		cmds[i] = ft_strtrim(tmp[i], " ");
+		i++;
+	}
+	cmds[i] = NULL;
+	tabfree(tmp);
+	return (cmds);
+}
+
 int	monitor(char *cmd, t_tab t)
 {
 	t_parse	p;
+	char	**cmds;
 	
 	(void) t;
 	p = stock_parsing_infos(cmd);
-	if (parsing_errors(p, cmd))
+	if (pre_parsing_errors(cmd, p))
 		return (1);
+	cmds = clean_cmds(cmd, p);
+
+	// TO DO > faire une fonction qui verifie les commandes
+
+	// printf("%s\n", cmd);
+	// printf("< : %d\n", p.redir_in);
+	// printf("<< : %d\n", p.redir_in_d);
+	// printf("> : %d\n", p.redir_out);
+	// printf(">> : %d\n", p.redir_out_d);
+	// printf("| : %d\n", p.pipes);
 	
-	printf("%s\n", cmd);
-	printf("< : %d\n", p.redir_in);
-	printf("<< : %d\n", p.redir_in_d);
-	printf("> : %d\n", p.redir_out);
-	printf(">> : %d\n", p.redir_out_d);
-	printf("| : %d\n", p.pipes);
-	
-	// if (pipes == 0 && redirections == 0 && doublesquotes == 0 && quotes == 0)
+	// if (p.pipes == 0 && redirections == 0 && doublesquotes == 0 && quotes == 0)
 	// 	launch_builtins(cmd, t);
 	return (0);
 }

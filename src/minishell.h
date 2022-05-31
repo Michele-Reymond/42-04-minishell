@@ -6,7 +6,7 @@
 /*   By: mreymond <mreymond@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/20 10:48:46 by mreymond          #+#    #+#             */
-/*   Updated: 2022/05/31 15:59:35 by mreymond         ###   ########.fr       */
+/*   Updated: 2022/05/31 17:52:39 by mreymond         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,6 +57,7 @@ typedef struct s_ms_b_cd
 typedef struct s_parse
 {
 	int		pipes;
+	int		nbr_cmd;
 	int		single_q;
 	int		double_q;
 	int		dollar;
@@ -104,6 +105,7 @@ int			monitor(char *cmd, t_tab t);
 int			pre_parsing_errors(char *cmd, t_parse p);
 t_parse		stock_parsing_infos(char *cmd);
 int			*check_redir(char *cmd, char redir);
+char		**clean_cmds(char *cmd, t_parse p); 
 
 #endif
 
