@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: vroch <vroch@student.42.fr>                +#+  +:+       +#+        */
+/*   By: mreymond <mreymond@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/20 10:48:46 by mreymond          #+#    #+#             */
-/*   Updated: 2022/05/27 17:05:04 by vroch            ###   ########.fr       */
+/*   Updated: 2022/05/30 16:05:38 by mreymond         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,6 @@
 
 
 typedef struct s_echo {
-	char			*cmd;
 	unsigned int	nbr_args;
 	char			flag;
 	char			**args;
@@ -54,7 +53,9 @@ typedef struct s_ms_b_cd
 }	t_ms_b_cd;
 
 void		echo_print(char **args, char **var);
-int			echo(t_echo elem);
+int			echo(char **token, t_tab t);
+char		**echo_vars(char **token, t_tab t, int nbr);
+t_echo		echo_parsing(char **token, t_tab t);
 void		ft_export(char **env, t_var *var);
 char		**sort(char **env);
 void		display(char **env);

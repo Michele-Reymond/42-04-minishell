@@ -10,14 +10,14 @@ INC = -I inc -I src/libft/inc -I$(HOME)/.brew/opt/readline/include
 LFT = -L src/libft -lft -lreadline -L$(HOME)/.brew/opt/readline/lib
 
 SRC_NAME = 	minishell.c \
-			ms-builtins.c \
-			ms-b-echo.c \
-			ms-b-tabs.c \
-			ms-b-tabsort.c \
-			ms-b-variables.c \
-			ms-b-var-utils.c \
-			ms-parsing.c \
-			ms-b-export.c \
+			ms_builtins.c \
+			ms_b_echo.c \
+			ms_b_tabs.c \
+			ms_b_tabsort.c \
+			ms_b_variables.c \
+			ms_b_var_utils.c \
+			ms_parsing.c \
+			ms_b_export.c \
 			ms_b_cd.c \
 			ms_b_pwd.c \
 			ms_b_other.c 
