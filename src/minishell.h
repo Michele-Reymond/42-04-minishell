@@ -16,7 +16,7 @@
 # include <stdio.h>
 # include <stdlib.h>
 # include <string.h>
-
+# include <sys/wait.h>
 # include <readline/readline.h>
 # include <readline/history.h>
 # include "libft/libft.h"
@@ -52,6 +52,7 @@ typedef struct s_ms_b_cd
 	int		pos_buf;
 	int		pos_param;
 }	t_ms_b_cd;
+
 
 void		echo_print(char **args, char **var);
 int			echo(t_echo elem);
