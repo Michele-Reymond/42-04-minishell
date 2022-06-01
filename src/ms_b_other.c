@@ -6,7 +6,7 @@
 /*   By: vroch <vroch@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/26 12:37:07 by vroch             #+#    #+#             */
-/*   Updated: 2022/06/01 13:30:22 by vroch            ###   ########.fr       */
+/*   Updated: 2022/06/01 15:47:38 by vroch            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -127,6 +127,8 @@ static char **path_parsing()
 		}
 		i++;
 	}
+	env_parms[i] = malloc(len[i] + 2 * sizeof(char));
+	ft_memset(env_parms[i], len[i] + 1, '\0');
 	env_parms = path_load(len, env_parms);
 	free(len);
 	
@@ -191,25 +193,19 @@ int ms_b_other(char *buf)
 	int		k;
 	int		err;
 	// char	*cmd;
-	//  char	*xparm_list[] = {"/bin/ls", "-la", NULL};
-	//  char   *xenv_parms[] = {"/bin/", NULL};
+	  char	*xparm_list[] = {"/bin/ls", "-la", NULL};
+	//   char   *xenv_parms[] = {"/bin/", "/usr/sbin/", NULL};
 	char	**parm_list;
 	int		pid;
+
+	printf("buf: %s\n", buf);
 	env_parms = path_parsing();
-	i = 0;
-	// printf ("Ret env_parms\n");
-	// while (env_parms[i] != NULL)
-	// {
-	// 	printf ("%s\n",env_parms[i]);
-	// 	i++;
-	// }
-
-
+		
 	// --------------------------------------------
 	parm_list_t = ft_split(buf, ' ');
 	i = 0;
-	// j = 0;
-	// k = 0;
+	j = 0;
+	k = 0;
 	
 	while (parm_list_t[i] != NULL)
 			i++;
@@ -218,7 +214,7 @@ int ms_b_other(char *buf)
 	j = 0;
 	while (j < i)
 	{
-		parm_list[j] = malloc(1024 * sizeof (char));
+		parm_list[j] = malloc(1000 * sizeof (char));
 		ft_memset (parm_list[j], '\0', ft_strlen(buf));
 		printf ("j : %d >%s<\n", j, parm_list[j]);
 		j++;
@@ -236,13 +232,14 @@ int ms_b_other(char *buf)
 		printf("command OK %s\n", parm_list[0]);
 	else
 		printf("command KO %s\n", parm_list[0]);
+	
 
 // ----------------------
 	pid=fork();
 	if (pid == 0)
 	{
 		err = 0;
-		err = execve(parm_list[0], parm_list, env_parms);
+		err = execve(parm_list[0], xparm_list, env_parms);
 		printf("err = %d\n", err);
 		if (err == -1)
 			printf("Error: command not executable !\n");;

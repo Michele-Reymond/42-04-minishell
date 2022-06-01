@@ -6,7 +6,7 @@
 /*   By: vroch <vroch@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/20 10:48:46 by mreymond          #+#    #+#             */
-/*   Updated: 2022/06/01 12:15:17 by vroch            ###   ########.fr       */
+/*   Updated: 2022/06/01 13:39:33 by vroch            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,6 +21,8 @@
 # include <readline/history.h>
 # include "libft/libft.h"
 
+# define ERROR_UNEXPECTED_TOKEN "minishell: syntax error near unexpected token "
+# define ERROR_QUOTES "minishell: unclosed quotes\n"
 
 typedef struct s_echo {
 	unsigned int	nbr_args;
@@ -52,6 +54,22 @@ typedef struct s_ms_b_cd
 	int		pos_param;
 }	t_ms_b_cd;
 
+typedef struct s_parse
+{
+	int		pipes;
+	int		nbr_cmd;
+	int		single_q;
+	int		double_q;
+	int		dollar;
+	int		redir_out;
+	int		redir_in;
+	int		redir_out_d;
+	int		redir_in_d;
+	char	**cmds;
+}	t_parse;
+
+// >	redirection de sortie
+// <	redirection d'entree
 
 void		echo_print(char **args, char **var);
 int			echo(char **token, t_tab t);
@@ -74,7 +92,7 @@ char		**remove_var(char **old, t_var *var);
 char		**sort_env(char **env);
 void		display_tab(char **tab);
 char		**new_tab(void);
-int			launch_builtins(char *cmd, t_tab t);
+int			launch_cmds(char *cmd, t_tab t);
 int			ms_b_pwd(void);
 int			ms_b_cd(char *buf);
 int			ms_b_other(char *buf);
@@ -83,6 +101,11 @@ void		rl_redisplay (void);
 char		**tokenize(char *buff);
 int			how_many_in_str(char *str, char c);
 int			how_many_in_tab(char **str, char c);
+int			monitor(char *cmd, t_tab t);
+int			pre_parsing_errors(char *cmd, t_parse p);
+t_parse		stock_parsing_infos(char *cmd);
+int			*check_redir(char *cmd, char redir);
+char		**clean_cmds(char *cmd, t_parse p); 
 
 #endif
 
