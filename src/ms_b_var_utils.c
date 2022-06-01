@@ -1,24 +1,24 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ms-b-var-utils.c                                   :+:      :+:    :+:   */
+/*   ms_b_var_utils.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: mreymond <mreymond@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/27 11:49:03 by mreymond          #+#    #+#             */
-/*   Updated: 2022/05/27 11:53:04 by mreymond         ###   ########.fr       */
+/*   Updated: 2022/06/01 14:56:03 by mreymond         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-char	*var_to_str(t_var *var)
+char	*var_to_str(t_var var)
 {
 	char	*varstr;
 	char	*tmp;
 
-	tmp = ft_strjoin("=", var->value);
-	varstr = ft_strjoin(var->key, tmp);
+	tmp = ft_strjoin("=", var.value);
+	varstr = ft_strjoin(var.key, tmp);
 	free(tmp);
 	return (varstr);
 }

@@ -6,7 +6,7 @@
 /*   By: mreymond <mreymond@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/20 10:47:58 by mreymond          #+#    #+#             */
-/*   Updated: 2022/05/31 14:41:10 by mreymond         ###   ########.fr       */
+/*   Updated: 2022/06/01 15:28:18 by mreymond         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,20 +29,20 @@ int	main(int argc, char **argv, char **envp)
 	first.value = "0";
 	test.key = "test";
 	test.value = "Vartest";
-	t.var = add_var(new_tab(), &first);
-	t.var = add_var(t.var, &test);
+	t.var = add_var(new_tab(), first);
+	t.var = add_var(t.var, test);
 	// fin du test
 
 	while ((cmd = readline("🌸 >> ")) != NULL) 
 	{
 		t.token = tokenize(cmd);
-		if (strlen(cmd) > 0) 
+		if (strlen(cmd) > 0)
 		{
 			add_history(cmd);
 			if (!strcmp(cmd, "exit"))
 				break;
 			// launch_cmds(cmd, t);
-			monitor(cmd, t);
+			monitor(cmd, &t);
 			// display_tab(t.token);
 		}
   	  	free(cmd);

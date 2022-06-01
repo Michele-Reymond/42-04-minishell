@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ms-b-export.c                                      :+:      :+:    :+:   */
+/*   ms_b_export.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: mreymond <mreymond@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/20 10:43:17 by mreymond          #+#    #+#             */
-/*   Updated: 2022/05/27 13:04:17 by mreymond         ###   ########.fr       */
+/*   Updated: 2022/06/01 17:13:24 by mreymond         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,21 +19,21 @@ void	display_export(char **env)
 	int	i;
 
 	i = 0;
-	while (env[i])
+	while (env[i] != NULL)
 	{
 		printf("declare -x %s\n", env[i]);
 		i++;
 	}
 }
 
-char	**update_env(char **old, t_var *var)
+char	**update_env(char **old, t_var var)
 {
 	char	**new;
 	int		var_pos;
 
-	if (var->key == NULL)
+	if (var.key == NULL)
 		return (old);
-	var_pos = var_exist(old, var->key);
+	var_pos = var_exist(old, var.key);
 	if (var_pos != 0)
 		new = update_var(old, var, var_pos);
 	else
@@ -41,12 +41,45 @@ char	**update_env(char **old, t_var *var)
 	return (new);
 }
 
-void	ft_export(char **env, t_var *var)
+char	**ft_export(char **env, char **token)
 {
-	if (var->key == NULL)
+	t_var	*vartab;
+	char	**tmp;
+	int		i;
+	int		j;
+
+	i = 1;
+	j = 0;
+	if (tab_len(token) == 1)
 		display_export(env);
 	else
-		update_env(env, var);
+	{
+		vartab = malloc(sizeof(t_var) * tab_len(token) - 1);
+		while (token[i])
+		{
+			vartab[j] = str_to_var(token[i]);
+			i++;
+			j++;
+		}
+		j = 0;
+		while (i > 1)
+		{
+			tmp = update_env(env, vartab[j]);
+			tabfree(env);
+			env = tmp;
+			j++;
+			i--;
+		}
+		env = sort_env(tmp);
+		tabfree(tmp);
+	}
+	return (env);
+}
+
+
+char	**unset_var()
+{
+	
 }
 
 // trier env
