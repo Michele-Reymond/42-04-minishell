@@ -6,7 +6,7 @@
 /*   By: mreymond <mreymond@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/20 10:47:58 by mreymond          #+#    #+#             */
-/*   Updated: 2022/06/01 17:17:04 by mreymond         ###   ########.fr       */
+/*   Updated: 2022/06/02 18:14:20 by mreymond         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,21 +16,21 @@ int	main(int argc, char **argv, char **envp)
 {
 	t_tab		t;
 	char* 		cmd;
-	t_var		first;
-	t_var		test;
+	// t_var		first;
+	// t_var		test;
 
 	(void) argc;
 	(void) argv;
 	t.env = tabdup(envp);
-	t.exp = sort_env(envp);
+	t.exp = tabsort(t.env);
 
 	// test
-	first.key = "FIRST";
-	first.value = "0";
-	test.key = "test";
-	test.value = "Vartest";
-	t.var = add_var(new_tab(), first);
-	t.var = add_var(t.var, test);
+	// first.key = "FIRST";
+	// first.value = "0";
+	// test.key = "test";
+	// test.value = "Vartest";
+	// t.var = add_var(new_tab(), first);
+	// t.var = add_var(t.var, test);
 	// fin du test
 
 	while ((cmd = readline("🌸 >> ")) != NULL) 

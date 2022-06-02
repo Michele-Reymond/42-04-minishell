@@ -6,7 +6,7 @@
 /*   By: mreymond <mreymond@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/20 10:43:17 by mreymond          #+#    #+#             */
-/*   Updated: 2022/06/01 17:13:24 by mreymond         ###   ########.fr       */
+/*   Updated: 2022/06/02 18:11:46 by mreymond         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,7 +41,7 @@ char	**update_env(char **old, t_var var)
 	return (new);
 }
 
-char	**ft_export(char **env, char **token)
+t_tab	*ft_export(t_tab *t, char **token)
 {
 	t_var	*vartab;
 	char	**tmp;
@@ -51,7 +51,7 @@ char	**ft_export(char **env, char **token)
 	i = 1;
 	j = 0;
 	if (tab_len(token) == 1)
-		display_export(env);
+		display_export(t->exp);
 	else
 	{
 		vartab = malloc(sizeof(t_var) * tab_len(token) - 1);
@@ -64,22 +64,15 @@ char	**ft_export(char **env, char **token)
 		j = 0;
 		while (i > 1)
 		{
-			tmp = update_env(env, vartab[j]);
-			tabfree(env);
-			env = tmp;
+			tmp = update_env(t->env, vartab[j]);
+			tabfree(t->env);
+			t->env = tmp;
 			j++;
 			i--;
 		}
-		env = sort_env(tmp);
-		tabfree(tmp);
+		t->exp = tabsort(t->env);
 	}
-	return (env);
-}
-
-
-char	**unset_var()
-{
-	
+	return (t);
 }
 
 // trier env

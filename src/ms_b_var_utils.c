@@ -6,7 +6,7 @@
 /*   By: mreymond <mreymond@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/27 11:49:03 by mreymond          #+#    #+#             */
-/*   Updated: 2022/06/01 14:56:03 by mreymond         ###   ########.fr       */
+/*   Updated: 2022/06/02 16:55:49 by mreymond         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,10 @@ char	*var_to_str(t_var var)
 	char	*varstr;
 	char	*tmp;
 
-	tmp = ft_strjoin("=", var.value);
+	if (*var.value != '\0')
+		tmp = ft_strjoin("=", var.value);
+	else
+		tmp = ft_strdup("");
 	varstr = ft_strjoin(var.key, tmp);
 	free(tmp);
 	return (varstr);
