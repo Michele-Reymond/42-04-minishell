@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: vroch <vroch@student.42.fr>                +#+  +:+       +#+        */
+/*   By: mreymond <mreymond@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/20 10:48:46 by mreymond          #+#    #+#             */
-/*   Updated: 2022/06/01 13:39:33 by vroch            ###   ########.fr       */
+/*   Updated: 2022/06/01 17:16:44 by mreymond         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -75,24 +75,24 @@ void		echo_print(char **args, char **var);
 int			echo(char **token, t_tab t);
 char		**echo_vars(char **token, t_tab t, int nbr);
 t_echo		echo_parsing(char **token, t_tab t);
-void		ft_export(char **env, t_var *var);
+char		**ft_export(char **env, char **token);
 char		**sort(char **env);
 void		display(char **env);
 t_var		str_to_var(char *str);
 char		**update(char **old, t_var *var);
-char		**update_var(char **old, t_var *var, int pos);
+char		**update_var(char **old, t_var var, int pos);
 void		display_export(char **env);
 char		**tabdup(char **tab);
 void		tabfree(char **tab);
 int			tab_len(char **tab);
-char		*var_to_str(t_var *var);
+char		*var_to_str(t_var var);
 int			var_exist(char **env, char *var);
-char		**add_var(char **old, t_var *var);
+char		**add_var(char **old, t_var var);
 char		**remove_var(char **old, t_var *var);
 char		**sort_env(char **env);
 void		display_tab(char **tab);
 char		**new_tab(void);
-int			launch_cmds(char *cmd, t_tab t);
+int			launch_cmds(char *cmd, t_tab *t);
 int			ms_b_pwd(void);
 int			ms_b_cd(char *buf);
 int			ms_b_other(char *buf);
@@ -101,7 +101,7 @@ void		rl_redisplay (void);
 char		**tokenize(char *buff);
 int			how_many_in_str(char *str, char c);
 int			how_many_in_tab(char **str, char c);
-int			monitor(char *cmd, t_tab t);
+int			monitor(char *cmd, t_tab *t);
 int			pre_parsing_errors(char *cmd, t_parse p);
 t_parse		stock_parsing_infos(char *cmd);
 int			*check_redir(char *cmd, char redir);

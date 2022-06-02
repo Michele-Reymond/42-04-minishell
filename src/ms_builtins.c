@@ -6,7 +6,7 @@
 /*   By: mreymond <mreymond@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/27 13:06:22 by mreymond          #+#    #+#             */
-/*   Updated: 2022/05/31 17:56:52 by mreymond         ###   ########.fr       */
+/*   Updated: 2022/06/01 17:13:56 by mreymond         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -116,16 +116,15 @@ char	**clean_cmds(char *cmd, t_parse p)
 	return (cmds);
 }
 
-int	monitor(char *cmd, t_tab t)
+int	monitor(char *cmd, t_tab *t)
 {
 	t_parse	p;
-	char	**cmds;
 	
 	(void) t;
 	p = stock_parsing_infos(cmd);
 	if (pre_parsing_errors(cmd, p))
 		return (1);
-	cmds = clean_cmds(cmd, p);
+	p.cmds = clean_cmds(cmd, p);
 
 	// TO DO > faire une fonction qui verifie les commandes
 
@@ -136,25 +135,29 @@ int	monitor(char *cmd, t_tab t)
 	// printf(">> : %d\n", p.redir_out_d);
 	// printf("| : %d\n", p.pipes);
 	
-	// if (p.pipes == 0 && redirections == 0 && doublesquotes == 0 && quotes == 0)
-	// 	launch_builtins(cmd, t);
+	if (tab_len(p.cmds) == 1)
+		launch_cmds(p.cmds[0], t);
 	return (0);
 }
 
-int	launch_cmds(char *cmd, t_tab t)
+int	launch_cmds(char *cmd, t_tab *t)
 {
+	char	**token;
+
+	token = tokenize(
+		cmd);
 	if (!ft_strncmp(cmd, "cd", 2))
 		ms_b_cd(cmd);
 	else if (!ft_strncmp(cmd, "pwd", 3))
 		ms_b_pwd();
 	else if (!ft_strncmp(cmd, "echo", 4))
-		echo(t.token, t);
-	// else if (!ft_strncmp(buf, "export", 6))
-	// 	ft_export(tab, var);
-	// else if (cmd == UNSET)
-	// 	remove_var(tab, var);
+		echo(token, *t);
+	else if (!ft_strncmp(cmd, "export", 6))
+		t->env = ft_export(t->env, token);
+	// else if (!ft_strncmp(cmd, "unset", 5))
+	// 	t->env = remove_var(t->env, token);
 	else if (!ft_strncmp(cmd, "env", 3))
-		display_tab(t.env);
+		display_tab(t->env);
 	else
 		ms_b_other(cmd);
 	return (0);

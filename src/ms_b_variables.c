@@ -1,17 +1,18 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ms-b-variables.c                                   :+:      :+:    :+:   */
+/*   ms_b_variables.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: mreymond <mreymond@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/27 11:28:42 by mreymond          #+#    #+#             */
-/*   Updated: 2022/05/27 12:12:39 by mreymond         ###   ########.fr       */
+/*   Updated: 2022/06/01 16:54:52 by mreymond         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
+// crer une variable
 t_var	str_to_var(char *str)
 {
 	t_var	new_var;
@@ -34,7 +35,7 @@ t_var	str_to_var(char *str)
 	return (new_var);
 }
 
-char	**add_var(char **old, t_var *var)
+char	**add_var(char **old, t_var var)
 {
 	char	**new;
 	int		i;
@@ -52,7 +53,7 @@ char	**add_var(char **old, t_var *var)
 	return (new);
 }
 
-char	**remove_var(char **old, t_var *var)
+char	**remove_var(char **old, char *key)
 {
 	char	**new;
 	int		i;
@@ -61,7 +62,7 @@ char	**remove_var(char **old, t_var *var)
 	new = malloc(sizeof(char *) * (tab_len(old) + 1));
 	while (old[i])
 	{
-		if (ft_strncmp(old[i], var->key, ft_strlen(var->key)))
+		if (ft_strncmp(old[i], key, ft_strlen(key)))
 			new[i] = ft_strdup(old[i]);
 		i++;
 	}
@@ -69,12 +70,22 @@ char	**remove_var(char **old, t_var *var)
 	return (new);
 }
 
-char	**update_var(char **old, t_var *var, int pos)
+char	**update_var(char **old, t_var var, int pos)
 {
-	char	*tmp;
+	char	**new;
+	int		i;
 
-	tmp = old[pos];
-	old[pos] = var_to_str(var);
-	free(tmp);
-	return (old);
+	i = 0;
+	(void) pos;
+	new = malloc(sizeof(char *) * (tab_len(old) + 1));
+	while (old[i])
+	{
+		if (!ft_strncmp(old[i], var.key, ft_strlen(var.key)))
+			new[i] = var_to_str(var);
+		else
+			new[i] = ft_strdup(old[i]);
+		i++;
+	}
+	new[i] = NULL;
+	return (new);
 }
