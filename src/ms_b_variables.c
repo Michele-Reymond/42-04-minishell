@@ -6,7 +6,7 @@
 /*   By: mreymond <mreymond@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/27 11:28:42 by mreymond          #+#    #+#             */
-/*   Updated: 2022/06/01 16:54:52 by mreymond         ###   ########.fr       */
+/*   Updated: 2022/06/02 18:13:00 by mreymond         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,13 +25,18 @@ t_var	str_to_var(char *str)
 		return (new_var);
 	while (str[i] && str[i] != '=' && (ft_isalnum(str[i]) != 0 || str[i] == '_'))
 		i++;
-	if (str[i] != '=')
-		return (new_var);
+	// if (str[i] == '=')
+	// 	i++;
 	new_var.key = malloc(sizeof(char) * i + 1);
 	ft_strlcpy(new_var.key, str, i + 1);
-	i++;
-	new_var.value = malloc(sizeof(char) * (ft_strlen(str) - i + 1));
-	ft_strlcpy(new_var.value, &str[i], (ft_strlen(str) - i + 1));
+	if (str[i] != '\0')
+	{
+		i++;
+		new_var.value = malloc(sizeof(char) * (ft_strlen(str) - i + 1));
+		ft_strlcpy(new_var.value, &str[i], (ft_strlen(str) - i + 1));
+	}
+	else
+		new_var.value = ft_strdup("");
 	return (new_var);
 }
 
@@ -42,7 +47,7 @@ char	**add_var(char **old, t_var var)
 
 	i = 0;
 	new = malloc(sizeof(char *) * (tab_len(old) + 2));
-	while (old[i])
+	while (old[i] != NULL)
 	{
 		new[i] = ft_strdup(old[i]);
 		i++;
@@ -53,21 +58,46 @@ char	**add_var(char **old, t_var var)
 	return (new);
 }
 
-char	**remove_var(char **old, char *key)
+t_tab	*unset_var(t_tab *t, char **token)
 {
 	char	**new;
 	int		i;
+	int 	j;
+	int		k;
+	int		ok;
+	int 	len;
 
 	i = 0;
-	new = malloc(sizeof(char *) * (tab_len(old) + 1));
-	while (old[i])
+	ok = 0;
+	k = 0;
+	len = (tab_len(t->env) - tab_len(token)) + 2;
+	new = malloc(sizeof(char *) * len);
+	while (t->env[i] != NULL)
 	{
-		if (ft_strncmp(old[i], key, ft_strlen(key)))
-			new[i] = ft_strdup(old[i]);
+		j = 1;
+		ok = 0;
+		while (token[j] != NULL)
+		{
+			if (!ft_strncmp(t->env[i], token[j], ft_strlen(token[j])))
+			{
+				ok = 1;
+				break ;
+			}
+			j++;
+		}
+		if (ok == 0)
+		{
+			new[k] = ft_strdup(t->env[i]);
+			k++;
+		}
 		i++;
 	}
-	new[i] = NULL;
-	return (new);
+	new[k] = NULL;
+	tabfree(t->env);
+	tabfree(t->exp);
+	t->env = new;
+	t->exp = tabsort(t->env);
+	return (t);
 }
 
 char	**update_var(char **old, t_var var, int pos)
@@ -78,7 +108,7 @@ char	**update_var(char **old, t_var var, int pos)
 	i = 0;
 	(void) pos;
 	new = malloc(sizeof(char *) * (tab_len(old) + 1));
-	while (old[i])
+	while (old[i] != NULL)
 	{
 		if (!ft_strncmp(old[i], var.key, ft_strlen(var.key)))
 			new[i] = var_to_str(var);

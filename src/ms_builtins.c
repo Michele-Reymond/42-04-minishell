@@ -6,7 +6,7 @@
 /*   By: mreymond <mreymond@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/27 13:06:22 by mreymond          #+#    #+#             */
-/*   Updated: 2022/06/01 17:13:56 by mreymond         ###   ########.fr       */
+/*   Updated: 2022/06/02 17:06:51 by mreymond         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -120,7 +120,6 @@ int	monitor(char *cmd, t_tab *t)
 {
 	t_parse	p;
 	
-	(void) t;
 	p = stock_parsing_infos(cmd);
 	if (pre_parsing_errors(cmd, p))
 		return (1);
@@ -144,8 +143,7 @@ int	launch_cmds(char *cmd, t_tab *t)
 {
 	char	**token;
 
-	token = tokenize(
-		cmd);
+	token = tokenize(cmd);
 	if (!ft_strncmp(cmd, "cd", 2))
 		ms_b_cd(cmd);
 	else if (!ft_strncmp(cmd, "pwd", 3))
@@ -153,11 +151,11 @@ int	launch_cmds(char *cmd, t_tab *t)
 	else if (!ft_strncmp(cmd, "echo", 4))
 		echo(token, *t);
 	else if (!ft_strncmp(cmd, "export", 6))
-		t->env = ft_export(t->env, token);
-	// else if (!ft_strncmp(cmd, "unset", 5))
-	// 	t->env = remove_var(t->env, token);
+		t = ft_export(t, token);
+	else if (!ft_strncmp(cmd, "unset", 5))
+		t = unset_var(t, token);
 	else if (!ft_strncmp(cmd, "env", 3))
-		display_tab(t->env);
+		display_env(t->env);
 	else
 		ms_b_other(cmd);
 	return (0);

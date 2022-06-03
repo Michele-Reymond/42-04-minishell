@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ms_b_other.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: vroch <vroch@student.42.fr>                +#+  +:+       +#+        */
+/*   By: mreymond <mreymond@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/26 12:37:07 by vroch             #+#    #+#             */
-/*   Updated: 2022/06/01 15:47:38 by vroch            ###   ########.fr       */
+/*   Updated: 2022/06/02 13:31:28 by mreymond         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -190,7 +190,7 @@ int ms_b_other(char *buf)
 	char	**parm_list_t;
 	int		i;
 	int		j;
-	int		k;
+	// int		k;
 	int		err;
 	// char	*cmd;
 	  char	*xparm_list[] = {"/bin/ls", "-la", NULL};
@@ -205,7 +205,7 @@ int ms_b_other(char *buf)
 	parm_list_t = ft_split(buf, ' ');
 	i = 0;
 	j = 0;
-	k = 0;
+	// k = 0;
 	
 	while (parm_list_t[i] != NULL)
 			i++;
@@ -221,7 +221,7 @@ int ms_b_other(char *buf)
 	}
 	i = 0;
 	j = 0;
-	k = 0;
+	// k = 0;
 	//  construction de param_list
 	parm_list = cmd_checking(parm_list, env_parms, buf);
 	

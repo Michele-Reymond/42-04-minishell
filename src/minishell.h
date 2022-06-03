@@ -6,7 +6,7 @@
 /*   By: mreymond <mreymond@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/20 10:48:46 by mreymond          #+#    #+#             */
-/*   Updated: 2022/06/01 17:16:44 by mreymond         ###   ########.fr       */
+/*   Updated: 2022/06/02 18:10:44 by mreymond         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -75,7 +75,7 @@ void		echo_print(char **args, char **var);
 int			echo(char **token, t_tab t);
 char		**echo_vars(char **token, t_tab t, int nbr);
 t_echo		echo_parsing(char **token, t_tab t);
-char		**ft_export(char **env, char **token);
+t_tab		*ft_export(t_tab *t, char **token);
 char		**sort(char **env);
 void		display(char **env);
 t_var		str_to_var(char *str);
@@ -88,8 +88,11 @@ int			tab_len(char **tab);
 char		*var_to_str(t_var var);
 int			var_exist(char **env, char *var);
 char		**add_var(char **old, t_var var);
-char		**remove_var(char **old, t_var *var);
+char		**remove_var(char **old, char *key);
+t_tab		*unset_var(t_tab *t, char **token);
 char		**sort_env(char **env);
+char		**tabsort(char **tab);
+void		display_env(char **tab);
 void		display_tab(char **tab);
 char		**new_tab(void);
 int			launch_cmds(char *cmd, t_tab *t);
