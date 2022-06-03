@@ -6,7 +6,7 @@
 /*   By: mreymond <mreymond@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/20 10:48:46 by mreymond          #+#    #+#             */
-/*   Updated: 2022/06/02 18:10:44 by mreymond         ###   ########.fr       */
+/*   Updated: 2022/06/03 15:25:27 by mreymond         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,6 +19,7 @@
 # include <sys/wait.h>
 # include <readline/readline.h>
 # include <readline/history.h>
+# include <stdbool.h>
 # include "libft/libft.h"
 
 # define ERROR_UNEXPECTED_TOKEN "minishell: syntax error near unexpected token "
@@ -80,14 +81,16 @@ char		**sort(char **env);
 void		display(char **env);
 t_var		str_to_var(char *str);
 char		**update(char **old, t_var *var);
-char		**update_var(char **old, t_var var, int pos);
+char		**update_var(char **old, t_var var, int pos, bool quotes);
+char		**update_env(char **old, t_var var, bool quotes);
 void		display_export(char **env);
 char		**tabdup(char **tab);
 void		tabfree(char **tab);
 int			tab_len(char **tab);
 char		*var_to_str(t_var var);
+char		*var_to_str_with_quotes(t_var var);
 int			var_exist(char **env, char *var);
-char		**add_var(char **old, t_var var);
+char		**add_var(char **old, t_var var, bool quotes);
 char		**remove_var(char **old, char *key);
 t_tab		*unset_var(t_tab *t, char **token);
 char		**sort_env(char **env);
@@ -108,9 +111,7 @@ int			monitor(char *cmd, t_tab *t);
 int			pre_parsing_errors(char *cmd, t_parse p);
 t_parse		stock_parsing_infos(char *cmd);
 int			*check_redir(char *cmd, char redir);
-char		**clean_cmds(char *cmd, t_parse p); 
+char		**clean_cmds(char *cmd, t_parse p);
+char		**make_export(char **env);
 
 #endif
-
-// liste des malloc à free à la fin :
-// - dans la fonction sort_env

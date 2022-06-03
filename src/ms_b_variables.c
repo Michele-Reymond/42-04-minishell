@@ -6,7 +6,7 @@
 /*   By: mreymond <mreymond@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/27 11:28:42 by mreymond          #+#    #+#             */
-/*   Updated: 2022/06/02 18:13:00 by mreymond         ###   ########.fr       */
+/*   Updated: 2022/06/03 15:26:14 by mreymond         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,7 +40,7 @@ t_var	str_to_var(char *str)
 	return (new_var);
 }
 
-char	**add_var(char **old, t_var var)
+char	**add_var(char **old, t_var var, bool quotes)
 {
 	char	**new;
 	int		i;
@@ -52,7 +52,10 @@ char	**add_var(char **old, t_var var)
 		new[i] = ft_strdup(old[i]);
 		i++;
 	}
-	new[i] = var_to_str(var);
+	if (quotes)
+		new[i] = var_to_str_with_quotes(var);
+	else
+		new[i] = var_to_str(var);
 	i++;
 	new[i] = NULL;
 	return (new);
@@ -100,7 +103,7 @@ t_tab	*unset_var(t_tab *t, char **token)
 	return (t);
 }
 
-char	**update_var(char **old, t_var var, int pos)
+char	**update_var(char **old, t_var var, int pos, bool quotes)
 {
 	char	**new;
 	int		i;
@@ -111,7 +114,12 @@ char	**update_var(char **old, t_var var, int pos)
 	while (old[i] != NULL)
 	{
 		if (!ft_strncmp(old[i], var.key, ft_strlen(var.key)))
-			new[i] = var_to_str(var);
+		{
+			if (quotes)
+				new[i] = var_to_str_with_quotes(var);
+			else
+				new[i] = var_to_str(var);
+		}
 		else
 			new[i] = ft_strdup(old[i]);
 		i++;

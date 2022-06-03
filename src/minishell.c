@@ -6,7 +6,7 @@
 /*   By: mreymond <mreymond@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/20 10:47:58 by mreymond          #+#    #+#             */
-/*   Updated: 2022/06/02 18:14:20 by mreymond         ###   ########.fr       */
+/*   Updated: 2022/06/03 15:27:28 by mreymond         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,25 +14,16 @@
 
 int	main(int argc, char **argv, char **envp)
 {
-	t_tab		t;
+	
 	char* 		cmd;
+	t_tab		t;
 	// t_var		first;
 	// t_var		test;
 
 	(void) argc;
 	(void) argv;
 	t.env = tabdup(envp);
-	t.exp = tabsort(t.env);
-
-	// test
-	// first.key = "FIRST";
-	// first.value = "0";
-	// test.key = "test";
-	// test.value = "Vartest";
-	// t.var = add_var(new_tab(), first);
-	// t.var = add_var(t.var, test);
-	// fin du test
-
+	t.exp = make_export(t.env);
 	while ((cmd = readline("🌸 >> ")) != NULL) 
 	{
 		t.token = tokenize(cmd);
@@ -50,3 +41,13 @@ int	main(int argc, char **argv, char **envp)
 	}
 	return (0);
 }
+
+
+	// test
+	// first.key = "FIRST";
+	// first.value = "0";
+	// test.key = "test";
+	// test.value = "Vartest";
+	// t.var = add_var(new_tab(), first);
+	// t.var = add_var(t.var, test);
+	// fin du test
