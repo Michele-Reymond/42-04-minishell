@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ms-b-echo.c                                        :+:      :+:    :+:   */
+/*   ms_b_echo.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: mreymond <mreymond@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/20 10:43:17 by mreymond          #+#    #+#             */
-/*   Updated: 2022/05/30 19:12:45 by mreymond         ###   ########.fr       */
+/*   Updated: 2022/06/03 18:05:14 by mreymond         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -103,7 +103,7 @@ t_echo	echo_parsing(char **token, t_tab t)
 	while (elem.args[i])
 		i++;
 	elem.nbr_args = i;
-	nbr_vars =	how_many_in_tab(token, '$');
+	nbr_vars = how_many_in_tab(token, '$');
 	if (nbr_vars == 0)
 		elem.vars = NULL;
 	else
@@ -114,11 +114,13 @@ t_echo	echo_parsing(char **token, t_tab t)
 int	echo(char **token, t_tab t)
 {
 	t_echo elem;
-	
-	if (tab_len(token) < 2)
+	char **cleaned;
+
+	cleaned = clean_quotes_token(token, t.p);
+	if (tab_len(cleaned) < 2)
 		elem.nbr_args = 0;
 	else
-		elem = echo_parsing(token, t);
+		elem = echo_parsing(cleaned, t);
 	if (elem.nbr_args == 0 && elem.flag != 'n')
 		printf("\n");
 	if (elem.nbr_args > 0 && elem.flag == 'n')

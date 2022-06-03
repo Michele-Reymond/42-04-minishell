@@ -6,7 +6,7 @@
 /*   By: mreymond <mreymond@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/27 13:06:22 by mreymond          #+#    #+#             */
-/*   Updated: 2022/06/03 14:48:14 by mreymond         ###   ########.fr       */
+/*   Updated: 2022/06/03 18:03:07 by mreymond         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -95,8 +95,19 @@ int	pre_parsing_errors(char *cmd, t_parse p)
 	return (0);
 }
 
-// créer un tableau de commandes
+// créer un tableau de commandes clean
 char	**clean_cmds(char *cmd, t_parse p)
+{
+	char	**cmds;
+	// char	**tmp;
+	
+	cmds = clean_spaces(cmd, p);
+	// autres clean a faire?
+	return (cmds);
+}
+
+// créer un tableau de commandes sans les espaces
+char	**clean_spaces(char *cmd, t_parse p)
 {
 	char	**cmds;
 	char	**tmp;
@@ -106,7 +117,7 @@ char	**clean_cmds(char *cmd, t_parse p)
 	(void) p;
 	tmp = ft_split(cmd, '|');
 	cmds = malloc(sizeof(char *) * tab_len(tmp) + 1);
-	while (tmp[i])
+	while (tmp[i] != NULL)
 	{
 		cmds[i] = ft_strtrim(tmp[i], " ");
 		i++;
@@ -116,14 +127,98 @@ char	**clean_cmds(char *cmd, t_parse p)
 	return (cmds);
 }
 
+char	*tab_to_str(char **tab)
+{
+	char	*str;
+	char	*tmp;
+	int		i;
+
+	i = 0;
+	tmp = ft_strdup("");
+	while (tab[i] != NULL)
+	{
+		if (*tab[i] == '\0')
+		{
+			str = ft_strjoin(tmp, " ");
+			free(tmp);
+			tmp = str;
+		}
+		else
+		{
+			str = ft_strjoin(tmp, tab[i]);
+			free(tmp);
+			tmp = str;
+			str = ft_strjoin(tmp, " ");
+			free(tmp);
+			tmp = str;
+		}
+		i++;
+	}
+	return (str);
+}
+
+char	**clean_quotes(char **cmds, t_parse p)
+{
+	char	**new;
+	char	**token;
+	char	**tmp;
+	int		i;
+	int		j;
+
+	i = 0;
+	j = 0;
+	if (p.double_q == 0 && p.single_q == 0)
+		return (cmds);
+	new = malloc(sizeof(char *) * tab_len(cmds) + 1);
+	while (cmds[j] != NULL)
+	{
+		i = 0;
+		tmp = tokenize(cmds[j]);
+		token = malloc(sizeof(char *) * tab_len(tmp) + 1);
+		while (tmp[i] != NULL)
+		{
+			token[i] = ft_strtrim(tmp[i], "\"");
+			i++;
+		}
+		token[i] = NULL;
+		new[j] = tab_to_str(token);
+		j++;
+	}
+	return (cmds);
+}
+
+char	**clean_quotes_token(char **token, t_parse p)
+{
+	char	**new;
+	int		i;
+	int		j;
+
+	i = 0;
+	j = 0;
+	if (p.double_q == 0 && p.single_q == 0)
+		return (token);
+	new = malloc(sizeof(char *) * tab_len(token) + 1);
+	while (token[i] != NULL)
+	{
+		if (*token[i] == '\0')
+			new[i] = ft_strdup(" ");
+		else
+			new[i] = ft_strtrim(token[i], "\"");
+		i++;
+	}
+	new[i] = NULL;
+	return (new);
+}
+
 int	monitor(char *cmd, t_tab *t)
 {
 	t_parse	p;
 	
 	p = stock_parsing_infos(cmd);
+	t->p = p;
 	if (pre_parsing_errors(cmd, p))
 		return (1);
-	p.cmds = clean_cmds(cmd, p);
+	p.cmds = clean_spaces(cmd, p);
 
 	// TO DO > faire une fonction qui verifie les commandes
 

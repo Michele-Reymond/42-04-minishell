@@ -6,7 +6,7 @@
 /*   By: mreymond <mreymond@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/20 10:43:17 by mreymond          #+#    #+#             */
-/*   Updated: 2022/06/03 15:40:17 by mreymond         ###   ########.fr       */
+/*   Updated: 2022/06/03 16:37:39 by mreymond         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -77,20 +77,3 @@ t_tab	*ft_export(t_tab *t, char **token)
 	}
 	return (t);
 }
-
-// trier env
-// lui ajouter les variables de export
-// afficher avec export
-// export salut > ça créer la variable mais sans valeur
-
-// 1. Au debut de programme stocker env dans un tableau
-// 2. sort le tableau
-
-// 3. si que export: afficher le tableau
-// 4. si export + variable
-//	4.0 parser la variable
-//	4.1 verifier si la variable existe deja
-//	4.2 update la variable
-//	4.3 sinon ajouter la variable
-
-// !!! echo doit aller chercher dans les variables qui sont dans env (evec export) et dans les variables stockees localement
