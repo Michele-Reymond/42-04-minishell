@@ -6,7 +6,7 @@
 /*   By: mreymond <mreymond@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/20 10:48:46 by mreymond          #+#    #+#             */
-/*   Updated: 2022/06/02 18:10:44 by mreymond         ###   ########.fr       */
+/*   Updated: 2022/06/03 17:57:55 by mreymond         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,6 +19,7 @@
 # include <sys/wait.h>
 # include <readline/readline.h>
 # include <readline/history.h>
+# include <stdbool.h>
 # include "libft/libft.h"
 
 # define ERROR_UNEXPECTED_TOKEN "minishell: syntax error near unexpected token "
@@ -37,13 +38,6 @@ typedef struct s_var
 	char	*value;
 }	t_var;
 
-typedef struct s_tab
-{
-	char	**env;
-	char	**exp;
-	char	**var;
-	char	**token;
-}	t_tab;
 
 typedef struct s_ms_b_cd
 {
@@ -71,6 +65,15 @@ typedef struct s_parse
 // >	redirection de sortie
 // <	redirection d'entree
 
+typedef struct s_tab
+{
+	char	**env;
+	char	**exp;
+	char	**var;
+	char	**token;
+	t_parse	p;
+}	t_tab;
+
 void		echo_print(char **args, char **var);
 int			echo(char **token, t_tab t);
 char		**echo_vars(char **token, t_tab t, int nbr);
@@ -80,14 +83,17 @@ char		**sort(char **env);
 void		display(char **env);
 t_var		str_to_var(char *str);
 char		**update(char **old, t_var *var);
-char		**update_var(char **old, t_var var, int pos);
+char		**update_var(char **old, t_var var, int pos, bool quotes);
+char		**update_env(char **old, t_var var, bool quotes);
 void		display_export(char **env);
 char		**tabdup(char **tab);
 void		tabfree(char **tab);
 int			tab_len(char **tab);
+char		*tab_to_str(char **token);
 char		*var_to_str(t_var var);
+char		*var_to_str_with_quotes(t_var var);
 int			var_exist(char **env, char *var);
-char		**add_var(char **old, t_var var);
+char		**add_var(char **old, t_var var, bool quotes);
 char		**remove_var(char **old, char *key);
 t_tab		*unset_var(t_tab *t, char **token);
 char		**sort_env(char **env);
@@ -108,9 +114,10 @@ int			monitor(char *cmd, t_tab *t);
 int			pre_parsing_errors(char *cmd, t_parse p);
 t_parse		stock_parsing_infos(char *cmd);
 int			*check_redir(char *cmd, char redir);
-char		**clean_cmds(char *cmd, t_parse p); 
+char		**clean_cmds(char *cmd, t_parse p);
+char		**clean_spaces(char *cmd, t_parse p);
+char		**clean_quotes(char **cmds, t_parse p);
+char		**clean_quotes_token(char **token, t_parse p);
+char		**make_export(char **env);
 
 #endif
-
-// liste des malloc à free à la fin :
-// - dans la fonction sort_env

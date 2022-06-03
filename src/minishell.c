@@ -6,7 +6,7 @@
 /*   By: mreymond <mreymond@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/20 10:47:58 by mreymond          #+#    #+#             */
-/*   Updated: 2022/06/02 18:14:20 by mreymond         ###   ########.fr       */
+/*   Updated: 2022/06/03 17:50:36 by mreymond         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,15 +14,32 @@
 
 int	main(int argc, char **argv, char **envp)
 {
-	t_tab		t;
+	
 	char* 		cmd;
+	t_tab		t;
 	// t_var		first;
 	// t_var		test;
 
 	(void) argc;
 	(void) argv;
 	t.env = tabdup(envp);
-	t.exp = tabsort(t.env);
+	t.exp = make_export(t.env);
+	while ((cmd = readline("🌸 >> ")) != NULL) 
+	{
+		t.token = tokenize(cmd);
+		if (strlen(cmd) > 0)
+		{
+			add_history(cmd);
+			if (!strcmp(cmd, "exit"))
+				break;
+			monitor(cmd, &t);
+		}
+  	  	// free(cmd);
+		// free(t.token);
+	}
+	return (0);
+}
+
 
 	// test
 	// first.key = "FIRST";
@@ -32,21 +49,3 @@ int	main(int argc, char **argv, char **envp)
 	// t.var = add_var(new_tab(), first);
 	// t.var = add_var(t.var, test);
 	// fin du test
-
-	while ((cmd = readline("🌸 >> ")) != NULL) 
-	{
-		t.token = tokenize(cmd);
-		if (strlen(cmd) > 0)
-		{
-			add_history(cmd);
-			if (!strcmp(cmd, "exit"))
-				break;
-			// launch_cmds(cmd, t);
-			monitor(cmd, &t);
-			// display_tab(t.token);
-		}
-  	  	free(cmd);
-		free(t.token);
-	}
-	return (0);
-}
