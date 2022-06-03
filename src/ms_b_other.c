@@ -6,18 +6,12 @@
 /*   By: vroch <vroch@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/26 12:37:07 by vroch             #+#    #+#             */
-/*   Updated: 2022/06/01 15:47:38 by vroch            ###   ########.fr       */
+/*   Updated: 2022/06/02 13:31:28 by mreymond         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-//#include "minishell.h"
 #include "minishell.h"
-#include "libft/libft.h"
-#include "libft/ft_memset.c"
-#include "libft/ft_strjoin.c"
-#include "libft/ft_strlen.c"
-#include "libft/ft_split.c"
-#include "libft/ft_bzero.c"
+
 /* **************************************************************************
  *  parameter : len (empty and not yet allocated)
  *  retour : len
@@ -239,7 +233,7 @@ char **parm_parsing(char **env_parms, char **parm_list, char *buf, char *cmd)
 	while (parm_list_t[i] != NULL)
 		i++;
 	parm_list = malloc(i + 1 * sizeof(char*));
-	
+
 	i = 0;
 	while (parm_list_t[i] != NULL)
 	{
@@ -363,7 +357,3 @@ int ms_b_other(char *buf)
 	return(0);
 }
 
-int main ()
-{
-    ms_b_other("ls -la");
-}

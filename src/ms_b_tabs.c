@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ms-b-tabs.c                                        :+:      :+:    :+:   */
+/*   ms_b_tabs.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: mreymond <mreymond@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/27 11:26:36 by mreymond          #+#    #+#             */
-/*   Updated: 2022/05/27 13:04:15 by mreymond         ###   ########.fr       */
+/*   Updated: 2022/06/02 17:05:57 by mreymond         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,7 @@ int	tab_len(char **tab)
 	int	i;
 
 	i = 0;
-	while (tab[i])
+	while (tab[i] != NULL)
 		i++;
 	return (i);
 }
@@ -27,7 +27,7 @@ void	tabfree(char **tab)
 	int	i;
 
 	i = 0;
-	while (tab[i])
+	while (tab[i] != NULL)
 	{
 		free(tab[i]);
 		i++;
@@ -42,7 +42,7 @@ char	**tabdup(char **tab)
 
 	i = 0;
 	new = malloc(sizeof(char *) * (tab_len(tab) + 1));
-	while (tab[i])
+	while (tab[i] != NULL)
 	{
 		new[i] = ft_strdup(tab[i]);
 		i++;
@@ -65,9 +65,24 @@ void	display_tab(char **tab)
 	int	i;
 
 	i = 0;
-	while (tab[i])
+	while (tab[i] != NULL)
 	{
 		printf("%s\n", tab[i]);
+		i++;
+	}
+}
+
+
+// displaying all vars exept variable without value
+void	display_env(char **tab)
+{
+	int	i;
+
+	i = 0;
+	while (tab[i] != NULL)
+	{
+		if (ft_strchr(tab[i], '=') != NULL)
+			printf("%s\n", tab[i]);
 		i++;
 	}
 }
