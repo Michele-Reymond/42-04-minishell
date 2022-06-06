@@ -6,7 +6,7 @@
 /*   By: mreymond <mreymond@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/27 11:28:42 by mreymond          #+#    #+#             */
-/*   Updated: 2022/06/02 18:13:00 by mreymond         ###   ########.fr       */
+/*   Updated: 2022/06/03 16:45:56 by mreymond         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,8 +25,6 @@ t_var	str_to_var(char *str)
 		return (new_var);
 	while (str[i] && str[i] != '=' && (ft_isalnum(str[i]) != 0 || str[i] == '_'))
 		i++;
-	// if (str[i] == '=')
-	// 	i++;
 	new_var.key = malloc(sizeof(char) * i + 1);
 	ft_strlcpy(new_var.key, str, i + 1);
 	if (str[i] != '\0')
@@ -40,7 +38,7 @@ t_var	str_to_var(char *str)
 	return (new_var);
 }
 
-char	**add_var(char **old, t_var var)
+char	**add_var(char **old, t_var var, bool quotes)
 {
 	char	**new;
 	int		i;
@@ -52,7 +50,10 @@ char	**add_var(char **old, t_var var)
 		new[i] = ft_strdup(old[i]);
 		i++;
 	}
-	new[i] = var_to_str(var);
+	if (quotes)
+		new[i] = var_to_str_with_quotes(var);
+	else
+		new[i] = var_to_str(var);
 	i++;
 	new[i] = NULL;
 	return (new);
@@ -100,7 +101,7 @@ t_tab	*unset_var(t_tab *t, char **token)
 	return (t);
 }
 
-char	**update_var(char **old, t_var var, int pos)
+char	**update_var(char **old, t_var var, int pos, bool quotes)
 {
 	char	**new;
 	int		i;
@@ -114,8 +115,10 @@ char	**update_var(char **old, t_var var, int pos)
 		printf("%s\n",old[i]);
 		if (!ft_strncmp(old[i], var.key, ft_strlen(var.key)))
 		{
-			new[i] = var_to_str(var);
-			printf("%s\n",old[i]);
+			if (quotes)
+				new[i] = var_to_str_with_quotes(var);
+			else
+				new[i] = var_to_str(var);
 		}
 		else
 			new[i] = ft_strdup(old[i]);
