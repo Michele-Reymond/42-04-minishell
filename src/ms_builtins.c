@@ -6,7 +6,7 @@
 /*   By: mreymond <mreymond@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/27 13:06:22 by mreymond          #+#    #+#             */
-/*   Updated: 2022/06/06 19:17:58 by mreymond         ###   ########.fr       */
+/*   Updated: 2022/06/06 21:56:30 by mreymond         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -232,22 +232,20 @@ int	launch_cmds(char *cmd, t_tab *t)
 	char	**token;
 
 	token = tokenize(cmd);
-	if (!ft_strncmp(cmd, "cd", 2))
+	if (!ft_strncmp(cmd, "cd", 2) && (cmd[2] == ' ' || cmd[2] == '\0'))
 		t = ms_b_cd(cmd, t);
-	else if (!ft_strncmp(cmd, "pwd", 3))
+	else if (!ft_strncmp(cmd, "pwd", 3) && (cmd[3] == ' ' || cmd[3] == '\0'))
 		ms_b_pwd();
-	else if (!ft_strncmp(cmd, "echo", 4))
+	else if (!ft_strncmp(cmd, "echo", 4) && (cmd[4] == ' ' || cmd[4] == '\0'))
 		echo(token, *t);
-	else if (!ft_strncmp(cmd, "export", 6))
+	else if (!ft_strncmp(cmd, "export", 6) && (cmd[6] == ' ' || cmd[6] == '\0'))
 		t = ft_export(t, token);
-	else if (!ft_strncmp(cmd, "unset", 5))
+	else if (!ft_strncmp(cmd, "unset", 5) && (cmd[5] == ' ' || cmd[5] == '\0'))
 		t = unset_var(t, token);
-	else if (!ft_strncmp(cmd, "env", 3))
+	else if (!ft_strncmp(cmd, "env", 3) && (cmd[3] == ' ' || cmd[3] == '\0'))
 		display_env(t->env);
 	else
-	{
 		test_other(cmd, t);
-	}
 		// ms_b_other(cmd);
 	return (0);
 }
