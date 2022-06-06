@@ -240,7 +240,7 @@ int	launch_cmds(char *cmd, t_tab *t)
 
 	token = tokenize(cmd);
 	if (!ft_strncmp(cmd, "cd", 2))
-		ms_b_cd(cmd);
+		t = ms_b_cd(cmd, t);
 	else if (!ft_strncmp(cmd, "pwd", 3))
 		ms_b_pwd();
 	else if (!ft_strncmp(cmd, "echo", 4))
