@@ -6,7 +6,7 @@
 /*   By: mreymond <mreymond@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/20 10:48:46 by mreymond          #+#    #+#             */
-/*   Updated: 2022/06/03 17:57:55 by mreymond         ###   ########.fr       */
+/*   Updated: 2022/06/06 12:25:22 by mreymond         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,6 +24,7 @@
 
 # define ERROR_UNEXPECTED_TOKEN "minishell: syntax error near unexpected token "
 # define ERROR_QUOTES "minishell: unclosed quotes\n"
+# define ERROR_ARGC "minishell: No arguments expected\n"
 
 typedef struct s_echo {
 	unsigned int	nbr_args;
@@ -119,5 +120,7 @@ char		**clean_spaces(char *cmd, t_parse p);
 char		**clean_quotes(char **cmds, t_parse p);
 char		**clean_quotes_token(char **token, t_parse p);
 char		**make_export(char **env);
+void		check_args(int argc);
+void		launch_with_pipes(t_parse p, t_tab *t);
 
 #endif

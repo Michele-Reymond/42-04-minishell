@@ -6,7 +6,7 @@
 /*   By: mreymond <mreymond@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/27 13:06:22 by mreymond          #+#    #+#             */
-/*   Updated: 2022/06/03 18:03:07 by mreymond         ###   ########.fr       */
+/*   Updated: 2022/06/06 12:31:22 by mreymond         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -191,10 +191,8 @@ char	**clean_quotes_token(char **token, t_parse p)
 {
 	char	**new;
 	int		i;
-	int		j;
 
 	i = 0;
-	j = 0;
 	if (p.double_q == 0 && p.single_q == 0)
 		return (token);
 	new = malloc(sizeof(char *) * tab_len(token) + 1);
@@ -231,6 +229,8 @@ int	monitor(char *cmd, t_tab *t)
 	
 	if (tab_len(p.cmds) == 1)
 		launch_cmds(p.cmds[0], t);
+	else if (p.pipes > 0)
+		launch_with_pipes(p, t);
 	return (0);
 }
 

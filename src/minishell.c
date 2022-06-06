@@ -6,7 +6,7 @@
 /*   By: mreymond <mreymond@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/20 10:47:58 by mreymond          #+#    #+#             */
-/*   Updated: 2022/06/03 17:50:36 by mreymond         ###   ########.fr       */
+/*   Updated: 2022/06/06 11:24:36 by mreymond         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,8 +20,8 @@ int	main(int argc, char **argv, char **envp)
 	// t_var		first;
 	// t_var		test;
 
-	(void) argc;
 	(void) argv;
+	check_args(argc);
 	t.env = tabdup(envp);
 	t.exp = make_export(t.env);
 	while ((cmd = readline("🌸 >> ")) != NULL) 
