@@ -105,6 +105,7 @@ char	**update_var(char **old, t_var var, int pos, bool quotes)
 {
 	char	**new;
 	int		i;
+	
 
 	i = 0;
 	(void) pos;

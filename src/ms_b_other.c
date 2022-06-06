@@ -142,6 +142,38 @@ static char	**ot_path_parsing(char **env_parms)
 	free(len);
 	return (env_parms);
 }
+/* **************************************************************************
+ *  parameter : cmd
+ *  retour : cmd
+ * 	 determin if pattern ./ present
+ * 	 remove all . and /
+ *   remove extra spaces remainings
+ *   return the new cmd
+ * exit
+ */
+static char	*ot_cmd_path(char *cmd)
+{
+	int i;
+
+	i = 0;
+	if (ft_strncmp(cmd, "./",2))
+	{
+		while (cmd[i] != '\0')
+		{
+			if (cmd[i] == '.')
+				cmd[i] = ' ';
+			if (cmd[i] == '/')
+				cmd[i] = ' ';
+			
+			i++;
+		}
+	}	
+	cmd = ft_strtrim(cmd, " ");
+	printf("cmd : >%s<\n",cmd);
+
+	return(cmd);
+
+}
 
 /* **************************************************************************
  *  parameter : parm_list & env_parms & buf
@@ -157,13 +189,18 @@ static char	*ot_cmd_checking(char **env_parms, char *buf)
 	char	*cmd;
 	int		err;
 
-	cmd = malloc(ft_strlen(buf) + 1024 * sizeof(char));
+	//cmd = malloc(ft_strlen(buf) + 1024 * sizeof(char));
+	cmd = ft_calloc(ft_strlen(buf) + 1024, 4);
 	j = 0;
 	while (buf[j] != ' ' && buf[j] != '\0')
 	{
 		cmd[j] = buf[j];
 		j++;
 	}
+	if (cmd[0] == '.' || cmd[0] == '/')
+		cmd = ot_cmd_path(cmd);
+	
+
 	i = 0;
 	while (env_parms[i][0] != '\0')
 	{

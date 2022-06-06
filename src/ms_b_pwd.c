@@ -13,14 +13,20 @@
 #include "minishell.h"
 /* **************************************************************************
  *  parameter : none
+ *   ces commandes semblent equivalentes: 	
+ * 		pwd = getenv("PWD");
+ *		pwd = getcwd(NULL, 0); + free
  */
+
+
 
 int	ms_b_pwd(void)
 {
-	char	*home;
+	char	*pwd;
 
-	home = getenv("HOME");
-	ft_putendl_fd(home, 2);
+	pwd = getcwd(NULL, 0);
+	ft_putendl_fd(pwd, 2);
+	free(pwd);
 	return (0);
 
 }
