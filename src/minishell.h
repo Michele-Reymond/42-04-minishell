@@ -104,7 +104,7 @@ void		display_tab(char **tab);
 char		**new_tab(void);
 int			launch_cmds(char *cmd, t_tab *t);
 int			ms_b_pwd(void);
-int			ms_b_cd(char *buf);
+t_tab		*ms_b_cd(char *buf,t_tab *t);
 int			ms_b_other(char *buf);
 void		rl_replace_line (const char *text, int clear_undo);
 void		rl_redisplay (void);

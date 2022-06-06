@@ -189,7 +189,6 @@ static char	*ot_cmd_checking(char **env_parms, char *buf)
 	char	*cmd;
 	int		err;
 
-	//cmd = malloc(ft_strlen(buf) + 1024 * sizeof(char));
 	cmd = ft_calloc(ft_strlen(buf) + 1024, 4);
 	j = 0;
 	while (buf[j] != ' ' && buf[j] != '\0')
