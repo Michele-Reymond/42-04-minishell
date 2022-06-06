@@ -6,7 +6,7 @@
 /*   By: mreymond <mreymond@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/20 10:48:46 by mreymond          #+#    #+#             */
-/*   Updated: 2022/06/06 18:27:55 by mreymond         ###   ########.fr       */
+/*   Updated: 2022/06/06 19:18:46 by mreymond         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -122,6 +122,6 @@ char		**clean_quotes_token(char **token, t_parse p);
 char		**make_export(char **env);
 void		check_args(int argc);
 void		launch_with_pipes(t_parse p, t_tab *t);
-void		test_other(pid_t pid, char *buf, t_tab *t, int in, int out);
+void		test_other(char *buf, t_tab *t);
 
 #endif

@@ -6,7 +6,7 @@
 /*   By: mreymond <mreymond@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/06 11:15:36 by mreymond          #+#    #+#             */
-/*   Updated: 2022/06/06 18:19:40 by mreymond         ###   ########.fr       */
+/*   Updated: 2022/06/06 19:55:26 by mreymond         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,14 +21,13 @@ void closing_loop(int **fd, int pos, int nbr)
 
     i = 0;
     j = 0;
-    while (i < nbr)
+    while (i < nbr + 1)
     {
         j = 0;
         while (j < 2)
         {
-            if (!(i == pos && j == 0))
-                if (!(i == pos + 1 && j == 1))
-                    close(fd[i][j]);
+            if (!(i == pos && j == 0) && !(i == pos + 1 && j == 1))
+                close(fd[i][j]);
             j++;
         }
         i++;
@@ -48,9 +47,7 @@ void parent_closing_loop(int **fd, int nbr)
         j = 0;
         while (j < 2)
         {
-            if (!(i == nbr - 1 && j == 0))
-                if (!(i == 0 + 1 && j == 1))
-                    close(fd[i][j]);
+            close(fd[i][j]);
             j++;
         }
         i++;
@@ -113,8 +110,8 @@ void launch_with_pipes(t_parse p, t_tab *t)
     {
         if (child_process(pid[i], fd, i, p.nbr_cmd))
         {
-            // launch_cmds(p.cmds[i], t);
-            test_other(pid[i], p.cmds[i], t, fd[i][0], fd[i + 1][1]);
+            launch_cmds(p.cmds[i], t);
+            // test_other(pid[i], p.cmds[i], t, fd[i][0], fd[i + 1][1]);
             exit(0) ;
         }
         i++;

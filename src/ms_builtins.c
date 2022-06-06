@@ -6,7 +6,7 @@
 /*   By: mreymond <mreymond@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/27 13:06:22 by mreymond          #+#    #+#             */
-/*   Updated: 2022/06/06 17:48:16 by mreymond         ###   ########.fr       */
+/*   Updated: 2022/06/06 19:17:58 by mreymond         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -246,7 +246,7 @@ int	launch_cmds(char *cmd, t_tab *t)
 		display_env(t->env);
 	else
 	{
-		// test_other(cmd, t);
+		test_other(cmd, t);
 	}
 		// ms_b_other(cmd);
 	return (0);
