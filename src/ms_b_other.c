@@ -6,7 +6,7 @@
 /*   By: mreymond <mreymond@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/26 12:37:07 by vroch             #+#    #+#             */
-/*   Updated: 2022/06/03 14:48:24 by mreymond         ###   ########.fr       */
+/*   Updated: 2022/06/06 18:34:31 by mreymond         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -335,3 +335,110 @@ int ms_b_other(char *buf)
 	}
 	return (0);
 }
+
+
+// TEST depuis Pipex
+void	exec_cmd(char **paths, char *first_cmd, char **envp, char **flags)
+{
+	int		i;
+	char	*cmd;
+
+	i = 0;
+	while (paths[i])
+	{
+		cmd = ft_strjoin(paths[i], first_cmd);
+		execve(cmd, flags, envp);
+		perror("Error");
+		free(cmd);
+		i++;
+	}
+	free(first_cmd);
+}
+
+char	**split_flags(char *cmds)
+{
+	char	**flags;
+
+	if (ft_strnstr(cmds, "awk", 3) == NULL)
+		flags = ft_split(cmds, ' ');
+	else
+	{
+		flags = ft_split(cmds, '\'');
+		flags[0][3] = '\0';
+	}
+	return (flags);
+}
+
+void	first_child_process(char *buff, char **paths, int fd[], int fd2[], int in, int out, char **envp)
+{
+	char	*first_cmd;
+	char	**flags;
+	char	**token;
+
+	(void) out;
+	(void) fd2;
+	token = tokenize(buff);
+	first_cmd = ft_strjoin("/", token[0]);
+	flags = split_flags(buff);
+	dup2(fd[0], in);
+	// dup2(fd2[1], STDOUT_FILENO);
+	exec_cmd(paths, first_cmd, envp, flags);
+}
+
+
+void test_other(pid_t pid, char *buf, t_tab *t, int in, int out)
+{
+	// pid_t	pid;
+	int		fd[2];
+	int		fd2[2];
+	char	**paths;
+	int		status;
+
+	(void) pid;
+	paths = ft_split(getenv("PATH"), ':');
+	if (pipe(fd) == -1)
+		return ;
+	if (pipe(fd2) == -1)
+		return ;
+	pid = fork();
+	if (pid < 0)
+		return (perror("Fork: "));
+	if (pid == 0)
+	{
+		first_child_process(buf, paths, fd, fd2, in, out, t->env);
+		exit(0);
+	}
+	close(fd[0]);
+	close(fd[1]);
+	close(fd2[0]);
+	close(fd2[1]);
+	waitpid(pid, &status, 0);
+}
+
+
+// void test_other(pid_t pid, char *buf, t_tab *t)
+// {
+// 	// pid_t	pid;
+// 	int		fd[2];
+// 	int		fd2[2];
+// 	char	**paths;
+// 	// int		status;
+
+// (void) pid;
+// 	paths = ft_split(getenv("PATH"), ':');
+// 	// if (pipe(fd) == -1)
+// 	// 	return ;
+// 	// if (pipe(fd2) == -1)
+// 	// 	return ;
+// 	// pid = fork();
+// 	// if (pid < 0)
+// 	// 	return (perror("Fork: "));
+// 	// if (pid == 0)
+// 	// {
+// 	first_child_process(buf, paths, fd, fd2, t->env);
+// 		// exit(0);
+// 	// }
+// 	// close(fd[0]);
+// 	// close(fd[1]);
+// 	// waitpid(pid, &status, 0);
+// }

@@ -6,7 +6,7 @@
 /*   By: mreymond <mreymond@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/06 11:15:36 by mreymond          #+#    #+#             */
-/*   Updated: 2022/06/06 15:09:49 by mreymond         ###   ########.fr       */
+/*   Updated: 2022/06/06 18:19:40 by mreymond         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,6 +57,7 @@ void parent_closing_loop(int **fd, int nbr)
     }
 }
 
+// lancer les processus enfants
 int child_process(pid_t pid, int **fd, int pos, int nbr)
 {
     pid = fork();
@@ -112,7 +113,8 @@ void launch_with_pipes(t_parse p, t_tab *t)
     {
         if (child_process(pid[i], fd, i, p.nbr_cmd))
         {
-            launch_cmds(p.cmds[i], t);
+            // launch_cmds(p.cmds[i], t);
+            test_other(pid[i], p.cmds[i], t, fd[i][0], fd[i + 1][1]);
             exit(0) ;
         }
         i++;
@@ -121,7 +123,7 @@ void launch_with_pipes(t_parse p, t_tab *t)
     i = 0;
     while (i < p.nbr_cmd)
     {
-        waitpid(pid[0], &status, 0);
+        waitpid(pid[i], &status, 0);
         i++;
     }
 }
