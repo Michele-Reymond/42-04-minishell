@@ -6,7 +6,7 @@
 /*   By: mreymond <mreymond@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/26 12:37:07 by vroch             #+#    #+#             */
-/*   Updated: 2022/06/03 14:48:24 by mreymond         ###   ########.fr       */
+/*   Updated: 2022/06/07 14:03:45 by mreymond         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -333,4 +333,57 @@ int ms_b_other(char *buf)
 		waitpid(pid, &err, WUNTRACED);
 	}
 	return (0);
+}
+
+
+// TEST depuis Pipex
+void	exec_cmd(char **paths, char *first_cmd, char **envp, char **flags)
+{
+	int		i;
+	char	*cmd;
+
+	i = 0;
+	while (paths[i])
+	{
+		cmd = ft_strjoin(paths[i], first_cmd);
+		execve(cmd, flags, envp);
+		free(cmd);
+		i++;
+	}
+	free(first_cmd);
+}
+
+char	**split_flags(char *cmds)
+{
+	char	**flags;
+
+	if (ft_strnstr(cmds, "awk", 3) == NULL)
+		flags = ft_split(cmds, ' ');
+	else
+	{
+		flags = ft_split(cmds, '\'');
+		flags[0][3] = '\0';
+	}
+	return (flags);
+}
+
+void	first_child_process(char *buff, char **paths, char **envp)
+{
+	char	*first_cmd;
+	char	**flags;
+	char	**token;
+
+	token = tokenize(buff);
+	first_cmd = ft_strjoin("/", token[0]);
+	flags = split_flags(buff);
+	exec_cmd(paths, first_cmd, envp, flags);
+}
+
+
+void test_other(char *buf, t_tab *t)
+{
+	char	**paths;
+
+	paths = ft_split(getenv("PATH"), ':');
+	first_child_process(buf, paths, t->env);
 }

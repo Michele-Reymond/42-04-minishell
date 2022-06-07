@@ -6,7 +6,7 @@
 /*   By: mreymond <mreymond@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/27 13:06:22 by mreymond          #+#    #+#             */
-/*   Updated: 2022/06/03 18:03:07 by mreymond         ###   ########.fr       */
+/*   Updated: 2022/06/07 14:06:02 by mreymond         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -191,10 +191,8 @@ char	**clean_quotes_token(char **token, t_parse p)
 {
 	char	**new;
 	int		i;
-	int		j;
 
 	i = 0;
-	j = 0;
 	if (p.double_q == 0 && p.single_q == 0)
 		return (token);
 	new = malloc(sizeof(char *) * tab_len(token) + 1);
@@ -221,16 +219,11 @@ int	monitor(char *cmd, t_tab *t)
 	p.cmds = clean_spaces(cmd, p);
 
 	// TO DO > faire une fonction qui verifie les commandes
-
-	// printf("%s\n", cmd);
-	// printf("< : %d\n", p.redir_in);
-	// printf("<< : %d\n", p.redir_in_d);
-	// printf("> : %d\n", p.redir_out);
-	// printf(">> : %d\n", p.redir_out_d);
-	// printf("| : %d\n", p.pipes);
 	
 	if (tab_len(p.cmds) == 1)
 		launch_cmds(p.cmds[0], t);
+	else if (p.pipes > 0)
+		launch_with_pipes(p, t);
 	return (0);
 }
 
@@ -239,19 +232,27 @@ int	launch_cmds(char *cmd, t_tab *t)
 	char	**token;
 
 	token = tokenize(cmd);
-	if (!ft_strncmp(cmd, "cd", 2))
+	if (!ft_strncmp(cmd, "cd", 2) && (cmd[2] == ' ' || cmd[2] == '\0'))
 		t = ms_b_cd(cmd, t);
-	else if (!ft_strncmp(cmd, "pwd", 3))
+	else if (!ft_strncmp(cmd, "pwd", 3) && (cmd[3] == ' ' || cmd[3] == '\0'))
 		ms_b_pwd();
-	else if (!ft_strncmp(cmd, "echo", 4))
+	else if (!ft_strncmp(cmd, "echo", 4) && (cmd[4] == ' ' || cmd[4] == '\0'))
 		echo(token, *t);
-	else if (!ft_strncmp(cmd, "export", 6))
+	else if (!ft_strncmp(cmd, "export", 6) && (cmd[6] == ' ' || cmd[6] == '\0'))
 		t = ft_export(t, token);
-	else if (!ft_strncmp(cmd, "unset", 5))
+	else if (!ft_strncmp(cmd, "unset", 5) && (cmd[5] == ' ' || cmd[5] == '\0'))
 		t = unset_var(t, token);
-	else if (!ft_strncmp(cmd, "env", 3))
+	else if (!ft_strncmp(cmd, "env", 3) && (cmd[3] == ' ' || cmd[3] == '\0'))
 		display_env(t->env);
 	else
-		ms_b_other(cmd);
+		test_other(cmd, t);
+		// ms_b_other(cmd);
 	return (0);
 }
+
+
+// trop de pipes?
+// minishell qui exit sans pipes par exemple avec ls -la
+// redirections
+
+

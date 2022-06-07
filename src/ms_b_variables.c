@@ -6,7 +6,7 @@
 /*   By: mreymond <mreymond@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/27 11:28:42 by mreymond          #+#    #+#             */
-/*   Updated: 2022/06/03 16:45:56 by mreymond         ###   ########.fr       */
+/*   Updated: 2022/06/06 11:16:29 by mreymond         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,6 +38,7 @@ t_var	str_to_var(char *str)
 	return (new_var);
 }
 
+// ajouter une variable à un tableau
 char	**add_var(char **old, t_var var, bool quotes)
 {
 	char	**new;
@@ -59,6 +60,7 @@ char	**add_var(char **old, t_var var, bool quotes)
 	return (new);
 }
 
+// ajouter une variable à un tableau
 t_tab	*unset_var(t_tab *t, char **token)
 {
 	char	**new;

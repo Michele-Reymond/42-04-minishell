@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ms_b_cd.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: vroch <vroch@student.42.fr>                +#+  +:+       +#+        */
+/*   By: mreymond <mreymond@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/20 12:16:50 by vroch             #+#    #+#             */
-/*   Updated: 2022/05/27 17:36:24 by vroch            ###   ########.fr       */
+/*   Updated: 2022/06/06 19:14:07 by mreymond         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -76,11 +76,11 @@ t_tab *ms_b_cd(char *buf, t_tab *t)
 		// maj variables d'environnement
 		var.key = "OLDPWD";
 		var.value = getenv("PWD");
-		update_env(t->env, var);
+		update_env(t->env, var, false);
 		printf("old var.value %s : %s",var.key,var.value);
 		var.key = "PWD";
 		var.value = str.param;
-		update_env(t->env, var);
+		update_env(t->env, var, false);
 		printf("new var.value %s : %s",var.key,var.value);
 
 	}
