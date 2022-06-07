@@ -6,7 +6,7 @@
 /*   By: mreymond <mreymond@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/27 13:06:22 by mreymond          #+#    #+#             */
-/*   Updated: 2022/06/06 21:56:30 by mreymond         ###   ########.fr       */
+/*   Updated: 2022/06/07 14:06:02 by mreymond         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -250,28 +250,9 @@ int	launch_cmds(char *cmd, t_tab *t)
 	return (0);
 }
 
-// int	launch_cmds_with_pipes(char *cmd, t_tab *t, int *fd)
-// {
-// 	char	**token;
 
-// 	token = tokenize(cmd);
-// 	if (!ft_strncmp(cmd, "cd", 2))
-// 		ms_b_cd(cmd);
-// 	else if (!ft_strncmp(cmd, "pwd", 3))
-// 		ms_b_pwd();
-// 	else if (!ft_strncmp(cmd, "echo", 4))
-// 		echo(token, *t);
-// 	else if (!ft_strncmp(cmd, "export", 6))
-// 		t = ft_export(t, token);
-// 	else if (!ft_strncmp(cmd, "unset", 5))
-// 		t = unset_var(t, token);
-// 	else if (!ft_strncmp(cmd, "env", 3))
-// 		display_env(t->env);
-// 	else
-// 	{
-// 		test_other(cmd, t, fd);
-// 	}
-// 		// ms_b_other(cmd);
-// 	return (0);
-// }
+// trop de pipes?
+// minishell qui exit sans pipes par exemple avec ls -la
+// redirections
+
 

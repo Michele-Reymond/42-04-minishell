@@ -6,7 +6,7 @@
 /*   By: mreymond <mreymond@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/26 12:37:07 by vroch             #+#    #+#             */
-/*   Updated: 2022/06/06 19:20:20 by mreymond         ###   ########.fr       */
+/*   Updated: 2022/06/07 14:03:45 by mreymond         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -347,7 +347,6 @@ void	exec_cmd(char **paths, char *first_cmd, char **envp, char **flags)
 	{
 		cmd = ft_strjoin(paths[i], first_cmd);
 		execve(cmd, flags, envp);
-		// perror("Error");
 		free(cmd);
 		i++;
 	}
@@ -377,64 +376,14 @@ void	first_child_process(char *buff, char **paths, char **envp)
 	token = tokenize(buff);
 	first_cmd = ft_strjoin("/", token[0]);
 	flags = split_flags(buff);
-	// dup2(fd[0], in);
-	// dup2(fd2[1], STDOUT_FILENO);
 	exec_cmd(paths, first_cmd, envp, flags);
 }
 
 
 void test_other(char *buf, t_tab *t)
 {
-	// pid_t	pid;
-	// int		fd[2];
-	// int		fd2[2];
 	char	**paths;
-	// int		status;
 
 	paths = ft_split(getenv("PATH"), ':');
-	// if (pipe(fd) == -1)
-	// 	return ;
-	// if (pipe(fd2) == -1)
-	// 	return ;
-	// pid = fork();
-	// if (pid < 0)
-	// 	return (perror("Fork: "));
-	// if (pid == 0)
-	// {
-		first_child_process(buf, paths, t->env);
-	// 	exit(0);
-	// }
-	// close(fd[0]);
-	// close(fd[1]);
-	// close(fd2[0]);
-	// close(fd2[1]);
-	// waitpid(pid, &status, 0);
+	first_child_process(buf, paths, t->env);
 }
-
-
-// void test_other(pid_t pid, char *buf, t_tab *t)
-// {
-// 	// pid_t	pid;
-// 	int		fd[2];
-// 	int		fd2[2];
-// 	char	**paths;
-// 	// int		status;
-
-// (void) pid;
-// 	paths = ft_split(getenv("PATH"), ':');
-// 	// if (pipe(fd) == -1)
-// 	// 	return ;
-// 	// if (pipe(fd2) == -1)
-// 	// 	return ;
-// 	// pid = fork();
-// 	// if (pid < 0)
-// 	// 	return (perror("Fork: "));
-// 	// if (pid == 0)
-// 	// {
-// 	first_child_process(buf, paths, fd, fd2, t->env);
-// 		// exit(0);
-// 	// }
-// 	// close(fd[0]);
-// 	// close(fd[1]);
-// 	// waitpid(pid, &status, 0);
-// }
