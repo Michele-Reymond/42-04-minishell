@@ -6,7 +6,7 @@
 /*   By: mreymond <mreymond@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/26 12:37:07 by vroch             #+#    #+#             */
-/*   Updated: 2022/06/07 14:03:45 by mreymond         ###   ########.fr       */
+/*   Updated: 2022/06/07 16:31:40 by mreymond         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -377,6 +377,8 @@ void	first_child_process(char *buff, char **paths, char **envp)
 	first_cmd = ft_strjoin("/", token[0]);
 	flags = split_flags(buff);
 	exec_cmd(paths, first_cmd, envp, flags);
+	tabfree(flags);
+	tabfree(token);
 }
 
 
@@ -386,4 +388,5 @@ void test_other(char *buf, t_tab *t)
 
 	paths = ft_split(getenv("PATH"), ':');
 	first_child_process(buf, paths, t->env);
+	tabfree(paths);
 }

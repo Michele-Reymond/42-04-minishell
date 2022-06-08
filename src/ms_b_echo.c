@@ -6,13 +6,11 @@
 /*   By: mreymond <mreymond@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/20 10:43:17 by mreymond          #+#    #+#             */
-/*   Updated: 2022/06/03 18:05:14 by mreymond         ###   ########.fr       */
+/*   Updated: 2022/06/07 13:28:44 by mreymond         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
-
-//pour le parsing voir l'onglet parsing de Notion
 
 void	echo_print(char **args, char **var)
 {

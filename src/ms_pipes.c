@@ -6,7 +6,7 @@
 /*   By: mreymond <mreymond@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/06 11:15:36 by mreymond          #+#    #+#             */
-/*   Updated: 2022/06/06 19:55:26 by mreymond         ###   ########.fr       */
+/*   Updated: 2022/06/08 20:16:04 by mreymond         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,19 +14,47 @@
 
 // nbr : nombres de pipes()
 // pos : dans quel process on est
-void closing_loop(int **fd, int pos, int nbr)
+void closing_loop_in(int **fd, int pos, int nbr)
 {
     int i;
     int j;
 
     i = 0;
     j = 0;
-    while (i < nbr + 1)
+    while (i < nbr)
     {
         j = 0;
         while (j < 2)
         {
-            if (!(i == pos && j == 0) && !(i == pos + 1 && j == 1))
+            if (pos == 0 && !(i == 0 && j == 1))
+                close(fd[i][j]);
+            else if (pos != 0 && pos != nbr && !(i == pos - 1 && j == 0) && !(i == pos && j == 1))
+                close(fd[i][j]);
+            else if (pos == nbr && !(i == pos - 1 && j == 0))
+                close(fd[i][j]);
+            j++;
+        }
+        i++;
+    }
+}
+
+void closing_loop_out(int **fd, int pos, int nbr)
+{
+    int i;
+    int j;
+
+    i = 0;
+    j = 0;
+    while (i < nbr)
+    {
+        j = 0;
+        while (j < 2)
+        {
+            if (pos == 0 && (i == 0 && j == 1))
+                close(fd[i][j]);
+            else if (pos != 0 && pos != nbr && (i == pos - 1 && j == 0) && (i == pos && j == 1))
+                close(fd[i][j]);
+            else if (pos == nbr && (i == pos - 1 && j == 0))
                 close(fd[i][j]);
             j++;
         }
@@ -55,24 +83,18 @@ void parent_closing_loop(int **fd, int nbr)
 }
 
 // lancer les processus enfants
-int child_process(pid_t pid, int **fd, int pos, int nbr)
+void child_process(int **fd, int pos, int nbr)
 {
-    pid = fork();
-	if (pid < 0)
-		return (0);
-	if (pid == 0)
-	{
-		closing_loop(fd, pos, nbr);
-        if (!(pos == nbr - 1))
-        {
-            dup2(fd[pos][0], STDIN_FILENO);
-	        dup2(fd[pos + 1][1], STDOUT_FILENO);
-        }
-        else
-            dup2(fd[pos][0], STDIN_FILENO);
-        return (1);
-	}
-    return (0);
+    closing_loop_in(fd, pos, nbr);
+    if (pos == 0)
+        dup2(fd[pos][1], STDOUT_FILENO);
+    else if (pos != 0 && !(pos == nbr))
+    {
+        dup2(fd[pos - 1][0], STDIN_FILENO);
+        dup2(fd[pos][1], STDOUT_FILENO);
+    }
+    else
+        dup2(fd[pos - 1][0], STDIN_FILENO);
 }
 
 void create_pipes(int **fd, int nbr)
@@ -94,32 +116,56 @@ void launch_with_pipes(t_parse p, t_tab *t)
     int		**fd;
     int		status;
     int     i;
+    int k;
 
-    (void) t;
     i = 0;
+    k = 0;
     pid = malloc(sizeof(pid_t) * p.nbr_cmd);
-    fd = malloc(sizeof(int *) * p.nbr_cmd + 1);
-    while (i <= p.nbr_cmd)
+    fd = malloc(sizeof(int *) * p.pipes);
+    while (i < p.pipes)
     {
         fd[i] = malloc(sizeof(int) * 2);
         i++;
     }
-    create_pipes(fd, p.nbr_cmd + 1);
+    create_pipes(fd, p.pipes);
     i = 0;
     while (i < p.nbr_cmd)
     {
-        if (child_process(pid[i], fd, i, p.nbr_cmd))
+        pid[i] = fork();
+        if (pid[i] < 0)
+            return ;
+        if (pid[i] == 0)
         {
+            child_process(fd, i, p.pipes);
             launch_cmds(p.cmds[i], t);
-            exit(0) ;
+            closing_loop_out(fd, i, p.pipes);
+            while (k < p.pipes)
+            {
+                free(fd[k]);
+                k++;
+            }
+            free(fd);
+            free(pid);
+            exit (0);
         }
         i++;
     }
-    parent_closing_loop(fd, p.nbr_cmd + 1);
-    i = 0;
-    while (i < p.nbr_cmd)
+    if (pid != 0)
     {
-        waitpid(pid[i], &status, 0);
-        i++;
+        parent_closing_loop(fd, p.pipes);
+        i = 0;
+        while (i < p.nbr_cmd)
+        {
+            waitpid(pid[i], &status, 0);
+            i++;
+        }
+        i = 0;
+        while (i < p.pipes)
+        {
+            free(fd[i]);
+            i++;
+        }
+        free(fd);
+        free(pid);
     }
 }
