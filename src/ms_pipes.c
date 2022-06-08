@@ -111,7 +111,6 @@ void launch_with_pipes(t_parse p, t_tab *t)
         if (child_process(pid[i], fd, i, p.nbr_cmd))
         {
             launch_cmds(p.cmds[i], t);
-            // test_other(pid[i], p.cmds[i], t, fd[i][0], fd[i + 1][1]);
             exit(0) ;
         }
         i++;
