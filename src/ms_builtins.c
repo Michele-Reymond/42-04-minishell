@@ -6,7 +6,7 @@
 /*   By: mreymond <mreymond@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/27 13:06:22 by mreymond          #+#    #+#             */
-/*   Updated: 2022/06/07 14:29:31 by mreymond         ###   ########.fr       */
+/*   Updated: 2022/06/08 21:42:18 by mreymond         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,10 +59,6 @@ t_parse	stock_parsing_infos(char *cmd)
 	int		*nbr1;
 	int		*nbr2;
 	
-	p.redir_in = 0;
-	p.redir_out = 0;
-	p.redir_in_d = 0;
-	p.redir_out_d = 0;
 	p.pipes = how_many_in_str(cmd, '|');
 	p.nbr_cmd = p.pipes + 1;
 	p.double_q = how_many_in_str(cmd, '\"');
@@ -74,6 +70,7 @@ t_parse	stock_parsing_infos(char *cmd)
 	nbr2 = check_redir(cmd, '<');
 	p.redir_in = nbr2[0];
 	p.redir_in_d = nbr2[1];
+	p.redir = p.redir_in + p.redir_in_d + p.redir_out + p.redir_out_d;
 	return (p);
 }
 
@@ -100,21 +97,21 @@ char	**clean_cmds(char *cmd, t_parse p)
 {
 	char	**cmds;
 	// char	**tmp;
+	(void) p;
 	
-	cmds = clean_spaces(cmd, p);
+	cmds = clean_spaces(cmd);
 	// autres clean a faire?
 	return (cmds);
 }
 
 // créer un tableau de commandes sans les espaces
-char	**clean_spaces(char *cmd, t_parse p)
+char	**clean_spaces(char *cmd)
 {
 	char	**cmds;
 	char	**tmp;
 	int		i;
 
 	i = 0;
-	(void) p;
 	tmp = ft_split(cmd, '|');
 	cmds = malloc(sizeof(char *) * tab_len(tmp) + 1);
 	while (tmp[i] != NULL)
@@ -216,14 +213,16 @@ int	monitor(char *cmd, t_tab *t)
 	t->p = p;
 	if (pre_parsing_errors(cmd, p))
 		return (1);
-	p.cmds = clean_spaces(cmd, p);
+	p.cmds = clean_spaces(cmd);
 
 	// TO DO > faire une fonction qui verifie les commandes
 	
-	if (tab_len(p.cmds) == 1)
+	if (tab_len(p.cmds) == 1 && p.redir == 0)
 		launch_cmds(p.cmds[0], t);
-	else if (p.pipes > 0)
-		launch_with_pipes(p, t);
+	else if (p.redir > 0)
+		launch_with_redir(p, t);
+	// else if (p.pipes > 0 && p.redir == 0)
+	// 	launch_with_pipes(p, t);
 	return (0);
 }
 

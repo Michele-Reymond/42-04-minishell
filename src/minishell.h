@@ -6,7 +6,7 @@
 /*   By: mreymond <mreymond@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/20 10:48:46 by mreymond          #+#    #+#             */
-/*   Updated: 2022/06/06 19:18:46 by mreymond         ###   ########.fr       */
+/*   Updated: 2022/06/08 21:19:05 by mreymond         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,6 +56,7 @@ typedef struct s_parse
 	int		single_q;
 	int		double_q;
 	int		dollar;
+	int		redir;
 	int		redir_out;
 	int		redir_in;
 	int		redir_out_d;
@@ -65,6 +66,14 @@ typedef struct s_parse
 
 // >	redirection de sortie
 // <	redirection d'entree
+
+typedef struct s_redir
+{
+	int		index;
+	char	*dest;
+	char	*redir;
+	char	*cmd;
+}	t_redir;
 
 typedef struct s_tab
 {
@@ -116,12 +125,13 @@ int			pre_parsing_errors(char *cmd, t_parse p);
 t_parse		stock_parsing_infos(char *cmd);
 int			*check_redir(char *cmd, char redir);
 char		**clean_cmds(char *cmd, t_parse p);
-char		**clean_spaces(char *cmd, t_parse p);
+char		**clean_spaces(char *cmd);
 char		**clean_quotes(char **cmds, t_parse p);
 char		**clean_quotes_token(char **token, t_parse p);
 char		**make_export(char **env);
 void		check_args(int argc);
 void		launch_with_pipes(t_parse p, t_tab *t);
 void		test_other(char *buf, t_tab *t);
+void		launch_with_redir(t_parse p, t_tab *t);
 
 #endif
