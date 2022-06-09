@@ -6,7 +6,7 @@
 /*   By: mreymond <mreymond@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/20 10:48:46 by mreymond          #+#    #+#             */
-/*   Updated: 2022/06/08 21:19:05 by mreymond         ###   ########.fr       */
+/*   Updated: 2022/06/09 11:10:28 by mreymond         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,7 +39,6 @@ typedef struct s_var
 	char	*value;
 }	t_var;
 
-
 typedef struct s_ms_b_cd
 {
 	char	*param;
@@ -63,7 +62,6 @@ typedef struct s_parse
 	int		redir_in_d;
 	char	**cmds;
 }	t_parse;
-
 // >	redirection de sortie
 // <	redirection d'entree
 
@@ -133,5 +131,14 @@ void		check_args(int argc);
 void		launch_with_pipes(t_parse p, t_tab *t);
 void		test_other(char *buf, t_tab *t);
 void		launch_with_redir(t_parse p, t_tab *t);
+void    	which_redir(t_redir *r, char *cmd);
+char    	*stock_cmd_part(char **token, int pos);
+char		**rebuilt_cmds(t_redir *r, int len);
+t_redir		*stock_redir_infos(char **cmds);
+int			launch_redir(t_redir r, t_tab *t, char *cmd);
+int			launch_in_d(t_redir r, t_tab *t, char *cmd);
+int			launch_in(t_redir r, t_tab *t, char *cmd);
+int			launch_out_d(t_redir r, t_tab *t, char *cmd);
+int			launch_out(t_redir r, t_tab *t, char *cmd);
 
 #endif

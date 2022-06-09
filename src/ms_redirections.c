@@ -6,28 +6,32 @@
 /*   By: mreymond <mreymond@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/06 15:58:02 by mreymond          #+#    #+#             */
-/*   Updated: 2022/06/08 22:05:28 by mreymond         ###   ########.fr       */
+/*   Updated: 2022/06/09 11:14:36 by mreymond         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-//trouver un moyen pour savoir quel redir correspond à quel commande
-
-void    which_redir(t_redir *r, t_parse p)
+void    which_redir(t_redir *r, char *cmd)
 {
-    if (p.redir_in > 0)
+    int		*nbr1;
+	int		*nbr2;
+
+    nbr1 = check_redir(cmd, '>');
+	nbr2 = check_redir(cmd, '<');
+    if (nbr2[0] > 0)
         r->redir = ft_strdup("<");
-    else if(p.redir_in_d > 0)
+    else if (nbr2[1] > 0)
         r->redir = ft_strdup("<<");
-    else if (p.redir_out > 0 )
+    else if (nbr1[0] > 0 )
         r->redir = ft_strdup(">");
-    else if (p.redir_out_d > 0)
+    else if (nbr1[1] > 0)
         r->redir = ft_strdup(">>");
     else
-        r->redir = NULL;
+        r->redir = ft_strdup("");
 }
 
+// remove redirection part of the cmd
 char    *stock_cmd_part(char **token, int pos)
 {
     int i;
@@ -52,7 +56,23 @@ char    *stock_cmd_part(char **token, int pos)
     return (dst);
 }
 
-t_redir *stock_redir_infos(t_parse p, char **cmds)
+char **rebuilt_cmds(t_redir *r, int len)
+{
+    char **cmds;
+    int i;
+
+    i = 0;
+    cmds = malloc(sizeof(char *) * len + 1);
+    while (i < len)
+    {
+        cmds[i] = ft_strdup(r[i].cmd);
+        i++;
+    }
+    return (cmds);
+}
+
+// create a truct with redirections infos
+t_redir *stock_redir_infos(char **cmds)
 {
     t_redir *r;
     int i;
@@ -60,10 +80,10 @@ t_redir *stock_redir_infos(t_parse p, char **cmds)
     int pos;
 
     i = 0;
-    r = malloc(sizeof(t_redir) * tab_len(cmds) + 1);
+    r = malloc(sizeof(t_redir) * (tab_len(cmds) + 1));
     while (cmds[i] != NULL)
     {
-        which_redir(&r[i], p);
+        which_redir(&r[i], cmds[i]);
         r[i].index = i;
         token = tokenize(cmds[i]);
         pos = var_exist(token, r[i].redir);
@@ -75,21 +95,86 @@ t_redir *stock_redir_infos(t_parse p, char **cmds)
     return (r);
 }
 
+int launch_out(t_redir r, t_tab *t, char *cmd)
+{
+    (void) r;
+    (void) t;
+    printf("Launch out:\n");
+    printf("%s\n", cmd);
+    printf("____________\n");
+    return (0);
+}
+
+int launch_out_d(t_redir r, t_tab *t, char *cmd)
+{
+    (void) r;
+    (void) t;
+    printf("Launch out double:\n");
+    printf("%s\n", cmd);
+    printf("____________\n");
+    return (0);
+}
+
+int launch_in(t_redir r, t_tab *t, char *cmd)
+{
+    (void) r;
+    (void) t;
+    printf("Launch in:\n");
+    printf("%s\n", cmd);
+    printf("____________\n");
+    return (0);
+}
+
+int launch_in_d(t_redir r, t_tab *t, char *cmd)
+{
+    (void) r;
+    (void) t;
+    printf("Launch in double:\n");
+    printf("%s\n", cmd);
+    printf("____________\n");
+    return (0);
+}
+
+int launch_redir(t_redir r, t_tab *t, char *cmd)
+{
+    int ret;
+
+    if (!ft_strncmp(r.redir, ">", 1) && cmd[1] == '\0')
+		ret = launch_out(r, t, cmd);
+    if (!ft_strncmp(r.redir, "<", 1) && cmd[1] == '\0')
+		ret = launch_in(r, t, cmd);
+    if (!ft_strncmp(r.redir, ">>", 2) && cmd[2] == '\0')
+		ret = launch_out_d(r, t, cmd);
+    if (!ft_strncmp(r.redir, "<<", 2) && cmd[2] == '\0')
+		ret = launch_in_d(r, t, cmd);
+    else
+        ret = 0;
+    return (ret);
+}
+
+// launch cmds with redirections symbol
 void    launch_with_redir(t_parse p, t_tab *t)
 {
     t_redir *r;
-    (void) t;
-    (void) r;
-    int i = 0;
+    int     i;
+    int     len;
     
-    r = stock_redir_infos(p, p.cmds);
+    i = 0;
+    r = stock_redir_infos(p.cmds);
+    len = tab_len(p.cmds);
+    tabfree(p.cmds);
+    p.cmds = rebuilt_cmds(r, len);
     while (p.cmds[i] != NULL)
     {
-        printf("%d --------\n", i);
-        printf("index : %d\n", r[i].index);
-        printf("dest: %s\n", r[i].dest);
-        printf("redir: %s\n", r[i].redir);
-        printf("cmd: %s\n", r[i].cmd);
+        if(launch_redir(r[i], t, p.cmds[i]))
+            return ;
         i++;
     }
 }
+
+// checker ce qu'il se passe quand il n'y a pas de redir dans une des commandes
+// par exemple : cat test > outfile | echo coucou
+
+// 1. faire la redirections des chevrons
+// 2. action sur le fichier de sortie/entrée
+// 3. si il y a un pipe la redirection du pipe écrase la redirection précédente
