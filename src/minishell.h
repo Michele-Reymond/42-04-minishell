@@ -6,7 +6,7 @@
 /*   By: mreymond <mreymond@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/20 10:48:46 by mreymond          #+#    #+#             */
-/*   Updated: 2022/06/09 11:10:28 by mreymond         ###   ########.fr       */
+/*   Updated: 2022/06/14 10:37:04 by mreymond         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,6 +20,8 @@
 # include <readline/readline.h>
 # include <readline/history.h>
 # include <stdbool.h>
+# include <errno.h>
+# include <fcntl.h>
 # include "libft/libft.h"
 
 # define ERROR_UNEXPECTED_TOKEN "minishell: syntax error near unexpected token "
@@ -135,10 +137,10 @@ void    	which_redir(t_redir *r, char *cmd);
 char    	*stock_cmd_part(char **token, int pos);
 char		**rebuilt_cmds(t_redir *r, int len);
 t_redir		*stock_redir_infos(char **cmds);
-int			launch_redir(t_redir r, t_tab *t, char *cmd);
-int			launch_in_d(t_redir r, t_tab *t, char *cmd);
-int			launch_in(t_redir r, t_tab *t, char *cmd);
-int			launch_out_d(t_redir r, t_tab *t, char *cmd);
-int			launch_out(t_redir r, t_tab *t, char *cmd);
+void		launch_redir(t_redir r, t_tab *t, char *cmd);
+void		launch_in_d(t_redir r, t_tab *t, char *cmd);
+void		launch_in(t_redir r, t_tab *t, char *cmd);
+void		launch_out_d(t_redir r, t_tab *t, char *cmd);
+void		launch_out(t_redir r, t_tab *t, char *cmd);
 
 #endif

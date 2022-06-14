@@ -6,7 +6,7 @@
 /*   By: mreymond <mreymond@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/27 13:06:22 by mreymond          #+#    #+#             */
-/*   Updated: 2022/06/14 09:16:38 by mreymond         ###   ########.fr       */
+/*   Updated: 2022/06/14 10:49:05 by mreymond         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -225,7 +225,7 @@ int	monitor(char *cmd, t_tab *t)
 	else if (p.redir > 0)
 		launch_with_redir(p, t);
 	// else if (p.pipes > 0 && p.redir == 0)
-	// 	launch_with_pipes(p, t);
+		// launch_with_pipes(p, t);
 	return (0);
 }
 
@@ -254,4 +254,5 @@ int	launch_cmds(char *cmd, t_tab *t)
 
 
 // minishell qui exit sans pipes par exemple avec ls -la
+// > parce que je ne fork pas dans other à cause des pipes. 
 // redirections
