@@ -6,7 +6,7 @@
 /*   By: mreymond <mreymond@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/27 13:06:22 by mreymond          #+#    #+#             */
-/*   Updated: 2022/06/09 10:09:17 by mreymond         ###   ########.fr       */
+/*   Updated: 2022/06/14 09:16:38 by mreymond         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -253,6 +253,5 @@ int	launch_cmds(char *cmd, t_tab *t)
 }
 
 
-// trop de pipes?
 // minishell qui exit sans pipes par exemple avec ls -la
 // redirections
