@@ -6,7 +6,7 @@
 /*   By: mreymond <mreymond@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/27 13:06:22 by mreymond          #+#    #+#             */
-/*   Updated: 2022/06/14 10:49:05 by mreymond         ###   ########.fr       */
+/*   Updated: 2022/06/14 21:03:22 by mreymond         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -221,7 +221,10 @@ int	monitor(char *cmd, t_tab *t)
 	// TO DO > faire une fonction qui verifie les commandes
 	
 	if (tab_len(p.cmds) == 1 && p.redir == 0)
-		launch_cmds(p.cmds[0], t);
+	{
+		if (launch_cmds(p.cmds[0], t))
+			other_with_fork(p.cmds[0], t);
+	}
 	else if (p.redir > 0)
 		launch_with_redir(p, t);
 	// else if (p.pipes > 0 && p.redir == 0)
@@ -229,6 +232,8 @@ int	monitor(char *cmd, t_tab *t)
 	return (0);
 }
 
+// si fd vaut zéro il n'y a pas de fork sinon il y a un fork
+// Dans le cas où il y a des pipes la valeur doit être 0 sinon elle doit être true
 int	launch_cmds(char *cmd, t_tab *t)
 {
 	char	**token;
@@ -247,7 +252,8 @@ int	launch_cmds(char *cmd, t_tab *t)
 	else if (!ft_strncmp(cmd, "env", 3) && (cmd[3] == ' ' || cmd[3] == '\0'))
 		display_env(t->env);
 	else
-		test_other(cmd, t);
+		return (1);
+		// test_other(cmd, t, fd, std);
 		// ms_b_other(cmd);
 	return (0);
 }

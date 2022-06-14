@@ -6,7 +6,7 @@
 /*   By: mreymond <mreymond@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/06 15:58:02 by mreymond          #+#    #+#             */
-/*   Updated: 2022/06/14 10:50:40 by mreymond         ###   ########.fr       */
+/*   Updated: 2022/06/14 22:10:10 by mreymond         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -144,18 +144,22 @@ void launch_out(t_redir r, t_tab *t, char *cmd)
 		perror("minishell: ");
 		exit(EXIT_FAILURE);
 	}
-    dup2(outfile, STDOUT_FILENO);
-    launch_cmds(cmd, t);
+    other_redir_and_fork(cmd, t, outfile, STDOUT_FILENO);
 }
 
 // >>
 void launch_out_d(t_redir r, t_tab *t, char *cmd)
 {
-    (void) t;
+    int		outfile;
+
     check_files_out(r.dest);
-    printf("Launch out double:\n");
-    printf("%s\n", cmd);
-    printf("____________\n");
+	outfile = open(r.dest, O_WRONLY | O_APPEND);
+	if (outfile < 0)
+	{
+		perror("minishell: ");
+		exit(EXIT_FAILURE);
+	}
+    other_redir_and_fork(cmd, t, outfile, STDOUT_FILENO);
 }
 
 // <
@@ -163,25 +167,28 @@ void launch_in(t_redir r, t_tab *t, char *cmd)
 {
     int		infile;
 
-    check_files_out(r.dest);
+    check_files_in(r.dest);
 	infile = open(r.dest, O_RDONLY);
 	if (infile < 0)
 	{
 		perror("minishell: ");
 		exit(EXIT_FAILURE);
 	}
-    dup2(infile, STDIN_FILENO);
-    launch_cmds(cmd, t);
+    other_redir_and_fork(cmd, t, infile, STDIN_FILENO);
 }
 
 // <<
 void launch_in_d(t_redir r, t_tab *t, char *cmd)
 {
-    (void) t;
-    check_files_in(r.dest);
-    printf("Launch in double:\n");
-    printf("%s\n", cmd);
-    printf("____________\n");
+    int tmpfile;
+
+	tmpfile = open(".", O_TMPFILE | O_RDWR);
+	if (tmpfile < 0)
+	{
+		perror("minishell: ");
+		exit(EXIT_FAILURE);
+	// }
+    // other_redir_and_fork(cmd, t, infile, STDIN_FILENO);
 }
 
 void launch_redir(t_redir r, t_tab *t, char *cmd)
@@ -200,10 +207,10 @@ void launch_redir(t_redir r, t_tab *t, char *cmd)
 void    launch_with_redir(t_parse p, t_tab *t)
 {
     t_redir *r;
-    int     i;
+    // int     i;
     int     len;
     
-    i = 0;
+    // i = 0;
     r = stock_redir_infos(p.cmds);
     len = tab_len(p.cmds);
     tabfree(p.cmds);
@@ -212,12 +219,12 @@ void    launch_with_redir(t_parse p, t_tab *t)
         launch_redir(r[0], t, p.cmds[0]);
     else
     {
-        while (p.cmds[i] != NULL)
-        {
-            printf("%d: %s\n", i, p.cmds[i]);
-            launch_redir(r[i], t, p.cmds[i]);
-            i++;
-        }
+        // while (p.cmds[i] != NULL)
+        // {
+        //     printf("%d: %s\n", i, p.cmds[i]);
+        //     launch_redir(r[i], t, p.cmds[i]);
+        //     i++;
+        // }
     }
 }
 

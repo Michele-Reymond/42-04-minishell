@@ -6,7 +6,7 @@
 /*   By: mreymond <mreymond@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/20 10:48:46 by mreymond          #+#    #+#             */
-/*   Updated: 2022/06/14 10:37:04 by mreymond         ###   ########.fr       */
+/*   Updated: 2022/06/14 22:14:07 by mreymond         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,6 +21,8 @@
 # include <readline/history.h>
 # include <stdbool.h>
 # include <errno.h>
+# include <sys/types.h>
+# include <sys/stat.h>
 # include <fcntl.h>
 # include "libft/libft.h"
 
@@ -131,7 +133,10 @@ char		**clean_quotes_token(char **token, t_parse p);
 char		**make_export(char **env);
 void		check_args(int argc);
 void		launch_with_pipes(t_parse p, t_tab *t);
-void		test_other(char *buf, t_tab *t);
+void		test_other(char *buf, t_tab *t, int fd, int std);
+void		other_basic(char *buf, t_tab *t);
+void		other_with_fork(char *buf, t_tab *t);
+void		other_redir_and_fork(char *buf, t_tab *t, int fd, int std);
 void		launch_with_redir(t_parse p, t_tab *t);
 void    	which_redir(t_redir *r, char *cmd);
 char    	*stock_cmd_part(char **token, int pos);
