@@ -6,13 +6,16 @@
 /*   By: mreymond <mreymond@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/27 13:06:22 by mreymond          #+#    #+#             */
-/*   Updated: 2022/06/08 21:42:18 by mreymond         ###   ########.fr       */
+/*   Updated: 2022/06/09 10:09:17 by mreymond         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
 // parse the redirections caracteres > >> < <<
+// return a int tab :
+// nbr[0] : nbr of simple redir (> or <)
+// nbr[1] : nbr of double redir (>> or <<)
 int	*check_redir(char *cmd, char redir)
 {
 	char	*tmp;
