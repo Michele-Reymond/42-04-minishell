@@ -6,7 +6,7 @@
 /*   By: mreymond <mreymond@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/06 15:58:02 by mreymond          #+#    #+#             */
-/*   Updated: 2022/06/15 10:49:48 by mreymond         ###   ########.fr       */
+/*   Updated: 2022/06/15 16:08:57 by mreymond         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -218,21 +218,6 @@ void launch_in_d(t_redir r, t_tab *t, char *cmd)
         close(tmpfile);
         unlink(".heredoc");
 	}
-
-
-    // dup2(tmpfile, STDOUT_FILENO);
-    // while ((input = readline("> ")) != NULL) 
-	// {
-	// 	if (strlen(input) > 0)
-	// 	{
-	// 		if (!ft_strncmp(input, r.dest, ft_strlen(r.dest)))
-	// 			break;
-	// 		printf("%s\n", input);
-	// 	}
-  	//   	free(input);
-	// }
-    // newcmd = ft_strjoin(cmd, " ./tmp/.redir");
-    // other_with_fork(newcmd, t);
 }
 
 void launch_redir(t_redir r, t_tab *t, char *cmd)
@@ -247,14 +232,284 @@ void launch_redir(t_redir r, t_tab *t, char *cmd)
 		launch_in_d(r, t, cmd);
 }
 
+char *find_cmd(char **token, int start)
+{
+    char *cmd;
+    char *tmp;
+
+    tmp = ft_strdup(token[start - 1]);
+    cmd = ft_strjoin(tmp, " ");
+    free(tmp);
+    while (token[start] != NULL && ft_strncmp(token[start], ">", 1) && ft_strncmp(token[start], "<", 1))
+    {
+        tmp = ft_strjoin(cmd, token[start]);
+        free(cmd);
+        cmd = ft_strjoin(tmp, " ");
+        free(tmp);
+        start++;
+    }
+    return (cmd);
+}
+
+char **join_cmd_and_redir(char *cmd, char **redirs)
+{
+    char **new;
+    char *tmp;
+    int i;
+    int j;
+
+    i = 0;
+    j = 0;
+    tmp = ft_strjoin(cmd, " ");
+    new = malloc(sizeof(char *) * tab_len(redirs) + 1);
+    while (redirs[i] != NULL)
+    {
+        if (redirs[i][0] == '<')
+        {
+            new[j] = ft_strjoin(tmp, redirs[i]);
+            j++;
+        }
+        i++;
+    }
+    i = 0;
+    while (redirs[i] != NULL)
+    {
+        if (redirs[i][0] == '>')
+        {
+            new[j] = ft_strjoin(tmp, redirs[i]);
+            j++;
+        }
+        i++;
+    }
+    new[j] = NULL;
+    free(tmp);
+    return (new);
+}
+
+char **split_with_starting_redir(char **token, char *oldcmd)
+{
+    char *cmd;
+    char *pos;
+    int i;
+    int j;
+    int k;
+    int		*nbr1;
+	int		*nbr2;
+    int     nbr;
+    char **redirs;
+    char **new;
+
+    i = 0;
+    j = 0;
+    k = 0;
+    cmd = ft_strtrim(find_cmd(token, 3), " ");
+    pos = ft_strnstr(oldcmd, cmd, ft_strlen(oldcmd));
+    nbr1 = check_redir(oldcmd, '>');
+	nbr2 = check_redir(oldcmd, '<');
+    nbr = nbr1[0] + nbr1[1] + nbr2[0] + nbr2[1];
+    redirs = malloc(sizeof(char *) * nbr + 1);
+    while (oldcmd[i] && &oldcmd[i] != pos)
+        i++;
+    redirs[k] = malloc(sizeof(char) * i);
+    i = 0;
+    while (oldcmd[i] && &oldcmd[i] != pos)
+    {
+        redirs[k][i] = oldcmd[i];
+        i++;
+    }
+    redirs[k][i] = '\0';
+    i += ft_strlen(cmd);
+    k++;
+    while (oldcmd[i] != '\0' && nbr > 1)
+    {
+        j = i;
+        while (oldcmd[j] && (oldcmd[j] == '>' || oldcmd[j] == '<'))
+            j++;
+        while (oldcmd[j] && (oldcmd[j] != '>' || oldcmd[j] != '<'))
+            j++;
+        redirs[k] = malloc(sizeof(char) * j - i);
+        j = 0;
+        while (oldcmd[i] && (oldcmd[i] == '>' || oldcmd[i] == '<'))
+        {
+            redirs[k][j] = oldcmd[i];
+            j++;
+            i++;
+        }
+        while (oldcmd[i] && oldcmd[i] != '>' && oldcmd[i] != '<')
+        {
+            redirs[k][j] = oldcmd[i];
+            j++;
+            i++;
+        }
+        redirs[k][j] = '\0';
+        k++;
+    }
+    redirs[k] = NULL;
+    new = join_cmd_and_redir(cmd, redirs);
+    return (new);
+}
+
+char **split_with_starting_cmd(char **token, char *oldcmd)
+{
+    char *cmd;
+    int i;
+    int j;
+    int k;
+    int		*nbr1;
+	int		*nbr2;
+    int     nbr;
+    char **redirs;
+    char **new;
+
+    j = 0;
+    k = 0;
+    cmd = ft_strtrim(find_cmd(token, 1), " ");
+    nbr1 = check_redir(oldcmd, '>');
+	nbr2 = check_redir(oldcmd, '<');
+    nbr = nbr1[0] + nbr1[1] + nbr2[0] + nbr2[1];
+    redirs = malloc(sizeof(char *) * nbr + 1);
+    i = ft_strlen(cmd);
+    while (oldcmd[i] != '\0')
+    {
+        j = i;
+        while (oldcmd[j] && (oldcmd[j] == '>' || oldcmd[j] == '<'))
+            j++;
+        while (oldcmd[j] && (oldcmd[j] != '>' || oldcmd[j] != '<'))
+            j++;
+        redirs[k] = malloc(sizeof(char) * j - i);
+        j = 0;
+        while (oldcmd[i] && (oldcmd[i] == '>' || oldcmd[i] == '<'))
+        {
+            redirs[k][j] = oldcmd[i];
+            j++;
+            i++;
+        }
+        while (oldcmd[i] && oldcmd[i] != '>' && oldcmd[i] != '<')
+        {
+            redirs[k][j] = oldcmd[i];
+            j++;
+            i++;
+        }
+        redirs[k][j] = '\0';
+        k++;
+    }
+    redirs[k] = NULL;
+    new = join_cmd_and_redir(cmd, redirs);
+    return (new);
+}
+
+char **split_redir(char *cmd)
+{
+    char **token;
+    char **new;
+
+    token = tokenize(cmd);
+    if (!ft_strncmp(token[0], ">", 1) || !ft_strncmp(token[0], "<", 1))
+        new = split_with_starting_redir(token, cmd);
+    else
+    {
+        new = split_with_starting_cmd(token, cmd);
+    }
+    tabfree(token);
+    return (new);
+}
+
+char **tabjoin(char **tab1, char **tab2)
+{
+    char **new;
+    int len;
+    int i;
+    int j;
+
+    i = 0;
+    j = 0;
+    len = tab_len(tab1) + tab_len(tab2);
+    new = malloc(sizeof(char *) * len + 1);
+    while (tab1[i] != NULL)
+    {
+        new[i] = ft_strdup(tab1[i]);
+        i++;
+    }
+    while (tab2[j] != NULL)
+    {
+        new[i] = ft_strdup(tab2[j]);
+        i++;
+        j++;
+    }
+    new[i] = NULL;
+    return (new);
+}
+
+int nbr_of_redir(char *cmd)
+{
+    int		*nbr1;
+	int		*nbr2;
+
+    nbr1 = check_redir(cmd, '>');
+	nbr2 = check_redir(cmd, '<');
+    return (nbr1[0] + nbr1[1] + nbr2[0] + nbr2[1]);
+}
+
+char **add_to_tab(char **oldtab, char *str_to_add)
+{
+    char **new;
+    int i;
+
+    i = 0;
+    new = malloc(sizeof(char *) * tab_len(oldtab) + 2);
+    while (oldtab[i] != NULL)
+    {
+        new[i] = ft_strdup(oldtab[i]);
+        i++;
+    }
+    new[i] = ft_strdup(str_to_add);
+    i++;
+    new[i] = NULL;
+    return (new);
+}
+
+char **one_redir_pro_cmd(char **oldcmds)
+{
+    char    **new;
+    char    **tmp1;
+    char    **tmp2;
+    int     i;
+
+    i = 0;
+    new = new_tab();
+    while (oldcmds[i] != NULL)
+    {
+        if (nbr_of_redir(oldcmds[i]) == 0)
+        {
+            tmp1 = add_to_tab(new, oldcmds[i]);
+            tabfree(new);
+            new = tmp1;
+        }
+        else
+        {
+            tmp1 = split_redir(oldcmds[i]);
+            tmp2 = tabjoin(new, tmp1);
+            tabfree(new);
+            tabfree(tmp1);
+            new = tmp2;
+        }
+        i++;
+    }
+    return (new);
+}
+
 // launch cmds with redirections symbol
 void    launch_with_redir(t_parse p, t_tab *t)
 {
     t_redir *r;
+    char    **tmp;
     // int     i;
     int     len;
     
     // i = 0;
+    tmp = one_redir_pro_cmd(p.cmds);
+    tabfree(p.cmds);
+    p.cmds = tmp;
     r = stock_redir_infos(p.cmds);
     len = tab_len(p.cmds);
     tabfree(p.cmds);
@@ -274,7 +529,10 @@ void    launch_with_redir(t_parse p, t_tab *t)
 
 // i il y a un pipe la redirection du pipe écrase la redirection précédente?
 
-// 0. terminer le heredoc
+// 0. il peut y avoir plusieurs redirections dans une commande!!
+    // ex: cat << FIN > fichier
+    // echo bidule > outfile > test (printf bidule dans les 2 fichiers)
+    // > new cat << test !!!
 // 1. lancer les redir avec les builtins car la je lance que les other!!
 // 2. lancer les redir et les pipes
 // 3. signaux
