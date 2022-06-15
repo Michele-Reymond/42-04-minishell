@@ -6,7 +6,7 @@
 /*   By: mreymond <mreymond@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/20 10:47:58 by mreymond          #+#    #+#             */
-/*   Updated: 2022/06/06 11:24:36 by mreymond         ###   ########.fr       */
+/*   Updated: 2022/06/15 09:48:18 by mreymond         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,7 +34,7 @@ int	main(int argc, char **argv, char **envp)
 				break;
 			monitor(cmd, &t);
 		}
-  	  	// free(cmd);
+  	  	free(cmd);
 		// free(t.token);
 	}
 	return (0);

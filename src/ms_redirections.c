@@ -6,7 +6,7 @@
 /*   By: mreymond <mreymond@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/06 15:58:02 by mreymond          #+#    #+#             */
-/*   Updated: 2022/06/14 22:10:10 by mreymond         ###   ########.fr       */
+/*   Updated: 2022/06/15 10:49:48 by mreymond         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -180,15 +180,59 @@ void launch_in(t_redir r, t_tab *t, char *cmd)
 // <<
 void launch_in_d(t_redir r, t_tab *t, char *cmd)
 {
-    int tmpfile;
+    int     tmpfile;
+    char    *input;
+    char    *newcmd;
+    pid_t	pid;
+    int		status;
 
-	tmpfile = open(".", O_TMPFILE | O_RDWR);
+	tmpfile = open(".heredoc", O_CREAT | O_RDWR | O_APPEND, 0644);
 	if (tmpfile < 0)
 	{
 		perror("minishell: ");
 		exit(EXIT_FAILURE);
+	}
+    pid = fork();
+	if (pid < 0)
+		return (perror("Fork: "));
+	if (pid == 0)
+	{
+        while ((input = readline("> ")) != NULL) 
+        {
+            if (strlen(input) > 0)
+            {
+                if (!ft_strncmp(input, r.dest, ft_strlen(r.dest)))
+                    break;
+                write(tmpfile, input, ft_strlen(input));
+                write(tmpfile, "\n", 1);
+            }
+            free(input);
+        }
+        newcmd = ft_strjoin(cmd, " .heredoc");
+        other_basic(newcmd, t);
+        close(tmpfile);
+		exit (0);
+	}
+	else {
+		waitpid(pid, &status, 0);
+        close(tmpfile);
+        unlink(".heredoc");
+	}
+
+
+    // dup2(tmpfile, STDOUT_FILENO);
+    // while ((input = readline("> ")) != NULL) 
+	// {
+	// 	if (strlen(input) > 0)
+	// 	{
+	// 		if (!ft_strncmp(input, r.dest, ft_strlen(r.dest)))
+	// 			break;
+	// 		printf("%s\n", input);
+	// 	}
+  	//   	free(input);
 	// }
-    // other_redir_and_fork(cmd, t, infile, STDIN_FILENO);
+    // newcmd = ft_strjoin(cmd, " ./tmp/.redir");
+    // other_with_fork(newcmd, t);
 }
 
 void launch_redir(t_redir r, t_tab *t, char *cmd)
@@ -228,9 +272,12 @@ void    launch_with_redir(t_parse p, t_tab *t)
     }
 }
 
-// checker ce qu'il se passe quand il n'y a pas de redir dans une des commandes
-// par exemple : cat test > outfile | echo coucou
+// i il y a un pipe la redirection du pipe écrase la redirection précédente?
 
-// 1. faire la redirections des chevrons
-// 2. action sur le fichier de sortie/entrée
-// 3. si il y a un pipe la redirection du pipe écrase la redirection précédente
+// 0. terminer le heredoc
+// 1. lancer les redir avec les builtins car la je lance que les other!!
+// 2. lancer les redir et les pipes
+// 3. signaux
+// 4. .minishell
+// 5. regler les bugs
+// 6. checker les leaks et les closes de fichiers

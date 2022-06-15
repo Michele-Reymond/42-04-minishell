@@ -6,7 +6,7 @@
 /*   By: mreymond <mreymond@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/20 10:48:46 by mreymond          #+#    #+#             */
-/*   Updated: 2022/06/14 22:14:07 by mreymond         ###   ########.fr       */
+/*   Updated: 2022/06/15 10:07:43 by mreymond         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,9 +20,8 @@
 # include <readline/readline.h>
 # include <readline/history.h>
 # include <stdbool.h>
+# include <dirent.h>
 # include <errno.h>
-# include <sys/types.h>
-# include <sys/stat.h>
 # include <fcntl.h>
 # include "libft/libft.h"
 
