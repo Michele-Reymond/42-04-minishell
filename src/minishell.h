@@ -6,7 +6,7 @@
 /*   By: mreymond <mreymond@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/20 10:48:46 by mreymond          #+#    #+#             */
-/*   Updated: 2022/06/15 10:07:43 by mreymond         ###   ########.fr       */
+/*   Updated: 2022/06/16 11:25:40 by mreymond         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,6 +41,12 @@ typedef struct s_var
 	char	*key;
 	char	*value;
 }	t_var;
+
+typedef struct s_doors
+{
+	int in;
+	int out;
+}	t_doors;
 
 typedef struct s_ms_b_cd
 {
@@ -136,6 +142,7 @@ void		test_other(char *buf, t_tab *t, int fd, int std);
 void		other_basic(char *buf, t_tab *t);
 void		other_with_fork(char *buf, t_tab *t);
 void		other_redir_and_fork(char *buf, t_tab *t, int fd, int std);
+void		other_doors_and_fork(char *buf, t_tab *t, t_doors doors);
 void		launch_with_redir(t_parse p, t_tab *t);
 void    	which_redir(t_redir *r, char *cmd);
 char    	*stock_cmd_part(char **token, int pos);
