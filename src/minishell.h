@@ -6,7 +6,7 @@
 /*   By: mreymond <mreymond@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/20 10:48:46 by mreymond          #+#    #+#             */
-/*   Updated: 2022/06/16 11:25:40 by mreymond         ###   ########.fr       */
+/*   Updated: 2022/06/16 14:46:03 by mreymond         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -119,6 +119,9 @@ void		display_env(char **tab);
 void		display_tab(char **tab);
 char		**new_tab(void);
 int			launch_cmds(char *cmd, t_tab *t);
+int			is_a_builtin(char *cmd);
+int			launch_builtins_with_redir(char *cmd, t_tab *t, int fd, int std);
+int			launch_builtins_with_doors(char *cmd, t_tab *t, t_doors doors);
 int			ms_b_pwd(void);
 t_tab		*ms_b_cd(char *buf,t_tab *t);
 int			ms_b_other(char *buf);
@@ -138,6 +141,8 @@ char		**clean_quotes_token(char **token, t_parse p);
 char		**make_export(char **env);
 void		check_args(int argc);
 void		launch_with_pipes(t_parse p, t_tab *t);
+void		launch_pipes_with_redir(t_parse p, t_tab *t);
+void	    launching_redirs(char *cmd, t_tab *t);
 void		test_other(char *buf, t_tab *t, int fd, int std);
 void		other_basic(char *buf, t_tab *t);
 void		other_with_fork(char *buf, t_tab *t);

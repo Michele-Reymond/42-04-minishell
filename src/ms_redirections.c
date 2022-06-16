@@ -6,7 +6,7 @@
 /*   By: mreymond <mreymond@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/06 15:58:02 by mreymond          #+#    #+#             */
-/*   Updated: 2022/06/16 11:54:38 by mreymond         ###   ########.fr       */
+/*   Updated: 2022/06/16 15:48:32 by mreymond         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -132,6 +132,24 @@ void	check_files_out(char *file)
 	}
 }
 
+void fork_and_launch_builtin(char *cmd, t_tab *t, int fd, int std)
+{
+    pid_t	pid;
+	int		status;
+
+    pid = fork();
+	if (pid < 0)
+		return (perror("Fork: "));
+	if (pid == 0)
+	{
+		dup2(fd, std);
+		launch_cmds(cmd, t);
+		exit (0);
+	}
+	else
+		waitpid(pid, &status, 0);
+}
+
 // >
 t_doors set_out(t_redir r, t_doors doors)
 {
@@ -139,7 +157,7 @@ t_doors set_out(t_redir r, t_doors doors)
     t_doors new;
 
     check_files_out(r.dest);
-	outfile = open(r.dest, O_WRONLY);
+	outfile = open(r.dest, O_TRUNC | O_WRONLY);
 	if (outfile < 0)
 	{
 		perror("minishell: ");
@@ -156,13 +174,16 @@ void launch_out(t_redir r, t_tab *t, char *cmd)
     int		outfile;
 
     check_files_out(r.dest);
-	outfile = open(r.dest, O_WRONLY);
+	outfile = open(r.dest, O_TRUNC | O_WRONLY);
 	if (outfile < 0)
 	{
 		perror("minishell: ");
 		exit(EXIT_FAILURE);
 	}
-    other_redir_and_fork(cmd, t, outfile, STDOUT_FILENO);
+    if (is_a_builtin(cmd))
+        fork_and_launch_builtin(cmd, t, outfile, STDOUT_FILENO);
+    else
+        other_redir_and_fork(cmd, t, outfile, STDOUT_FILENO);
 }
 
 // >>
@@ -195,7 +216,10 @@ void launch_out_d(t_redir r, t_tab *t, char *cmd)
 		perror("minishell: ");
 		exit(EXIT_FAILURE);
 	}
-    other_redir_and_fork(cmd, t, outfile, STDOUT_FILENO);
+    if (is_a_builtin(cmd))
+        fork_and_launch_builtin(cmd, t, outfile, STDOUT_FILENO);
+    else
+        other_redir_and_fork(cmd, t, outfile, STDOUT_FILENO);
 }
 
 // <
@@ -228,7 +252,10 @@ void launch_in(t_redir r, t_tab *t, char *cmd)
 		perror("minishell: ");
 		exit(EXIT_FAILURE);
 	}
-    other_redir_and_fork(cmd, t, infile, STDIN_FILENO);
+   if (is_a_builtin(cmd))
+        fork_and_launch_builtin(cmd, t, infile, STDIN_FILENO);
+    else
+        other_redir_and_fork(cmd, t, infile, STDIN_FILENO);
 }
 
 // <<
@@ -265,7 +292,7 @@ t_doors set_in_d(t_redir r, t_doors doors)
             }
             free(input);
         }
-		exit (0);
+		exit(0);
 	}
 	else {
 		waitpid(pid, &status, 0);
@@ -307,9 +334,10 @@ void launch_in_d(t_redir r, t_tab *t, char *cmd)
             free(input);
         }
         newcmd = ft_strjoin(cmd, " .heredoc");
-        other_basic(newcmd, t);
+        // if (launch_cmds(newcmd, t))
+            other_basic(newcmd, t);
         close(tmpfile);
-		exit (0);
+		exit(0);
 	}
 	else {
 		waitpid(pid, &status, 0);
@@ -367,7 +395,10 @@ void launch_multiple_redir(t_redir *r, t_tab *t, char **cmds)
         free(r[0].cmd);
         r[0].cmd = newcmd;
     }
-    other_doors_and_fork(r[0].cmd, t, doors);
+    if (is_a_builtin(r[0].cmd))
+        launch_builtins_with_doors(r[0].cmd, t, doors);
+    else
+        other_doors_and_fork(r[0].cmd, t, doors);
     close(doors.in);
     close(doors.out);
     if (access(".heredoc", F_OK) == 0)
@@ -640,39 +671,70 @@ char **one_redir_pro_cmd(char **oldcmds)
     return (new);
 }
 
+// this function is used in pipes with redir function
+void    launching_redirs(char *cmd, t_tab *t)
+{
+    t_redir *r;
+    char    **newcmds;
+    char    **tmp;
+    int     len;
+
+    if (nbr_of_redir(cmd) == 0)
+    {
+        if (launch_cmds(cmd, t))
+                other_basic(cmd, t);
+    }
+    else if (nbr_of_redir(cmd) == 1)
+    {
+        newcmds = add_to_tab(new_tab(), cmd);
+        r = stock_redir_infos(newcmds);
+        len = tab_len(newcmds);
+        tabfree(newcmds);
+        newcmds = rebuilt_cmds(r, len);
+        launch_redir(r[0], t, newcmds[0]);
+    }
+    else if (nbr_of_redir(cmd) > 1)
+    {
+        tmp = add_to_tab(new_tab(), cmd);
+        newcmds = one_redir_pro_cmd(tmp);
+        r = stock_redir_infos(newcmds);
+        len = tab_len(newcmds);
+        launch_multiple_redir(r, t, newcmds);
+    }
+}
+
 // launch cmds with redirections symbol
+// this function is used in monitor
 void    launch_with_redir(t_parse p, t_tab *t)
 {
     t_redir *r;
-    char    **tmp;
-    // int     i;
+    char    **newcmds;
     int     len;
     
-    // i = 0;
-    tmp = one_redir_pro_cmd(p.cmds);
-    tabfree(p.cmds);
-    p.cmds = tmp;
-    r = stock_redir_infos(p.cmds);
-    len = tab_len(p.cmds);
-    tabfree(p.cmds);
-    p.cmds = rebuilt_cmds(r, len);
-    if (tab_len(p.cmds) == 1)
+    if (tab_len(p.cmds) == 1 && p.redir <= 1)
+    {
+        r = stock_redir_infos(p.cmds);
+        len = tab_len(p.cmds);
+        tabfree(p.cmds);
+        p.cmds = rebuilt_cmds(r, len);
         launch_redir(r[0], t, p.cmds[0]);
-    else if (p.pipes == 0 && tab_len(p.cmds) > 1)
-        launch_multiple_redir(r, t, p.cmds);
-    // else
-        // launch_pipes_with_redir(r[i], t, p.cmds[i]);
+    }
+    else if (p.pipes == 0 && p.redir > 1)
+    {
+        newcmds = one_redir_pro_cmd(p.cmds);
+        r = stock_redir_infos(newcmds);
+        len = tab_len(newcmds);
+        launch_multiple_redir(r, t, newcmds);
+    }
+    else
+        launch_pipes_with_redir(p, t);
 }
 
-// i il y a un pipe la redirection du pipe écrase la redirection précédente?
-
-// 0. il peut y avoir plusieurs redirections dans une commande!!
-    // ex: cat << FIN > fichier
-    // echo bidule > outfile > test (printf bidule dans les 2 fichiers)
-    // > new cat << test !!!
-// 1. lancer les redir avec les builtins car la je lance que les other!!
-// 2. lancer les redir et les pipes
 // 3. signaux
 // 4. .minishell
 // 5. regler les bugs
 // 6. checker les leaks et les closes de fichiers et les protections de malloc
+
+// BUGS : 
+
+// - cat << FIN > test

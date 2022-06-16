@@ -6,7 +6,7 @@
 /*   By: mreymond <mreymond@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/26 12:37:07 by vroch             #+#    #+#             */
-/*   Updated: 2022/06/16 11:24:48 by mreymond         ###   ########.fr       */
+/*   Updated: 2022/06/16 15:02:13 by mreymond         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -482,11 +482,11 @@ void other_doors_and_fork(char *buf, t_tab *t, t_doors doors)
 		return (perror("Fork: "));
 	if (pid == 0)
 	{
+		exit(0);
 		dup2(doors.in, STDIN_FILENO);
 		dup2(doors.out, STDOUT_FILENO);
 		launch_child_process(buf, paths, t->env);
 		tabfree(paths);
-		exit (0);
 	}
 	else {
 		waitpid(pid, &status, 0);

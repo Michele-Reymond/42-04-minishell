@@ -6,7 +6,7 @@
 /*   By: mreymond <mreymond@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/27 13:06:22 by mreymond          #+#    #+#             */
-/*   Updated: 2022/06/14 21:03:22 by mreymond         ###   ########.fr       */
+/*   Updated: 2022/06/16 14:23:25 by mreymond         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -225,10 +225,10 @@ int	monitor(char *cmd, t_tab *t)
 		if (launch_cmds(p.cmds[0], t))
 			other_with_fork(p.cmds[0], t);
 	}
+	else if (p.pipes > 0 && p.redir == 0)
+		launch_with_pipes(p, t);
 	else if (p.redir > 0)
 		launch_with_redir(p, t);
-	// else if (p.pipes > 0 && p.redir == 0)
-		// launch_with_pipes(p, t);
 	return (0);
 }
 
@@ -239,6 +239,75 @@ int	launch_cmds(char *cmd, t_tab *t)
 	char	**token;
 
 	token = tokenize(cmd);
+	if (!ft_strncmp(cmd, "cd", 2) && (cmd[2] == ' ' || cmd[2] == '\0'))
+		t = ms_b_cd(cmd, t);
+	else if (!ft_strncmp(cmd, "pwd", 3) && (cmd[3] == ' ' || cmd[3] == '\0'))
+		ms_b_pwd();
+	else if (!ft_strncmp(cmd, "echo", 4) && (cmd[4] == ' ' || cmd[4] == '\0'))
+		echo(token, *t);
+	else if (!ft_strncmp(cmd, "export", 6) && (cmd[6] == ' ' || cmd[6] == '\0'))
+		t = ft_export(t, token);
+	else if (!ft_strncmp(cmd, "unset", 5) && (cmd[5] == ' ' || cmd[5] == '\0'))
+		t = unset_var(t, token);
+	else if (!ft_strncmp(cmd, "env", 3) && (cmd[3] == ' ' || cmd[3] == '\0'))
+		display_env(t->env);
+	else
+		return (1);
+		// test_other(cmd, t, fd, std);
+		// ms_b_other(cmd);
+	return (0);
+}
+
+int	is_a_builtin(char *cmd)
+{
+	if (!ft_strncmp(cmd, "cd", 2) && (cmd[2] == ' ' || cmd[2] == '\0'))
+		return (1);
+	else if (!ft_strncmp(cmd, "pwd", 3) && (cmd[3] == ' ' || cmd[3] == '\0'))
+		return (1);
+	else if (!ft_strncmp(cmd, "echo", 4) && (cmd[4] == ' ' || cmd[4] == '\0'))
+		return (1);
+	else if (!ft_strncmp(cmd, "export", 6) && (cmd[6] == ' ' || cmd[6] == '\0'))
+		return (1);
+	else if (!ft_strncmp(cmd, "unset", 5) && (cmd[5] == ' ' || cmd[5] == '\0'))
+		return (1);
+	else if (!ft_strncmp(cmd, "env", 3) && (cmd[3] == ' ' || cmd[3] == '\0'))
+		return (1);
+	else
+		return (0);
+}
+
+int	launch_builtins_with_redir(char *cmd, t_tab *t, int fd, int std)
+{
+	char	**token;
+
+	token = tokenize(cmd);
+	dup2(fd, std);
+	if (!ft_strncmp(cmd, "cd", 2) && (cmd[2] == ' ' || cmd[2] == '\0'))
+		t = ms_b_cd(cmd, t);
+	else if (!ft_strncmp(cmd, "pwd", 3) && (cmd[3] == ' ' || cmd[3] == '\0'))
+		ms_b_pwd();
+	else if (!ft_strncmp(cmd, "echo", 4) && (cmd[4] == ' ' || cmd[4] == '\0'))
+		echo(token, *t);
+	else if (!ft_strncmp(cmd, "export", 6) && (cmd[6] == ' ' || cmd[6] == '\0'))
+		t = ft_export(t, token);
+	else if (!ft_strncmp(cmd, "unset", 5) && (cmd[5] == ' ' || cmd[5] == '\0'))
+		t = unset_var(t, token);
+	else if (!ft_strncmp(cmd, "env", 3) && (cmd[3] == ' ' || cmd[3] == '\0'))
+		display_env(t->env);
+	else
+		return (1);
+		// test_other(cmd, t, fd, std);
+		// ms_b_other(cmd);
+	return (0);
+}
+
+int	launch_builtins_with_doors(char *cmd, t_tab *t, t_doors doors)
+{
+	char	**token;
+
+	token = tokenize(cmd);
+	dup2(doors.in, STDIN_FILENO);
+	dup2(doors.out, STDOUT_FILENO);
 	if (!ft_strncmp(cmd, "cd", 2) && (cmd[2] == ' ' || cmd[2] == '\0'))
 		t = ms_b_cd(cmd, t);
 	else if (!ft_strncmp(cmd, "pwd", 3) && (cmd[3] == ' ' || cmd[3] == '\0'))
