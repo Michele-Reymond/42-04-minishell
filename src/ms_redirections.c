@@ -6,7 +6,7 @@
 /*   By: mreymond <mreymond@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/06 15:58:02 by mreymond          #+#    #+#             */
-/*   Updated: 2022/06/17 16:29:34 by mreymond         ###   ########.fr       */
+/*   Updated: 2022/06/17 17:41:14 by mreymond         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -898,17 +898,15 @@ void    launch_with_redir(t_parse p, t_tab *t)
 // 7. cleaner cet enfer
 
 // BUGS : 
-// EXIT et $? !!!
+// EXIT ä faire correctement !!!
 // export foo = bar qui segfault (gestion des erreurs de export)
+// printfer un $ normal dans echo?
 // lancer une commande avec le chemin: /bin/ls
 // Test only spaces or tabs. (comment faire avec TAB?)
 // Execute exit command with or without arguments. (Comment faire avec des arguments?)
-// what the hell avec echo $??
 // what the hell is that : expr $? + $?
-// echo $? qui segfault
 // Double Quotes :  echo "cat lol.c | cat > lol.c"
 // echo '$USER' must print $USER
-// cd qui affiche env
 // Execute commands but this time use a relative path (pas bien compris cett demande)
 // Unset the $PATH and check if it is not working anymore
 // erreurs de command not found
