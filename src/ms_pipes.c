@@ -6,7 +6,7 @@
 /*   By: mreymond <mreymond@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/06 11:15:36 by mreymond          #+#    #+#             */
-/*   Updated: 2022/06/16 14:31:48 by mreymond         ###   ########.fr       */
+/*   Updated: 2022/06/17 11:20:13 by mreymond         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -172,7 +172,6 @@ void launch_with_pipes(t_parse p, t_tab *t)
 }
 
 ///pipes & redirections
-
 void launch_pipes_with_redir(t_parse p, t_tab *t)
 {
     pid_t	*pid;
@@ -194,6 +193,8 @@ void launch_pipes_with_redir(t_parse p, t_tab *t)
     i = 0;
     while (i < p.nbr_cmd)
     {
+        if (is_heredoc(p.cmds[i]))
+            read_heredoc(p.cmds[i]);
         pid[i] = fork();
         if (pid[i] < 0)
             return ;
@@ -222,6 +223,8 @@ void launch_pipes_with_redir(t_parse p, t_tab *t)
             waitpid(pid[i], &status, 0);
             i++;
         }
+        if (access(".heredoc", F_OK) == 0)
+            unlink(".heredoc");
         i = 0;
         while (i < p.pipes)
         {

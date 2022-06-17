@@ -6,7 +6,7 @@
 /*   By: mreymond <mreymond@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/26 12:37:07 by vroch             #+#    #+#             */
-/*   Updated: 2022/06/16 15:02:13 by mreymond         ###   ########.fr       */
+/*   Updated: 2022/06/17 09:54:49 by mreymond         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -381,37 +381,6 @@ void	launch_child_process(char *buff, char **paths, char **envp)
 	tabfree(token);
 }
 
-
-// void test_other(char *buf, t_tab *t, int fd, int std)
-// {
-// 	char	**paths;
-// 	pid_t	pid;
-// 	int		status;
-
-// 	paths = ft_split(getenv("PATH"), ':');
-// 	if (fd > 0)
-// 	{
-// 		pid = fork();
-// 		if (pid < 0)
-// 		return (perror("Fork: "));
-// 		if (pid == 0)
-// 		{
-// 			dup2(fd, std);
-// 			launch_child_process(buf, paths, t->env);
-// 			tabfree(paths);
-// 			exit (0);
-// 		}
-// 		else {
-// 			waitpid(pid, &status, 0);
-// 		}
-// 	}
-// 	else
-// 	{
-// 		launch_child_process(buf, paths, t->env);
-// 		tabfree(paths);
-// 	}
-// }
-
 // lancer cette comande dans les pipes
 void other_basic(char *buf, t_tab *t)
 {
@@ -482,7 +451,6 @@ void other_doors_and_fork(char *buf, t_tab *t, t_doors doors)
 		return (perror("Fork: "));
 	if (pid == 0)
 	{
-		exit(0);
 		dup2(doors.in, STDIN_FILENO);
 		dup2(doors.out, STDOUT_FILENO);
 		launch_child_process(buf, paths, t->env);

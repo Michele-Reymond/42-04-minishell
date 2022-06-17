@@ -6,7 +6,7 @@
 /*   By: mreymond <mreymond@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/06 15:58:02 by mreymond          #+#    #+#             */
-/*   Updated: 2022/06/16 15:48:32 by mreymond         ###   ########.fr       */
+/*   Updated: 2022/06/17 11:18:13 by mreymond         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -259,6 +259,49 @@ void launch_in(t_redir r, t_tab *t, char *cmd)
 }
 
 // <<
+void launch_heredoc(char *stop)
+{
+    int     tmpfile;
+    char    *input;
+    pid_t	pid;
+    int		status;
+
+	tmpfile = open(".heredoc", O_CREAT | O_RDWR | O_APPEND, 0644);
+	if (tmpfile < 0)
+	{
+		perror("minishell: ");
+		exit(EXIT_FAILURE);
+	}
+    pid = fork();
+	if (pid < 0)
+    {
+        perror("minishell: Fork: ");
+		exit(EXIT_FAILURE);
+    }
+	if (pid == 0)
+	{
+        while ((input = readline("> ")) != NULL) 
+        {
+            if (strlen(input) > 0)
+            {
+                if (!ft_strncmp(input, stop, ft_strlen(stop)))
+                    break;
+                write(tmpfile, input, ft_strlen(input));
+                write(tmpfile, "\n", 1);
+            }
+            free(input);
+        }
+        close(tmpfile);
+		exit(0);
+	}
+	else
+    {
+		waitpid(pid, &status, 0);
+        close(tmpfile);
+    }
+}
+
+// <<
 t_doors set_in_d(t_redir r, t_doors doors)
 {
     int     tmpfile;
@@ -302,6 +345,37 @@ t_doors set_in_d(t_redir r, t_doors doors)
 	}
 }
 
+t_doors set_in_d_in_pipe(t_doors doors)
+{
+    int     tmpfile;
+    t_doors new;
+
+	tmpfile = open(".heredoc", O_RDONLY);
+	if (tmpfile < 0)
+	{
+		perror("minishell: ");
+		exit(EXIT_FAILURE);
+	}
+    new.in = tmpfile;
+    new.out = doors.out;
+    return (new);
+}
+
+// <<
+void launch_in_d_in_pipe(t_tab *t, char *cmd)
+{
+    char    *newcmd;
+
+	if (tmpfile < 0)
+	{
+		perror("minishell: ");
+		exit(EXIT_FAILURE);
+	}
+    newcmd = ft_strjoin(cmd, " .heredoc");
+    if (launch_cmds(newcmd, t))
+        other_basic(newcmd, t);
+}
+
 // <<
 void launch_in_d(t_redir r, t_tab *t, char *cmd)
 {
@@ -334,7 +408,7 @@ void launch_in_d(t_redir r, t_tab *t, char *cmd)
             free(input);
         }
         newcmd = ft_strjoin(cmd, " .heredoc");
-        // if (launch_cmds(newcmd, t))
+        if (launch_cmds(newcmd, t))
             other_basic(newcmd, t);
         close(tmpfile);
 		exit(0);
@@ -344,6 +418,18 @@ void launch_in_d(t_redir r, t_tab *t, char *cmd)
         close(tmpfile);
         unlink(".heredoc");
 	}
+}
+
+void launch_redir_in_pipe(t_redir r, t_tab *t, char *cmd)
+{
+    if (!ft_strncmp(r.redir, ">", 1) && r.redir[1] == '\0')
+		launch_out(r, t, cmd);
+    else if (!ft_strncmp(r.redir, "<", 1) && r.redir[1] == '\0')
+		launch_in(r, t, cmd);
+    else if (!ft_strncmp(r.redir, ">>", 2) && r.redir[2] == '\0')
+		launch_out_d(r, t, cmd);
+    else if (!ft_strncmp(r.redir, "<<", 2) && r.redir[2] == '\0')
+		launch_in_d_in_pipe(t, cmd);
 }
 
 void launch_redir(t_redir r, t_tab *t, char *cmd)
@@ -356,6 +442,23 @@ void launch_redir(t_redir r, t_tab *t, char *cmd)
 		launch_out_d(r, t, cmd);
     else if (!ft_strncmp(r.redir, "<<", 2) && r.redir[2] == '\0')
 		launch_in_d(r, t, cmd);
+}
+
+t_doors set_redir_in_pipe(t_redir r, t_doors doors)
+{
+    t_doors new;
+
+    if (!ft_strncmp(r.redir, ">", 1) && r.redir[1] == '\0')
+		new = set_out(r, doors);
+    else if (!ft_strncmp(r.redir, "<", 1) && r.redir[1] == '\0')
+		new = set_in(r, doors);
+    else if (!ft_strncmp(r.redir, ">>", 2) && r.redir[2] == '\0')
+		new = set_out_d(r, doors);
+    else if (!ft_strncmp(r.redir, "<<", 2) && r.redir[2] == '\0')
+		new = set_in_d_in_pipe(doors);
+    else 
+        new = doors;
+    return (new);
 }
 
 t_doors set_redirection(t_redir r, t_doors doors)
@@ -387,6 +490,36 @@ void launch_multiple_redir(t_redir *r, t_tab *t, char **cmds)
     while (cmds[i] != NULL)
     {
         doors = set_redirection(r[i], doors);
+        i++;
+    }
+    if (access(".heredoc", F_OK) == 0)
+    {
+        newcmd = ft_strjoin(r[0].cmd, " .heredoc");
+        free(r[0].cmd);
+        r[0].cmd = newcmd;
+    }
+    if (is_a_builtin(r[0].cmd))
+        launch_builtins_with_doors(r[0].cmd, t, doors);
+    else
+        other_doors_and_fork(r[0].cmd, t, doors);
+    close(doors.in);
+    close(doors.out);
+    if (access(".heredoc", F_OK) == 0)
+        unlink(".heredoc");
+}
+
+void launch_multiple_redir_in_pipes(t_redir *r, t_tab *t, char **cmds)
+{
+    t_doors doors;
+    char *newcmd;
+    int i;
+
+    i = 0;
+    doors.in = STDIN_FILENO;
+    doors.out = STDOUT_FILENO;
+    while (cmds[i] != NULL)
+    {
+        doors = set_redir_in_pipe(r[i], doors);
         i++;
     }
     if (access(".heredoc", F_OK) == 0)
@@ -613,6 +746,34 @@ char **tabjoin(char **tab1, char **tab2)
     return (new);
 }
 
+void read_heredoc(char *cmd)
+{
+    char **newcmds;
+    char **tmp;
+    t_redir *r;
+    int i;
+
+    i = 0;
+    tmp = add_to_tab(new_tab(), cmd);
+    newcmds = one_redir_pro_cmd(tmp);
+    r = stock_redir_infos(newcmds);
+    while (newcmds[i] != NULL)
+    {
+        if (!ft_strncmp(r[i].redir, "<<", 2))
+            break ;
+        i++;
+    }
+    launch_heredoc(r[i].dest);
+}
+
+int is_heredoc(char *cmd)
+{
+	int		*nbr;
+
+	nbr = check_redir(cmd, '<');
+    return (nbr[1]);
+}
+
 int nbr_of_redir(char *cmd)
 {
     int		*nbr1;
@@ -691,7 +852,7 @@ void    launching_redirs(char *cmd, t_tab *t)
         len = tab_len(newcmds);
         tabfree(newcmds);
         newcmds = rebuilt_cmds(r, len);
-        launch_redir(r[0], t, newcmds[0]);
+        launch_redir_in_pipe(r[0], t, newcmds[0]);
     }
     else if (nbr_of_redir(cmd) > 1)
     {
@@ -699,7 +860,7 @@ void    launching_redirs(char *cmd, t_tab *t)
         newcmds = one_redir_pro_cmd(tmp);
         r = stock_redir_infos(newcmds);
         len = tab_len(newcmds);
-        launch_multiple_redir(r, t, newcmds);
+        launch_multiple_redir_in_pipes(r, t, newcmds);
     }
 }
 
@@ -731,10 +892,21 @@ void    launch_with_redir(t_parse p, t_tab *t)
 }
 
 // 3. signaux
-// 4. .minishell
+// 4. .minishell (checker other correctement)
 // 5. regler les bugs
 // 6. checker les leaks et les closes de fichiers et les protections de malloc
 
 // BUGS : 
-
-// - cat << FIN > test
+// multiples redirections:  cat << FIN > test
+// lancer une commande avec le chemin: /bin/ls
+// Test only spaces or tabs. (comment faire avec TAB?)
+// Execute exit command with or without arguments. (Comment faire avec des arguments?)
+// what the hell avec echo $??
+// what the hell is that : expr $? + $?
+// echo $? qui segfault
+// Double Quotes :  echo "cat lol.c | cat > lol.c"
+// echo '$USER' must print $USER
+// cd qui affiche env
+// Execute commands but this time use a relative path (pas bien compris cett demande)
+// Unset the $PATH and check if it is not working anymore
+// erreurs de command not found
