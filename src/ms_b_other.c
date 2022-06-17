@@ -6,7 +6,7 @@
 /*   By: mreymond <mreymond@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/26 12:37:07 by vroch             #+#    #+#             */
-/*   Updated: 2022/06/17 09:54:49 by mreymond         ###   ########.fr       */
+/*   Updated: 2022/06/17 15:35:06 by mreymond         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -341,14 +341,21 @@ void	exec_cmd(char **paths, char *first_cmd, char **envp, char **flags)
 {
 	int		i;
 	char	*cmd;
+	int		ret;
 
 	i = 0;
 	while (paths[i])
 	{
 		cmd = ft_strjoin(paths[i], first_cmd);
-		execve(cmd, flags, envp);
+		ret = execve(cmd, flags, envp);
 		free(cmd);
 		i++;
+	}
+	if (ret < 0)
+	{
+		printf("minishell: %s: ", &first_cmd[1]);
+		printf(ERROR_CMD_NOT_FOUND);
+		exit(errno);
 	}
 	free(first_cmd);
 }
@@ -391,6 +398,23 @@ void other_basic(char *buf, t_tab *t)
 	tabfree(paths);
 }
 
+void	status_of_child(int status)
+{
+	if (WIFEXITED(status))
+	{
+		if (WEXITSTATUS(status) == 2)
+			exit_status = 127;
+		else
+			exit_status = WEXITSTATUS(status);
+	}
+	if (WIFSIGNALED(status))
+	{
+		exit_status = WTERMSIG(status);
+		if (exit_status != 131)
+			exit_status += 128;
+	}
+}
+
 // lancer cette comande si commande seule sans redirections
 void other_with_fork(char *buf, t_tab *t)
 {
@@ -410,6 +434,7 @@ void other_with_fork(char *buf, t_tab *t)
 	}
 	else {
 		waitpid(pid, &status, 0);
+		status_of_child(status);
 		tabfree(paths);
 	}
 }
@@ -434,6 +459,7 @@ void other_redir_and_fork(char *buf, t_tab *t, int fd, int std)
 	}
 	else {
 		waitpid(pid, &status, 0);
+		status_of_child(status);
 		tabfree(paths);
 	}
 }
@@ -458,6 +484,7 @@ void other_doors_and_fork(char *buf, t_tab *t, t_doors doors)
 	}
 	else {
 		waitpid(pid, &status, 0);
+		status_of_child(status);
 		tabfree(paths);
 	}
 }

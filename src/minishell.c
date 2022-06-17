@@ -6,7 +6,7 @@
 /*   By: mreymond <mreymond@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/20 10:47:58 by mreymond          #+#    #+#             */
-/*   Updated: 2022/06/15 09:48:18 by mreymond         ###   ########.fr       */
+/*   Updated: 2022/06/17 16:23:27 by mreymond         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,14 +30,15 @@ int	main(int argc, char **argv, char **envp)
 		if (strlen(cmd) > 0)
 		{
 			add_history(cmd);
-			if (!strcmp(cmd, "exit"))
-				break;
+			if (!ft_strncmp(cmd, "exit", 4) && (cmd[4] == ' ' || cmd[4] == '\0'))
+				break ;
 			monitor(cmd, &t);
 		}
   	  	free(cmd);
+		printf("exit status is %d\n", exit_status);
 		// free(t.token);
 	}
-	return (0);
+	exit(exit_status);
 }
 
 

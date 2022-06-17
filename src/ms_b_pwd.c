@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ms_b_pwd.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: vroch <vroch@student.42.fr>                +#+  +:+       +#+        */
+/*   By: mreymond <mreymond@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/20 12:16:50 by vroch             #+#    #+#             */
-/*   Updated: 2022/05/27 15:27:19 by vroch            ###   ########.fr       */
+/*   Updated: 2022/06/17 16:26:57 by mreymond         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,7 @@ int	ms_b_pwd(void)
 
 	pwd = getcwd(NULL, 0);
 	ft_putendl_fd(pwd, 2);
+	exit_status = 0;
 	free(pwd);
 	return (0);
-
 }

@@ -6,7 +6,7 @@
 /*   By: mreymond <mreymond@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/27 11:28:42 by mreymond          #+#    #+#             */
-/*   Updated: 2022/06/06 11:16:29 by mreymond         ###   ########.fr       */
+/*   Updated: 2022/06/17 16:13:25 by mreymond         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -114,7 +114,7 @@ char	**update_var(char **old, t_var var, int pos, bool quotes)
 	new = malloc(sizeof(char *) * (tab_len(old) + 1));
 	while (old[i] != NULL)
 	{
-		printf("%s\n",old[i]);
+		// printf("%s\n",old[i]);
 		if (!ft_strncmp(old[i], var.key, ft_strlen(var.key)))
 		{
 			if (quotes)

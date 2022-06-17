@@ -6,7 +6,7 @@
 /*   By: mreymond <mreymond@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/27 13:06:22 by mreymond          #+#    #+#             */
-/*   Updated: 2022/06/16 14:23:25 by mreymond         ###   ########.fr       */
+/*   Updated: 2022/06/17 14:41:32 by mreymond         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -219,7 +219,6 @@ int	monitor(char *cmd, t_tab *t)
 	p.cmds = clean_spaces(cmd);
 
 	// TO DO > faire une fonction qui verifie les commandes
-	
 	if (tab_len(p.cmds) == 1 && p.redir == 0)
 	{
 		if (launch_cmds(p.cmds[0], t))

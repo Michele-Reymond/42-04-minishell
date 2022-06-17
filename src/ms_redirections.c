@@ -6,7 +6,7 @@
 /*   By: mreymond <mreymond@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/06 15:58:02 by mreymond          #+#    #+#             */
-/*   Updated: 2022/06/17 11:18:13 by mreymond         ###   ########.fr       */
+/*   Updated: 2022/06/17 16:29:34 by mreymond         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -895,9 +895,11 @@ void    launch_with_redir(t_parse p, t_tab *t)
 // 4. .minishell (checker other correctement)
 // 5. regler les bugs
 // 6. checker les leaks et les closes de fichiers et les protections de malloc
+// 7. cleaner cet enfer
 
 // BUGS : 
-// multiples redirections:  cat << FIN > test
+// EXIT et $? !!!
+// export foo = bar qui segfault (gestion des erreurs de export)
 // lancer une commande avec le chemin: /bin/ls
 // Test only spaces or tabs. (comment faire avec TAB?)
 // Execute exit command with or without arguments. (Comment faire avec des arguments?)

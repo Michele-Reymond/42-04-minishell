@@ -6,7 +6,7 @@
 /*   By: mreymond <mreymond@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/20 10:48:46 by mreymond          #+#    #+#             */
-/*   Updated: 2022/06/17 10:35:55 by mreymond         ###   ########.fr       */
+/*   Updated: 2022/06/17 16:19:54 by mreymond         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,19 +15,24 @@
 
 # include <stdio.h>
 # include <stdlib.h>
+# include <errno.h>
 # include <string.h>
 # include <sys/wait.h>
 # include <readline/readline.h>
 # include <readline/history.h>
 # include <stdbool.h>
 # include <dirent.h>
-# include <errno.h>
 # include <fcntl.h>
 # include "libft/libft.h"
+#include <math.h>
 
 # define ERROR_UNEXPECTED_TOKEN "minishell: syntax error near unexpected token "
 # define ERROR_QUOTES "minishell: unclosed quotes\n"
 # define ERROR_ARGC "minishell: No arguments expected\n"
+# define ERROR_CMD_NOT_FOUND "command not found\n"
+# define ERROR_FILE "No such file or directory\n"
+
+int	exit_status;
 
 typedef struct s_echo {
 	unsigned int	nbr_args;
@@ -88,11 +93,12 @@ typedef struct s_tab
 	char	**exp;
 	char	**var;
 	char	**token;
+	int 	e_status;
 	t_parse	p;
 }	t_tab;
 
 void		echo_print(char **args, char **var);
-int			echo(char **token, t_tab t);
+void		echo(char **token, t_tab t);
 char		**echo_vars(char **token, t_tab t, int nbr);
 t_echo		echo_parsing(char **token, t_tab t);
 t_tab		*ft_export(t_tab *t, char **token);
