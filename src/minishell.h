@@ -6,7 +6,7 @@
 /*   By: mreymond <mreymond@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/20 10:48:46 by mreymond          #+#    #+#             */
-/*   Updated: 2022/06/20 16:55:51 by mreymond         ###   ########.fr       */
+/*   Updated: 2022/06/20 19:10:09 by mreymond         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -139,6 +139,7 @@ void		echo(char **token, t_tab t);
 void		echo_print(char **args, char **var);
 char		**echo_vars(char **token, t_tab t, int nbr);
 t_echo		echo_parsing(char **token, t_tab t);
+char		**clean_cmd_for_echo(char *cmd, t_tab *t);
 
 //			Builtins - export
 t_tab		*ft_export(t_tab *t, char **token);
@@ -156,7 +157,8 @@ void		display_env(char **tab);
 //			Builtins - exit
 void		ft_exit(char *cmds, t_tab *t);
 char		*replace_exit_status(char **token);
-char		**exit_status_convert(char **token);
+// char		**exit_status_convert(char **token);
+char		*exit_status_convert(char *cmd);
 
 //			Pipes
 void		launch_with_pipes(t_parse p, t_tab *t);

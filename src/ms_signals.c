@@ -6,7 +6,7 @@
 /*   By: mreymond <mreymond@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/20 16:41:41 by mreymond          #+#    #+#             */
-/*   Updated: 2022/06/20 17:04:33 by mreymond         ###   ########.fr       */
+/*   Updated: 2022/06/20 17:16:55 by mreymond         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,6 @@ void sig_kill(int signum) {
 void    signal_handler(void)
 {
     signal(SIGINT, sig_kill);
-    fflush(stdout);
     // kill();
     return ;
 }

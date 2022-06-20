@@ -6,49 +6,79 @@
 /*   By: mreymond <mreymond@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/20 13:24:57 by mreymond          #+#    #+#             */
-/*   Updated: 2022/06/20 15:53:15 by mreymond         ###   ########.fr       */
+/*   Updated: 2022/06/20 19:14:32 by mreymond         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-char **exit_status_convert(char **token)
+char *exit_status_convert(char *cmd)
 {
-	char **new;
+	char *new;
 	char *tmp;
 	char *tmp2;
 	char *symbol;
-	int i;
 	int len;
 
-	i = 0;
-	new = malloc(sizeof(char *) * tab_len(token) + 2);
-	while (token[i] != NULL)
+	symbol = ft_strnstr(cmd, "$?", ft_strlen(cmd) + 1);
+	if (symbol != NULL)
 	{
-		symbol = ft_strnstr(token[i], "$?", ft_strlen(token[i]) + 1);
-		if (symbol != NULL)
+		len = ft_strlen(cmd) - ft_strlen(symbol);
+		tmp = malloc(sizeof(char) * len + 2);
+		ft_strlcat(tmp, cmd, len + 1);
+		tmp2 = ft_strjoin(tmp, ft_itoa(exit_status));
+		if (symbol + 2)
 		{
-			len = ft_strlen(token[i]) - ft_strlen(symbol);
-			tmp = malloc(sizeof(char) * len + 2);
-			ft_strlcat(tmp, token[i], len);
-			tmp2 = ft_strjoin(tmp, ft_itoa(exit_status));
-			if (symbol + 2)
-			{
-				symbol += 2;
-				new[i] = ft_strjoin(tmp2, symbol);
-			}
-			else
-				new[i] = ft_strdup(tmp2);
-			free(tmp);
-			free(tmp2);
+			symbol += 2;
+			new = ft_strjoin(tmp2, symbol);
 		}
 		else
-			new[i] = ft_strdup(token[i]);
-		i++;
+			new = ft_strdup(tmp2);
+		free(tmp);
+		free(tmp2);
 	}
-	new[i] = NULL;
+	else
+		new = ft_strdup(cmd);
 	return (new);
 }
+
+// char **exit_status_convert(char **token)
+// {
+// 	char **new;
+// 	char *tmp;
+// 	char *tmp2;
+// 	char *symbol;
+// 	int i;
+// 	int len;
+
+// 	i = 0;
+// 	new = malloc(sizeof(char *) * tab_len(token) + 2);
+// 	while (token[i] != NULL)
+// 	{
+// 		symbol = ft_strnstr(token[i], "$?", ft_strlen(token[i]) + 1);
+// 		if (symbol != NULL)
+// 		{
+// 			len = ft_strlen(token[i]) - ft_strlen(symbol);
+// 			tmp = malloc(sizeof(char) * len + 2);
+// 			ft_strlcat(tmp, token[i], len);
+// 			tmp2 = ft_strjoin(tmp, ft_itoa(exit_status));
+// 			if (symbol + 2)
+// 			{
+// 				symbol += 2;
+// 				new[i] = ft_strjoin(tmp2, symbol);
+// 			}
+// 			else
+// 				new[i] = ft_strdup(tmp2);
+// 			free(tmp);
+// 			free(tmp2);
+// 		}
+// 		else
+// 			new[i] = ft_strdup(token[i]);
+// 		i++;
+// 	}
+// 	new[i] = NULL;
+// 	return (new);
+// }
 
 static int	ft_pass(char s)
 {
@@ -91,16 +121,16 @@ long long	ft_atoll(const char *str)
 	return (result);
 }
 
-char *replace_exit_status(char **token)
-{
-    char *new;
-    char **tmp;
+// char *replace_exit_status(char **token)
+// {
+//     char *new;
+//     char **tmp;
 
-    tmp = exit_status_convert(token);
-    new = tab_to_str(tmp);
-    tabfree(tmp);
-    return (new);
-}
+//     tmp = exit_status_convert(token);
+//     new = tab_to_str(tmp);
+//     tabfree(tmp);
+//     return (new);
+// }
 
 int args_if_alpha(char *str)
 {

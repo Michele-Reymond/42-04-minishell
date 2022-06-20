@@ -6,7 +6,7 @@
 /*   By: mreymond <mreymond@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/20 10:47:58 by mreymond          #+#    #+#             */
-/*   Updated: 2022/06/20 17:12:42 by mreymond         ###   ########.fr       */
+/*   Updated: 2022/06/20 19:41:04 by mreymond         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,8 +26,9 @@ int	main(int argc, char **argv, char **envp)
 	signal_handler();
 	while ((tmp = readline("🌸 >> ")) != NULL) 
 	{
-		t.token = tokenize(tmp);
-		cmd = replace_exit_status(t.token);
+		// t.token = tokenize(tmp);
+		// cmd = replace_exit_status(tmp);
+		cmd = exit_status_convert(tmp);
 		if (strlen(cmd) > 0)
 		{
 			add_history(cmd);
@@ -40,6 +41,8 @@ int	main(int argc, char **argv, char **envp)
 }
 
 // TO DO!!
+
+// in clean_cmd_for_echo(char *cmd, t_tab *t) do singlequotes with $variable!
 
 // 3. signaux
 // 4. .minishell (checker other correctement)
@@ -56,6 +59,7 @@ int	main(int argc, char **argv, char **envp)
 // echo '$USER' must print $USER
 // Execute commands but this time use a relative path (pas bien compris cett demande)
 // Unset the $PATH and check if it is not working anymore
+// minishell: "echo": Command not found
 
 
 

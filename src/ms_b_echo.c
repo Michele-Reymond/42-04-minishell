@@ -6,7 +6,7 @@
 /*   By: mreymond <mreymond@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/20 10:43:17 by mreymond          #+#    #+#             */
-/*   Updated: 2022/06/20 13:52:51 by mreymond         ###   ########.fr       */
+/*   Updated: 2022/06/20 19:39:52 by mreymond         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -110,16 +110,68 @@ t_echo	echo_parsing(char **token, t_tab t)
 	return (elem);
 }
 
+char **trim_tab(char **tab)
+{
+	char **new;
+	int i;
+	int j;
+
+	i = 0;
+	j = 0;
+	new = malloc(sizeof(char *) * tab_len(tab) + 1);
+	while (tab[i] != NULL)
+	{
+		j = 0;
+		while (tab[i][j] && (tab[i][j] == ' ' || tab[i][j] == '	'))
+			j++;
+		new[i] = ft_strdup(&tab[i][j]);
+		if (new[i][ft_strlen(new[i]) - 1] == ' ')
+			new[i][ft_strlen(new[i]) - 1] = '\0';
+		i++;
+	}
+	new[i] = NULL;
+	return (new);
+}
+
+char **split_quotes(char *cmd, int nbr, char quote)
+{
+	char **new;
+	char **tmp;
+	(void) nbr;
+
+	tmp = ft_split(cmd, quote);
+	new = trim_tab(tmp);
+	display_tab(new);
+
+	return (new);
+}
+
+char **clean_cmd_for_echo(char *cmd, t_tab *t)
+{
+	char **new;
+
+	if (t->p.double_q == 0 && t->p.single_q == 0)
+		new = tokenize(cmd);
+	else if (t->p.double_q > 0 && t->p.single_q == 0)
+		new = split_quotes(cmd, t->p.double_q, '\"');
+	else if (t->p.double_q == 0 && t->p.single_q > 0)
+		new = split_quotes(cmd, t->p.double_q, '\'');
+	else
+		new = tokenize(cmd);
+	return (new);
+}
+
 void	echo(char **token, t_tab t)
 {
 	t_echo elem;
-	char **cleaned;
+	// char **cleaned;
 
-	cleaned = clean_quotes_token(token, t.p);
-	if (tab_len(cleaned) < 2)
+	// cleaned = clean_quotes_token(token, t.p);
+	// display_tab(cleaned);
+	if (tab_len(token) < 2)
 		elem.nbr_args = 0;
 	else
-		elem = echo_parsing(cleaned, t);
+		elem = echo_parsing(token, t);
 	if (elem.nbr_args == 0 && elem.flag != 'n')
 		printf("\n");
 	if (elem.nbr_args > 0 && elem.flag == 'n')
