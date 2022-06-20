@@ -6,7 +6,7 @@
 /*   By: mreymond <mreymond@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/06 15:58:02 by mreymond          #+#    #+#             */
-/*   Updated: 2022/06/17 17:41:14 by mreymond         ###   ########.fr       */
+/*   Updated: 2022/06/20 15:55:09 by mreymond         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -890,23 +890,3 @@ void    launch_with_redir(t_parse p, t_tab *t)
     else
         launch_pipes_with_redir(p, t);
 }
-
-// 3. signaux
-// 4. .minishell (checker other correctement)
-// 5. regler les bugs
-// 6. checker les leaks et les closes de fichiers et les protections de malloc
-// 7. cleaner cet enfer
-
-// BUGS : 
-// EXIT ä faire correctement !!!
-// export foo = bar qui segfault (gestion des erreurs de export)
-// printfer un $ normal dans echo?
-// lancer une commande avec le chemin: /bin/ls
-// Test only spaces or tabs. (comment faire avec TAB?)
-// Execute exit command with or without arguments. (Comment faire avec des arguments?)
-// what the hell is that : expr $? + $?
-// Double Quotes :  echo "cat lol.c | cat > lol.c"
-// echo '$USER' must print $USER
-// Execute commands but this time use a relative path (pas bien compris cett demande)
-// Unset the $PATH and check if it is not working anymore
-// erreurs de command not found

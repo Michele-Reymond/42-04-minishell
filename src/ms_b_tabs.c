@@ -6,7 +6,7 @@
 /*   By: mreymond <mreymond@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/27 11:26:36 by mreymond          #+#    #+#             */
-/*   Updated: 2022/06/02 17:05:57 by mreymond         ###   ########.fr       */
+/*   Updated: 2022/06/20 13:40:41 by mreymond         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -85,4 +85,34 @@ void	display_env(char **tab)
 			printf("%s\n", tab[i]);
 		i++;
 	}
+}
+
+char	*tab_to_str(char **tab)
+{
+	char	*str;
+	char	*tmp;
+	int		i;
+
+	i = 0;
+	tmp = ft_strdup("");
+	while (tab[i] != NULL)
+	{
+		if (*tab[i] == '\0')
+		{
+			str = ft_strjoin(tmp, " ");
+			free(tmp);
+			tmp = str;
+		}
+		else
+		{
+			str = ft_strjoin(tmp, tab[i]);
+			free(tmp);
+			tmp = str;
+			str = ft_strjoin(tmp, " ");
+			free(tmp);
+			tmp = str;
+		}
+		i++;
+	}
+	return (str);
 }

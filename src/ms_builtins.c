@@ -6,7 +6,7 @@
 /*   By: mreymond <mreymond@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/27 13:06:22 by mreymond          #+#    #+#             */
-/*   Updated: 2022/06/17 14:41:32 by mreymond         ###   ########.fr       */
+/*   Updated: 2022/06/20 15:54:34 by mreymond         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -127,36 +127,6 @@ char	**clean_spaces(char *cmd)
 	return (cmds);
 }
 
-char	*tab_to_str(char **tab)
-{
-	char	*str;
-	char	*tmp;
-	int		i;
-
-	i = 0;
-	tmp = ft_strdup("");
-	while (tab[i] != NULL)
-	{
-		if (*tab[i] == '\0')
-		{
-			str = ft_strjoin(tmp, " ");
-			free(tmp);
-			tmp = str;
-		}
-		else
-		{
-			str = ft_strjoin(tmp, tab[i]);
-			free(tmp);
-			tmp = str;
-			str = ft_strjoin(tmp, " ");
-			free(tmp);
-			tmp = str;
-		}
-		i++;
-	}
-	return (str);
-}
-
 char	**clean_quotes(char **cmds, t_parse p)
 {
 	char	**new;
@@ -238,7 +208,9 @@ int	launch_cmds(char *cmd, t_tab *t)
 	char	**token;
 
 	token = tokenize(cmd);
-	if (!ft_strncmp(cmd, "cd", 2) && (cmd[2] == ' ' || cmd[2] == '\0'))
+	if (!ft_strncmp(cmd, "exit", 4) && (cmd[4] == ' ' || cmd[4] == '\0'))
+		ft_exit(cmd, t);
+	else if (!ft_strncmp(cmd, "cd", 2) && (cmd[2] == ' ' || cmd[2] == '\0'))
 		t = ms_b_cd(cmd, t);
 	else if (!ft_strncmp(cmd, "pwd", 3) && (cmd[3] == ' ' || cmd[3] == '\0'))
 		ms_b_pwd();
@@ -252,8 +224,6 @@ int	launch_cmds(char *cmd, t_tab *t)
 		display_env(t->env);
 	else
 		return (1);
-		// test_other(cmd, t, fd, std);
-		// ms_b_other(cmd);
 	return (0);
 }
 

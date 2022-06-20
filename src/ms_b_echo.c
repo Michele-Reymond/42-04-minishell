@@ -6,7 +6,7 @@
 /*   By: mreymond <mreymond@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/20 10:43:17 by mreymond          #+#    #+#             */
-/*   Updated: 2022/06/17 17:35:06 by mreymond         ###   ########.fr       */
+/*   Updated: 2022/06/20 13:52:51 by mreymond         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -83,44 +83,6 @@ char	**echo_vars(char **token, t_tab t, int nbr)
 	return (vars);
 }
 
-char **echo_exit_status(char **token) 
-{
-	char **new;
-	char *tmp;
-	char *tmp2;
-	char *symbol;
-	int i;
-	int len;
-
-	i = 0;
-	new = malloc(sizeof(char *) * tab_len(token) + 2);
-	while (token[i] != NULL)
-	{
-		symbol = ft_strnstr(token[i], "$?", ft_strlen(token[i]) + 1);
-		if (symbol != NULL)
-		{
-			len = ft_strlen(token[i]) - ft_strlen(symbol);
-			tmp = malloc(sizeof(char) * len + 2);
-			ft_strlcat(tmp, token[i], len);
-			tmp2 = ft_strjoin(tmp, ft_itoa(exit_status));
-			if (symbol + 2)
-			{
-				symbol += 2;
-				new[i] = ft_strjoin(tmp2, symbol);
-			}
-			else
-				new[i] = ft_strdup(tmp2);
-			free(tmp);
-			free(tmp2);
-		}
-		else
-			new[i] = ft_strdup(token[i]);
-		i++;
-	}
-	new[i] = NULL;
-	return (new);
-}
-
 t_echo	echo_parsing(char **token, t_tab t)
 {
 	t_echo elem;
@@ -152,11 +114,8 @@ void	echo(char **token, t_tab t)
 {
 	t_echo elem;
 	char **cleaned;
-	char **tmp;
 
-	tmp = clean_quotes_token(token, t.p);
-	cleaned = echo_exit_status(tmp);
-	tabfree(tmp);
+	cleaned = clean_quotes_token(token, t.p);
 	if (tab_len(cleaned) < 2)
 		elem.nbr_args = 0;
 	else

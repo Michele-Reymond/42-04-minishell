@@ -6,7 +6,7 @@
 /*   By: mreymond <mreymond@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/20 10:48:46 by mreymond          #+#    #+#             */
-/*   Updated: 2022/06/17 19:21:46 by mreymond         ###   ########.fr       */
+/*   Updated: 2022/06/20 16:49:36 by mreymond         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,11 +26,16 @@
 # include "libft/libft.h"
 
 // __________ Macros __________
+# define MINISHELL "minishell: "
 # define ERROR_UNEXPECTED_TOKEN "minishell: syntax error near unexpected token "
 # define ERROR_QUOTES "minishell: Unclosed quotes\n"
 # define ERROR_ARGC "minishell: No arguments expected\n"
 # define ERROR_CMD_NOT_FOUND "Command not found\n"
 # define ERROR_FILE "No such file or directory\n"
+# define EXIT "exit\n"
+# define ERRORS_EXIT "exit: "
+# define ERRORS_EXIT_ARGS "too many arguments\n"
+# define ERRORS_NUM "numeric argument required\n"
 
 // ______ Global variable_______
 int	exit_status;
@@ -148,6 +153,9 @@ char		**sort_env(char **env);
 void		display_env(char **tab);
 
 //			Builtins - exit
+void		ft_exit(char *cmds, t_tab *t);
+char		*replace_exit_status(char **token);
+char		**exit_status_convert(char **token);
 
 //			Pipes
 void		launch_with_pipes(t_parse p, t_tab *t);
@@ -198,6 +206,9 @@ char		**tabsort(char **tab);
 void		display_tab(char **tab);
 char		**new_tab(void);
 char		**add_to_tab(char **oldtab, char *str_to_add);
+
+//			Signaux
+void    	signal_handler(void);
 
 //			à checker si utilisé
 void		display(char **env);
