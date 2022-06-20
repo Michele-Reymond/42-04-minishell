@@ -6,7 +6,7 @@
 /*   By: mreymond <mreymond@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/20 10:48:46 by mreymond          #+#    #+#             */
-/*   Updated: 2022/06/20 16:49:36 by mreymond         ###   ########.fr       */
+/*   Updated: 2022/06/20 16:55:51 by mreymond         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,6 +23,7 @@
 # include <stdbool.h>
 # include <dirent.h>
 # include <fcntl.h>
+# include <signal.h>
 # include "libft/libft.h"
 
 // __________ Macros __________

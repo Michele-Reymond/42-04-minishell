@@ -6,7 +6,7 @@
 /*   By: mreymond <mreymond@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/20 10:47:58 by mreymond          #+#    #+#             */
-/*   Updated: 2022/06/20 16:49:02 by mreymond         ###   ########.fr       */
+/*   Updated: 2022/06/20 17:12:42 by mreymond         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,8 +18,6 @@ int	main(int argc, char **argv, char **envp)
 	char		*cmd;
 	char		*tmp;
 	t_tab		t;
-	// t_var		first;
-	// t_var		test;
 
 	(void) argv;
 	check_args(argc);
@@ -37,7 +35,6 @@ int	main(int argc, char **argv, char **envp)
 		}
   	  	free(cmd);
 		free(tmp);
-		// free(t.token);
 	}
 	exit(exit_status);
 }
