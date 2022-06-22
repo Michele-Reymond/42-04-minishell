@@ -3,13 +3,13 @@
 /*                                                        :::      ::::::::   */
 /*   ft_strtrim.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: vroch <marvin@42lausanne.ch>               +#+  +:+       +#+        */
+/*   By: mreymond <mreymond@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/25 12:35:25 by vroch             #+#    #+#             */
-/*   Updated: 2021/11/14 16:20:15 by vroch            ###   ########.fr       */
+/*   Updated: 2022/06/22 15:07:22 by mreymond         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
-#include <string.h>
+
 #include "libft.h"
 #include <stdio.h>
 

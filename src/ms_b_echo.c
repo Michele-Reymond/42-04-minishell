@@ -6,14 +6,14 @@
 /*   By: mreymond <mreymond@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/20 10:43:17 by mreymond          #+#    #+#             */
-/*   Updated: 2022/06/21 17:56:10 by mreymond         ###   ########.fr       */
+/*   Updated: 2022/06/22 16:37:41 by mreymond         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
 // test d'un split qui stock les separateurs
-static int	countwords_sep(char const *s, char c)
+int	countwords_sep(char const *s, char c)
 {
 	int		i;
 	int		words;
@@ -41,17 +41,43 @@ static int	countwords_sep(char const *s, char c)
 	return (words);
 }
 
-static int	copywords_sep(char **strtab, char const *s, char c, int words)
+char	*ft_strldup(const char *src, size_t dstsize)
+{
+	size_t	i;
+	char	*dst;
+	char	*ptr;
+
+	i = 0;
+	if (dstsize == 0)
+		return (NULL);
+	ptr = (char *)src;
+	dst = malloc(sizeof(char) * dstsize + 1);
+	if (dst == NULL)
+		return (NULL);
+	while (ptr[i] != '\0' && i < (dstsize - 1))
+	{
+		dst[i] = ptr[i];
+		i++;
+	}
+	dst[i] = '\0';
+	return (dst);
+}
+
+char	**copywords_sep(char const *s, char c, int words)
 {
 	int	len;
 	int	i;
 	int	y;
 	int ok;
+	char	**strtab;
 
 	len = 0;
 	i = 0;
 	y = 0;
 	ok = 0;
+	strtab = (char **)malloc(sizeof(char *) * words + 1);
+	if (!strtab)
+		return (NULL);
 	while (s[i] != '\0' && y < words)
 	{
 		len = 0;
@@ -67,42 +93,34 @@ static int	copywords_sep(char **strtab, char const *s, char c, int words)
 			i++;
 			len++;
 		}
-		strtab[y] = (char *)malloc(sizeof(char) * len + 2);
-		if (!strtab[y])
-			return (0);
 		if (ok == 0)
-			ft_strlcpy(strtab[y], &s[i - len], len + 1);
+			strtab[y] = ft_strldup(&s[i - len], len + 1);
 		else
 		{
-			ft_strlcpy(strtab[y], &s[i - len], len + 2);
+			strtab[y] = ft_strldup(&s[i - len], len + 2);
 			i++;
 		}
 		y++;
 	}
-	return (y);
+	strtab[y] = NULL;
+	return (strtab);
 }
 
 char	**ft_split_with_sep(char const *s, char c)
 {
 	char	**strtab;
-	int		y;
 	int		words;
 
-	y = 0;
 	if (s == NULL)
 		return (NULL);
 	words = countwords_sep(s, c);
-	strtab = (char **)malloc(sizeof(char *) * words + 1);
-	if (!strtab)
-		return (NULL);
-	y = copywords_sep(strtab, s, c, words);
-	strtab[y] = NULL;
+	strtab = copywords_sep(s, c, words);
 	return (strtab);
 }
 
 // fin du test
 
-static int	countwords(char const *s)
+int	countwords(char const *s)
 {
 	int		i;
 	int		words;
@@ -130,7 +148,7 @@ static int	countwords(char const *s)
 	return (words);
 }
 
-static char	**copywords(char const *s, int words)
+char	**copywords(char const *s, int words)
 {
 	char	**strtab;
 	int	len;
@@ -140,7 +158,7 @@ static char	**copywords(char const *s, int words)
 	len = 0;
 	i = 0;
 	y = 0;
-	strtab = (char **)malloc(sizeof(char *) * words + 1);
+	strtab = (char **)malloc(sizeof(char *) * (words + 1));
 	if (!strtab)
 		return (NULL);
 	while (s[i] != '\0' && y < words)
@@ -156,7 +174,7 @@ static char	**copywords(char const *s, int words)
 				i++;
 				len++;
 		}
-		strtab[y] = (char *)malloc(sizeof(char) * len + 1);
+		strtab[y] = (char *)malloc(sizeof(char) * (len + 1));
 		if (!strtab[y])
 			return (0);
 		ft_strlcpy(strtab[y], &s[i - len], len + 1);
@@ -268,10 +286,11 @@ t_echo	echo_parsing(char **token, t_tab t)
 	return (elem);
 }
 
+// enlever les espaces et tab des tableaux
 char **trim_tab(char **tab)
 {
 	char **new;
-	char **tmp;
+	char *tmp;
 	int len;
 	int i;
 	int j;
@@ -286,16 +305,17 @@ char **trim_tab(char **tab)
 		i++;
 	}
 	i = 0;
-	new = malloc(sizeof(char *) * len + 1);
-	tmp = malloc(sizeof(char *) * tab_len(tab) + 1);
+	new = malloc(sizeof(char *) * (len + 1));
+	tmp = malloc(sizeof(char *) * (tab_len(tab) + 1));
 	while (tab[i] != NULL)
 	{
-		tmp[i] = ft_strtrim(tab[i], " 	");
-		if (*tmp[i] != '\0')
+		tmp = ft_strtrim(tab[i], " 	");
+		if (*tmp != '\0')
 		{
-			new[j] = tmp[i];
+			new[j] = ft_strtrim(tab[i], " 	");
 			j++;
 		}
+		free(tmp);
 		i++;
 	}
 	new[j] = NULL;
@@ -420,41 +440,194 @@ char **seperated_quotes(char *cmd)
 	return (new);
 }
 
-char **doubles_inside(char *cmd)
+// la premiere valeur du tableau d'int est le nombre d'int qu'il contient sauf le premier
+int *add_to_inttab(int *printing, int add)
+{
+	int *new;
+	int i;
+
+	i = 1;
+	new = malloc(sizeof(int) * (printing[0] + 1));
+	new[0] = printing[0] + 1;
+	while (i <= printing[0])
+	{
+		new[i] = printing[i];
+		i++;
+	}
+	new[i] = add;
+	return (new);
+}
+
+// la premiere valeur du tableau d'int est le nombre d'int qu'il contient sauf le premier
+int *new_inttab(void)
+{
+	int *new;
+
+	new = malloc(sizeof(int) * 1);
+	new[0] = 0;
+	return (new);
+}
+
+// la premiere valeur du tableau d'int est le nombre d'int qu'il contient sauf le premier
+int *fill_inttab(int *inttab, int add, int nbr)
+{
+	int *new;
+	int i;
+	int j;
+
+	i = 1;
+	j = 0;
+	new = malloc(sizeof(int) * (inttab[0] + nbr));
+	new[0] = inttab[0] + nbr;
+	while (i <= inttab[0])
+	{
+		new[i] = inttab[i];
+		i++;
+	}
+	while (j < nbr)
+	{
+		new[i] = add;
+		j++;
+		i++;
+	}
+	return (new);
+}
+
+void display_inttab(int *inttab)
+{
+	int i;
+
+	i = 1;
+	while (i <= inttab[0])
+	{
+		printf("%d\n", inttab[i]);
+		i++;
+	}
+}
+
+void display_tab_and_int(int *inttab, char **tab)
+{
+	int i;
+	int j;
+
+	i = 0;
+	j = 1;
+	while (tab[i] != NULL && j <= inttab[0])
+	{
+		printf("%d: ", inttab[j]);
+		printf("%s\n", tab[i]);
+		i++;
+		j++;
+	}
+}
+
+char **test1(char *str, char **tab)
+{
+	char **new;
+	char *strtmp;
+
+	strtmp = ft_strtrim(str, "\'");
+	new = add_to_tab(tab, strtmp);
+	free(strtmp);
+	return (new);
+}
+
+char **test2(char *str)
 {
 	char **new;
 	char **tmp;
+	char **tmp1;
+	char **tmp3;
+	char *strtmp;
+
+	strtmp = ft_strtrim(str, "\'");
+	tmp1 = ft_split(strtmp, ' ');
+	free(strtmp);
+	tmp = malloc(sizeof(char *) * 2);
+	tmp[0] = ft_strdup("\'");
+	tmp[1] = NULL;
+	tmp3 = tabjoin(tmp, tmp1);
+	tabfree(tmp);
+	tabfree(tmp1);
+	new = add_to_tab(tmp3, "\'");
+	return (new);
+}
+
+t_tprint doubles_inside(char *cmd)
+{
+	char **new;
+	char **tmp;
+	// char **tmp1;
 	char **tmp2;
 	char **tmp3;
-	char **tmp4;
-	// int *printing;
-	char *strtmp;
+	// char **tmp4;
+	// char **tmp5;
+	// char **tmp6;
+	int *printing;
+	int *inttmp;
+	// char *strtmp;
+	int in_d;
+	t_tprint tp;
 	int i;
 	
 	i = 0;
-	tmp4 = ft_split_with_sep(cmd, '\'');
-	tmp2 = trim_tab(tmp4);
-	display_tab(tmp2);
-	printf("---------\n");
-	tabfree(tmp4);
+	in_d = 0;
+	tmp = ft_split_with_sep(cmd, '\'');
+	tmp2 = trim_tab(tmp);
+	tabfree(tmp);
 	new = new_tab();
+	printing = new_inttab();
 	while (tmp2[i] != NULL)
 	{
-		if (tmp2[i][0] == '\'' && tmp2[i][ft_strlen(tmp2[i]) - 1] == '\'')
+		if (tmp2[i][0] == '\'' && in_d == 0)
 		{
-			strtmp = ft_strtrim(tmp2[i], "\'");
-			tmp4 = add_to_tab(new, strtmp);
+			// strtmp = ft_strtrim(tmp2[i], "\'");
+			// tmp = add_to_tab(new, strtmp);
+			// tabfree(new);
+			// new = tmp;
+			// free(strtmp);
+			// strtmp = NULL;
+			tmp = test1(tmp2[i], new);
 			tabfree(new);
-			new = tmp4;
-			free(strtmp);
+			new = tmp;
+			inttmp = add_to_inttab(printing, 0);
+			free(printing);
+			printing = inttmp;
+		}
+		else if (tmp2[i][0] == '\'' && in_d == 1)
+		{
+			// strtmp2 = ft_strtrim(tmp2[i], "\'");
+			// strtmp = ft_strtrim(tmp2[i], " 	");
+			// tmp1 = ft_split(strtmp, ' ');
+			// tmp = malloc(sizeof(char *) * 2);
+			// tmp[0] = ft_strdup("\'");
+			// tmp[1] = NULL;
+			// tmp3 = trim_tab(tmp1);
+			// tmp4 = tabjoin(tmp, tmp3);
+			// tmp5 = add_to_tab(tmp4, "\'");
+			tmp = test2(tmp2[i]);
+			display_tab(tmp);
+			tmp3 = tabjoin(new, tmp);
+			tabfree(new);
+			new = tmp3;
+			inttmp = fill_inttab(printing, 1, tab_len(tmp));
+			free(printing);
+			printing = inttmp;
+			tabfree(tmp);
 		}
 		else if (how_many_in_str(tmp2[i], '\"') > 0)
 		{
+			if (tmp2[i][0] == '\"' && how_many_in_str(tmp2[i], '\"') == 1)
+				in_d = 1;
+			else
+				in_d = 0;
 			tmp3 = split_quotes(tmp2[i], '\"');
-			exit(0);
 			tmp = tabjoin(new, tmp3);
 			tabfree(new);
 			new = tmp;
+			inttmp = fill_inttab(printing, 1, tab_len(tmp3));
+			free(printing);
+			printing = inttmp;
 			tabfree(tmp3);
 		}
 		else
@@ -463,68 +636,72 @@ char **doubles_inside(char *cmd)
 			tmp = tabjoin(new, tmp3);
 			tabfree(new);
 			new = tmp;
+			inttmp = fill_inttab(printing, 1, tab_len(tmp3));
+			free(printing);
+			printing = inttmp;
 			tabfree(tmp3);
 		}
 		i++;
 	}
-	// tmp = ft_split(cmd, '\'');
-	// tmp2 = trim_tab(tmp);
-	// tabfree(tmp);
-	// new = malloc(sizeof(char *) * tab_len(tmp2) + 1);
-	// while (tmp2[i] != NULL)
-	// {
-	// 	new[i] = ft_strtrim(tmp2[i], '\"')
-	// 	i++;
-	// }
-	display_tab(new);
-	exit(0);
-	return (new);
+	tp.tab = new;
+	tp.print = printing;
+	return (tp);
 }
 
 char **split_all_quotes(char *cmd)
 {
-	int i;
-	int j;
-	int nbrdouble;
-	int nbrsingle;
+	// int i;
+	// int j;
+	// int nbrdouble;
+	// int nbrsingle;
 	char **new;
+	t_tprint tp;
 
-	i = -1;
-	j = 1;
-	nbrdouble = 0;
-	nbrsingle = 0;
-	while (i != -2)
-	{
-		if (i == -1)
-			i++;
-		nbrdouble += i;
-		i = check_if_in(cmd, '\"',  '\'', j);
-		if (i == -1)
-			break ;
-		j += 2;
-	}
+	// i = -1;
+	// j = 1;
+	// nbrdouble = 0;
+	// nbrsingle = 0;
+	// while (i != -2)
+	// {
+	// 	if (i == -1)
+	// 		i++;
+	// 	nbrdouble += i;
+	// 	i = check_if_in(cmd, '\"',  '\'', j);
+	// 	if (i == -1)
+	// 		break ;
+	// 	j += 2;
+	// }
 
-	i = -1;
-	j = 1;
-	while (i != -2)
-	{
-		if (i == -1)
-			i++;
-		nbrsingle += i;
-		i = check_if_in(cmd, '\'',  '\"', j);
-		if (i == -1)
-			break ;
-		j += 2;
-	}
+	// i = -1;
+	// j = 1;
+	// while (i != -2)
+	// {
+	// 	if (i == -1)
+	// 		i++;
+	// 	nbrsingle += i;
+	// 	i = check_if_in(cmd, '\'',  '\"', j);
+	// 	if (i == -1)
+	// 		break ;
+	// 	j += 2;
+	// }
 
-	if (nbrdouble == 0 && nbrsingle == 0)
-		new = seperated_quotes(cmd);
-	else if (nbrdouble > 0 && nbrsingle == 0)
-		new = doubles_inside(cmd);
-	else if (nbrdouble == 0 && nbrsingle > 0)
-		printf("help\n");
-	else
-		printf("help\n");
+	// if (nbrdouble == 0 && nbrsingle == 0)
+	// 	new = seperated_quotes(cmd);
+	// else if (nbrdouble > 0 && nbrsingle == 0)
+	// 	tp = doubles_inside(cmd);
+	// else if (nbrdouble == 0 && nbrsingle > 0)
+	// {
+	// 	printf("help\n\n");
+		tp = doubles_inside(cmd);
+		display_tab_and_int(tp.print, tp.tab);
+	// }
+	// else
+	// {
+	// 	printf("yeah\n\n");
+	// 	tp = doubles_inside(cmd);
+	// 	display_tab_and_int(tp.print, tp.tab);
+	// }
+	exit(0);
 	new = tokenize(cmd);
 	return (new);
 }

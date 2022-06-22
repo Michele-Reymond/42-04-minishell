@@ -6,7 +6,7 @@
 /*   By: mreymond <mreymond@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/20 10:48:46 by mreymond          #+#    #+#             */
-/*   Updated: 2022/06/21 14:05:56 by mreymond         ###   ########.fr       */
+/*   Updated: 2022/06/22 11:40:27 by mreymond         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,6 +48,11 @@ typedef struct s_echo {
 	char			**args;
 	char			**vars;
 }	t_echo;
+
+typedef struct s_tprint {
+	char	**tab;
+	int		*print;
+}	t_tprint;
 
 typedef struct s_var
 {

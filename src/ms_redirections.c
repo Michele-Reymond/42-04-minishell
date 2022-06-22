@@ -6,7 +6,7 @@
 /*   By: mreymond <mreymond@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/06 15:58:02 by mreymond          #+#    #+#             */
-/*   Updated: 2022/06/20 15:55:09 by mreymond         ###   ########.fr       */
+/*   Updated: 2022/06/22 12:34:18 by mreymond         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -730,7 +730,7 @@ char **tabjoin(char **tab1, char **tab2)
     i = 0;
     j = 0;
     len = tab_len(tab1) + tab_len(tab2);
-    new = malloc(sizeof(char *) * len + 1);
+    new = malloc(sizeof(char *) * (len + 1));
     while (tab1[i] != NULL)
     {
         new[i] = ft_strdup(tab1[i]);
@@ -790,7 +790,7 @@ char **add_to_tab(char **oldtab, char *str_to_add)
     int i;
 
     i = 0;
-    new = malloc(sizeof(char *) * tab_len(oldtab) + 2);
+    new = malloc(sizeof(char *) * (tab_len(oldtab) + 2));
     while (oldtab[i] != NULL)
     {
         new[i] = ft_strdup(oldtab[i]);
