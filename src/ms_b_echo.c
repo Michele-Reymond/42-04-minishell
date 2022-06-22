@@ -6,7 +6,7 @@
 /*   By: mreymond <mreymond@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/20 10:43:17 by mreymond          #+#    #+#             */
-/*   Updated: 2022/06/22 16:37:41 by mreymond         ###   ########.fr       */
+/*   Updated: 2022/06/22 18:03:16 by mreymond         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -512,6 +512,8 @@ void display_tab_and_int(int *inttab, char **tab)
 
 	i = 0;
 	j = 1;
+	if (inttab == NULL || tab == NULL)
+		return ;
 	while (tab[i] != NULL && j <= inttab[0])
 	{
 		printf("%d: ", inttab[j]);
@@ -648,6 +650,87 @@ t_tprint doubles_inside(char *cmd)
 	return (tp);
 }
 
+int count_quotes(char *cmd)
+{
+	int i;
+	char stock;
+	int nbr;
+
+	i = 0;
+	nbr = 0;
+	stock = '\0';
+	while (cmd[i] != '\0')
+	{
+		if (cmd[i] != ' ' && cmd[i] != '	' && cmd[i] != '\'' && cmd[i] != '\"')
+			nbr++;
+		while (cmd[i] != '\0' && cmd[i] != '\'' && cmd[i] != '\"')
+		{
+			if (cmd[i - 1] == ' ' || cmd[i - 1] == '	')
+				nbr++;
+			i++;
+		}
+		if (cmd[i] == '\0')
+			return (nbr);
+		else if (cmd[i] == '\'' || cmd[i] == '\"')
+		{
+			nbr++;
+			stock = cmd[i];
+			i++;
+		}
+		while(cmd[i] != '\0' && cmd[i] != stock)
+			i++;
+		if (cmd[i] == '\0')
+			return (nbr);
+		else if (cmd[i] == stock)
+		{
+			stock = '\0';
+			i++;
+		}
+	}
+	return (nbr);
+}
+
+//ICIIII!!
+char **split_both_quotes(char *cmd)
+{
+	int tablen;
+
+	tablen = count_quotes(cmd);
+	printf("%d\n", tablen);
+	exit(0);
+	return (tokenize(cmd));
+}
+
+t_tprint parsing_master(char *cmd)
+{
+	char **tmp;
+	// char **tmp2;
+	int i;
+	t_tprint tp;
+
+	i = 0;
+//etape 1: split les single quotes
+	tmp = split_both_quotes(cmd);
+	while (tmp[i] != NULL)
+	{
+		// if (tmp[i][0] != '\'')
+		// {
+		// 	tmp2 = ft_split_with_sep(tmp[i], '\"');
+		// 	display_tab(tmp2);
+		// 	tabfree(tmp2);
+		// }
+		// else
+			printf("%s\n", tmp[i]);
+		i++;
+	}
+
+	// display_tab(tmp);
+	// printf("______\n");
+	// display_tab(tmp2);
+	tp.tab = tmp;
+	return (tp);
+}
+
 char **split_all_quotes(char *cmd)
 {
 	// int i;
@@ -692,7 +775,7 @@ char **split_all_quotes(char *cmd)
 	// else if (nbrdouble == 0 && nbrsingle > 0)
 	// {
 	// 	printf("help\n\n");
-		tp = doubles_inside(cmd);
+		tp = parsing_master(cmd);
 		display_tab_and_int(tp.print, tp.tab);
 	// }
 	// else

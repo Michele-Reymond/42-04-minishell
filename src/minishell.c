@@ -41,10 +41,12 @@ int	main(int argc, char **argv, char **envp)
 // TO DO!!
 
 // quotes :
-// segfault je sais pas ou : echo 'aled "aled" aled " $coucou" aled aled' 'coucou' "hello $yeah machin"
+// dans split_all_quotes(char *cmd) >>> return un t_tprint puis echo en fonction
 // quand il y a des single quotes dans des doubles ou l'inverse
 // quand il y a des pipes et autres symbols
 // // minishell: "echo": Command not found
+// echo coucou$coucou qui ne prends pas la variable!!
+// segfault de echo 'aled "aled" aled " $coucou" aled aled' 'coucou' "hello '$yeah yo $youhou pouet' machin" "chose"
 
 // 3. signaux
 // 4. .minishell (checker other correctement)
