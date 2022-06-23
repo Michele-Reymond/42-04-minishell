@@ -6,7 +6,7 @@
 /*   By: mreymond <mreymond@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/20 10:43:17 by mreymond          #+#    #+#             */
-/*   Updated: 2022/06/22 18:03:16 by mreymond         ###   ########.fr       */
+/*   Updated: 2022/06/23 10:18:25 by mreymond         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -690,44 +690,131 @@ int count_quotes(char *cmd)
 	return (nbr);
 }
 
+char **split_cmds(char *cmd, int tablen)
+{
+	int i;
+	int j;
+	int y;
+	int tmp;
+	char stock;
+	char **new;
+
+	i = 0;
+	j = 0;
+	y = 0;
+	tmp = 0;
+	stock = '\0';
+	new = malloc(sizeof(char *) * tablen + 1);
+	if (new == NULL)
+		return (NULL);
+	while (cmd[i] != '\0')
+	{
+		while (cmd[i] == ' ' || cmd[i] == '	')
+			i++;
+		while (cmd[i] != '\0' && cmd[i] != '\'' && cmd[i] != '\"')
+		{
+			y = 0;
+			tmp = i;
+			while (cmd[i] != '\0' && cmd[i] != ' ' && cmd[i] != '	')
+				i++;
+			new[j] = malloc(sizeof(char) * i - tmp + 1);
+			i = tmp;
+			while (cmd[i] != '\0' && cmd[i] != ' ' && cmd[i] != '	')
+			{
+				new[j][y] = cmd[i];
+				i++;
+				y++;
+			}
+			new[j][y] = '\0';
+			j++;
+			i++;
+		}
+		y = 0;
+		if (cmd[i] == '\0')
+			break ;
+		else if (cmd[i] == '\'' || cmd[i] == '\"')
+		{
+			stock = cmd[i];
+			tmp = i;
+			i++;
+		}
+		while(cmd[i] != '\0' && cmd[i] != stock)
+			i++;
+		new[j] = malloc(sizeof(char) * i - tmp + 1);
+		i = tmp;
+		if (cmd[i] == '\'' || cmd[i] == '\"')
+		{
+			new[j][y] = cmd[i];
+			i++;
+			y++;
+		}
+		while(cmd[i] != '\0' && cmd[i] != stock)
+		{
+			new[j][y] = cmd[i];
+			i++;
+			y++;
+		}
+		if (cmd[i] == stock)
+		{
+			stock = '\0';
+			new[j][y] = cmd[i];
+			i++;
+			y++;
+		}
+		new[j][y] = '\0';
+		j++;
+	}
+	new[j] = NULL;
+	return (new);
+}
+
 //ICIIII!!
 char **split_both_quotes(char *cmd)
 {
 	int tablen;
+	char **splitted;
+
 
 	tablen = count_quotes(cmd);
-	printf("%d\n", tablen);
-	exit(0);
-	return (tokenize(cmd));
+	splitted = split_cmds(cmd, tablen);
+	return (splitted);
 }
 
+// 0 : pour les string avec single quote
+// 1 : pour les string avec double quotes
+// 2 : pour les tring avec aucune quotes
+// utiliser display_tab_and_int(tp.print, tp.tab); pour afficher les 2
 t_tprint parsing_master(char *cmd)
 {
 	char **tmp;
-	// char **tmp2;
 	int i;
 	t_tprint tp;
 
 	i = 0;
-//etape 1: split les single quotes
 	tmp = split_both_quotes(cmd);
+	tp.tab = malloc(sizeof(char *) * tab_len(tmp) + 1);
+	tp.print = malloc(sizeof(int) * tab_len(tmp) + 1);
+	tp.print[0] = tab_len(tmp);
 	while (tmp[i] != NULL)
 	{
-		// if (tmp[i][0] != '\'')
-		// {
-		// 	tmp2 = ft_split_with_sep(tmp[i], '\"');
-		// 	display_tab(tmp2);
-		// 	tabfree(tmp2);
-		// }
-		// else
-			printf("%s\n", tmp[i]);
+		if (tmp[i][0] == '\'')
+		{
+			tp.tab[i] = ft_strtrim(tmp[i], "\'");
+			tp.print[i + 1] = 0;
+		}
+		else if (tmp[i][0] == '\"')
+		{
+			tp.tab[i] = ft_strtrim(tmp[i], "\"");
+			tp.print[i + 1] = 1;
+		}
+		else
+		{
+			tp.tab[i] = ft_strdup(tmp[i]);
+			tp.print[i + 1] = 2;
+		}
 		i++;
 	}
-
-	// display_tab(tmp);
-	// printf("______\n");
-	// display_tab(tmp2);
-	tp.tab = tmp;
+	tp.tab[i] = NULL;
 	return (tp);
 }
 
@@ -775,8 +862,8 @@ char **split_all_quotes(char *cmd)
 	// else if (nbrdouble == 0 && nbrsingle > 0)
 	// {
 	// 	printf("help\n\n");
-		tp = parsing_master(cmd);
-		display_tab_and_int(tp.print, tp.tab);
+	tp = parsing_master(cmd);
+	display_tab_and_int(tp.print, tp.tab);
 	// }
 	// else
 	// {
@@ -793,13 +880,15 @@ char **clean_cmd_for_echo(char *cmd, t_tab *t)
 {
 	char **new;
 
-	if (t->p.double_q == 0 && t->p.single_q == 0)
-		new = tokenize(cmd);
-	else if (t->p.double_q > 0 && t->p.single_q == 0)
-		new = split_quotes(cmd,  '\"');
-	else if (t->p.double_q == 0 && t->p.single_q > 0)
-		new = split_quotes(cmd, '\'');
-	else
+	(void) t;
+
+	// if (t->p.double_q == 0 && t->p.single_q == 0)
+	// 	new = tokenize(cmd);
+	// else if (t->p.double_q > 0 && t->p.single_q == 0)
+	// 	new = split_quotes(cmd,  '\"');
+	// else if (t->p.double_q == 0 && t->p.single_q > 0)
+	// 	new = split_quotes(cmd, '\'');
+	// else
 		new = split_all_quotes(cmd);
 	return (new);
 }
