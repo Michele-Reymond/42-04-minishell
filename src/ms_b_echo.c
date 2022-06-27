@@ -6,7 +6,7 @@
 /*   By: mreymond <mreymond@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/20 10:43:17 by mreymond          #+#    #+#             */
-/*   Updated: 2022/06/27 16:45:17 by mreymond         ###   ########.fr       */
+/*   Updated: 2022/06/27 19:57:55 by mreymond         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -202,95 +202,175 @@ void	echo_print(char **args, char **var, int *print)
 {
 	int	i;
 	int	j;
-	int ok;
-	char *tmp;
+	int k;
+	// char *tmp;
 
 	i = 0;
 	j = 0;
-	ok = 0;
+	k = 0;
+	display_tab(args);
+	printf("___\n");
 	while (args[i] != NULL)
 	{
-		if (args[i][0] == '\'')
-			ok = 1;
-		if (args[i][0] == '$' && how_many_in_str(args[i], ' ') == 0)
-		{
-			tmp = ft_strldup(&var[j][1], ft_strlen(var[j]) - 1);
-			printf("%s", tmp);
-			j++;
-			free(tmp);
-		}
-		else
+		if (print[i + 2] == 0 || how_many_in_str(args[i], '$') == 0)
 			printf("%s", args[i]);
-		if (args[i + 1] != NULL && ft_strncmp(args[i + 1], "$ ", 2)
-				&& !(print[i + 1] == 1 && args[i][0] == '\'' && args[i + 1][0] == '$')
-				&& !(print[i + 1] == 1 && args[i + 1][0] == '\'' && ok == 1))
-			printf(" ");
+		else
+		{
+			while (args[i][k] != '\0')
+			{
+				while (args[i][k] != '$')
+				{
+					write(STDOUT_FILENO, &args[i][k], 1);
+					k++;
+				}
+				if(args[i][k] == '$')
+				{
+					printf("%s", var[j]);
+					j++;
+					while (args[i][k] && args[i][k] != ' ' && args[i][k] != '	')
+						k++;
+				}
+			}
+			if (args[i + 1] != NULL)
+				printf(" ");
+		}
+
+
+		// if (args[i][0] == '$' && how_many_in_str(args[i], ' ') == 0)
+		// {
+		// 	tmp = ft_strldup(&var[j][1], ft_strlen(var[j]) - 1);
+		// 	printf("%s", tmp);
+		// 	j++;
+		// 	free(tmp);
+		// }
+		// else
+		// 	printf("%s", args[i]);
+		// if (args[i + 1] != NULL && ft_strncmp(args[i + 1], "$ ", 2))
+		// 	printf(" ");
 		i++;
 	}
 }
 
-char	**echo_vars(char **token, t_tab t, int nbr)
+char *find_key(char *str)
+{
+	int i;
+	char *key;
+	
+	i = 0;
+	while (str[i] && str[i] != ' ' && str[i] != '	')
+		i++;
+	key = ft_strldup(&str[1], i);
+	return (key);
+}
+
+char	*export_to_var(char *str)
+{
+	char	*var;
+
+	while (str && *str != '=')
+		str++;
+	str += 2;
+	var = ft_strldup(str, ft_strlen(str));
+	return(var);
+}
+
+// ici tab ne commence pas avec la commande echo
+// on commance donc l'index de print à 2
+char	**echo_vars(char **tab, t_tab t, int nbr, int *print)
 {
 	int i;
 	int j;
 	int pos;
 	char **vars;
 	char *tmp;
+	char *key;
 
 	i = 0;
 	j = 0;
 	pos = 0;
 	vars = malloc(sizeof(char *) * nbr + 1);
-	while (token[i] != NULL)
+	while (tab[i] != NULL)
 	{
-		if (token[i][0] == '$')
+		if (print[i + 2] != 0)
 		{
-			if (token[i][1] == ' ')
-				pos = var_exist(t.exp, &token[i][2]);
-			else
-				pos = var_exist(t.exp, &token[i][1]);
-			if (pos == 0)
-				vars[j] = strdup("");
-			else
+			tmp = ft_strchr(tab[i], '$');
+			while (tmp != NULL)
 			{
-				tmp = strdup(t.exp[pos]);
-				while (tmp && *tmp != '=')
-					tmp++;
+				key = find_key(tmp);
+				pos = var_exist(t.exp, key);
+				if (pos == 0)
+					vars[j] = strdup("");
+				else
+					vars[j] = export_to_var(t.exp[pos]);
 				tmp++;
-				vars[j] = ft_strdup(tmp);
+				tmp = ft_strchr(tmp, '$');
+				j++;
 			}
-			j++;
 		}
+		// if (tab[i][0] == '$')
+		// {
+		// 	if (tab[i][1] == ' ')
+		// 		pos = var_exist(t.exp, &tab[i][2]);
+		// 	else
+		// 		pos = var_exist(t.exp, &tab[i][1]);
+		// 	if (pos == 0)
+		// 		vars[j] = strdup("");
+		// 	else
+		// 	{
+		// 		tmp = strdup(t.exp[pos]);
+		// 		while (tmp && *tmp != '=')
+		// 			tmp++;
+		// 		tmp++;
+		// 		vars[j] = ft_strdup(tmp);
+		// 	}
+		// 	j++;
+		// }
 		i++;
 	}
 	vars[j] = NULL;
 	return (vars);
 }
 
-t_echo	echo_parsing(char **token, t_tab t)
+int how_many_dollars(char **tab, int *print)
+{
+	int i;
+	int nbr;
+
+	i = 0;
+	nbr = 0;
+	while (tab[i] != NULL && i <= print[0])
+	{
+		if (print[i + 1] != 0)
+			nbr = nbr + how_many_in_str(tab[i], '$');
+		i++;
+	}
+	return (nbr);
+}
+
+t_echo	echo_parsing(char **tab, t_tab t, int *print)
 {
 	t_echo elem;
 	int nbr_vars;
 	int i;
 
 	i = 1;
-	if (!ft_strncmp(token[1], "-n", 2))
+	if (!ft_strncmp(tab[1], "-n", 2))
 	{
 		elem.flag = 'n';
 		i++;
 	}
 	else
 		elem.flag = '0';
-	elem.args = tabdup(&token[i]);
+	elem.args = tabdup(&tab[i]);
 	i = 0;
 	while (elem.args[i])
 		i++;
 	elem.nbr_args = i;
-	nbr_vars = how_many_in_tab(token, '$');
+	nbr_vars = how_many_dollars(tab, print);
 	if (nbr_vars == 0)
 		elem.vars = NULL;
 	else
-		elem.vars = echo_vars(elem.args, t, nbr_vars);
+		elem.vars = echo_vars(elem.args, t, nbr_vars, print);
 	return (elem);
 }
 
@@ -890,32 +970,39 @@ t_tprint echo_parse_quotes(t_tprint tp)
 	int i;
 	t_tprint new;
 	char **tmp;
-	char **tmp2;
+	// char **tmp2;
 	char **splitted;
 	int *intmp;
 
 	i = 0;
 	new.tab = new_tab();
 	new.print = new_inttab();
+	// display_tab_and_int(tp.print, tp.tab);
+	// printf("------\n");
 	while (tp.tab[i] != NULL)
 	{
+		// printf("%d: ", tp.print[i + 1]);
+		// printf("%s\n", tp.tab[i]);
 		if (tp.print[i + 1] == 1)
 		{
 			splitted = ft_split_one_space(tp.tab[i]);
-			if (how_many_in_str(tp.tab[i], '\'') > 1)
-			{
+			// if (how_many_in_str(tp.tab[i], '\'') > 1)
+			// {
+			// 	tmp = tabjoin(new.tab, splitted);
+			// 	tmp2 = manage_single_quotes(tmp);
+			// 	intmp = fill_inttab(new.print, 1, tab_len(splitted) + 2);
+			// 	tabfree(tmp);
+			// }
+			// else
+			// {
 				tmp = tabjoin(new.tab, splitted);
-				tmp2 = manage_single_quotes(tmp);
-				tabfree(tmp);
-			}
-			else
-				tmp2 = tabjoin(new.tab, splitted);
+				intmp = fill_inttab(new.print, 1, tab_len(splitted));
+			// }
 			tabfree(new.tab);
-			intmp = fill_inttab(new.print, 1, tab_len(splitted) + 2);
 			free(new.print);
 			free(splitted);
 			new.print = intmp;
-			new.tab = tmp2;
+			new.tab = tmp;
 		}
 		else
 		{
@@ -928,6 +1015,8 @@ t_tprint echo_parse_quotes(t_tprint tp)
 		}
 		i++;
 	}
+	// display_tab_and_int(new.print, new.tab);
+	// exit(0);
 	return (new);
 }
 
@@ -941,7 +1030,7 @@ void	echo(t_tprint tp, t_tab t)
 	if (tab_len(tp.tab) < 2)
 		elem.nbr_args = 0;
 	else
-		elem = echo_parsing(preparsed.tab, t);
+		elem = echo_parsing(preparsed.tab, t, preparsed.print);
 	if (elem.nbr_args == 0 && elem.flag != 'n')
 		printf("\n");
 	if (elem.nbr_args > 0 && elem.flag == 'n')

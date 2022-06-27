@@ -6,7 +6,7 @@
 /*   By: mreymond <mreymond@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/20 10:47:58 by mreymond          #+#    #+#             */
-/*   Updated: 2022/06/27 16:42:59 by mreymond         ###   ########.fr       */
+/*   Updated: 2022/06/27 19:59:50 by mreymond         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,7 +41,7 @@ int	main(int argc, char **argv, char **envp)
 // TO DO!!
 
 // quotes :
-// ressort la variable de export avec les quotes à enlever "poulet"
+// echo_print(char **args, char **var, int *print) en cours pas encore ok
 // quand il y a des pipes et autres symbols
 // // minishell: "echo": Command not found
 // echo coucou$coucou qui ne prends pas la variable!!
