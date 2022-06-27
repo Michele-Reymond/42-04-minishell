@@ -20,6 +20,8 @@ SRC_NAME = 	minishell.c \
 			ms_b_cd.c \
 			ms_b_pwd.c \
 			ms_b_other.c \
+			ms_b_exit.c \
+			ms_signals.c \
 			ms_parsing.c \
 			ms_pipes.c \
 			ms_redirections.c \

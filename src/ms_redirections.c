@@ -6,7 +6,7 @@
 /*   By: mreymond <mreymond@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/06 15:58:02 by mreymond          #+#    #+#             */
-/*   Updated: 2022/06/09 11:14:36 by mreymond         ###   ########.fr       */
+/*   Updated: 2022/06/22 12:34:18 by mreymond         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,6 +37,7 @@ char    *stock_cmd_part(char **token, int pos)
     int i;
     char *tmp;
     char *dst;
+    char *trimmed;
 
     i = 0;
     dst = ft_strdup("");
@@ -53,7 +54,9 @@ char    *stock_cmd_part(char **token, int pos)
         }
         i++;
     }
-    return (dst);
+    trimmed = ft_strtrim(dst, " ");
+    free(dst);
+    return (trimmed);
 }
 
 char **rebuilt_cmds(t_redir *r, int len)
@@ -68,6 +71,7 @@ char **rebuilt_cmds(t_redir *r, int len)
         cmds[i] = ft_strdup(r[i].cmd);
         i++;
     }
+    cmds[i] = NULL;
     return (cmds);
 }
 
@@ -85,96 +89,804 @@ t_redir *stock_redir_infos(char **cmds)
     {
         which_redir(&r[i], cmds[i]);
         r[i].index = i;
-        token = tokenize(cmds[i]);
-        pos = var_exist(token, r[i].redir);
-        r[i].dest = ft_strtrim(ft_strdup(token[pos + 1]), " "); 
-        r[i].cmd = stock_cmd_part(token, pos);
-        tabfree(token);
+        if (*r[i].redir == '\0')
+        {
+            r[i].dest = ft_strdup("");
+            r[i].cmd = ft_strdup(cmds[i]);
+        }
+        else 
+        {
+            token = tokenize(cmds[i]);
+            pos = var_exist(token, r[i].redir);
+            r[i].dest = ft_strtrim(ft_strdup(token[pos + 1]), " "); 
+            r[i].cmd = stock_cmd_part(token, pos);
+            tabfree(token);
+        }
         i++;
     }
     return (r);
 }
 
-int launch_out(t_redir r, t_tab *t, char *cmd)
+void	check_files_in(char *file)
 {
-    (void) r;
-    (void) t;
-    printf("Launch out:\n");
-    printf("%s\n", cmd);
-    printf("____________\n");
-    return (0);
+	if (access(file, F_OK) != 0)
+	{
+		printf("minishell: %s : %s \n", file,  strerror(errno));
+		exit(EXIT_FAILURE);
+	}
+	if (access(file, R_OK) != 0)
+	{
+		printf("minishell: %s : %s \n", file,  strerror(errno));
+		exit(EXIT_FAILURE);
+	}
 }
 
-int launch_out_d(t_redir r, t_tab *t, char *cmd)
+void	check_files_out(char *file)
 {
-    (void) r;
-    (void) t;
-    printf("Launch out double:\n");
-    printf("%s\n", cmd);
-    printf("____________\n");
-    return (0);
+	if (access(file, F_OK) != 0)
+		open(file, O_CREAT | O_RDWR | O_TRUNC, 0644);
+	if (access(file, W_OK) != 0)
+	{
+		printf("minishell: %s : %s \n", file,  strerror(errno));
+		exit(EXIT_FAILURE);
+	}
 }
 
-int launch_in(t_redir r, t_tab *t, char *cmd)
+void fork_and_launch_builtin(char *cmd, t_tab *t, int fd, int std)
 {
-    (void) r;
-    (void) t;
-    printf("Launch in:\n");
-    printf("%s\n", cmd);
-    printf("____________\n");
-    return (0);
+    pid_t	pid;
+	int		status;
+
+    pid = fork();
+	if (pid < 0)
+		return (perror("Fork: "));
+	if (pid == 0)
+	{
+		dup2(fd, std);
+		launch_cmds(cmd, t);
+		exit (0);
+	}
+	else
+		waitpid(pid, &status, 0);
 }
 
-int launch_in_d(t_redir r, t_tab *t, char *cmd)
+// >
+t_doors set_out(t_redir r, t_doors doors)
 {
-    (void) r;
-    (void) t;
-    printf("Launch in double:\n");
-    printf("%s\n", cmd);
-    printf("____________\n");
-    return (0);
+    int		outfile;
+    t_doors new;
+
+    check_files_out(r.dest);
+	outfile = open(r.dest, O_TRUNC | O_WRONLY);
+	if (outfile < 0)
+	{
+		perror("minishell: ");
+		exit(EXIT_FAILURE);
+	}
+    new.in = doors.in;
+    new.out = outfile;
+    return (new);
 }
 
-int launch_redir(t_redir r, t_tab *t, char *cmd)
+// >
+void launch_out(t_redir r, t_tab *t, char *cmd)
 {
-    int ret;
+    int		outfile;
 
-    if (!ft_strncmp(r.redir, ">", 1) && cmd[1] == '\0')
-		ret = launch_out(r, t, cmd);
-    if (!ft_strncmp(r.redir, "<", 1) && cmd[1] == '\0')
-		ret = launch_in(r, t, cmd);
-    if (!ft_strncmp(r.redir, ">>", 2) && cmd[2] == '\0')
-		ret = launch_out_d(r, t, cmd);
-    if (!ft_strncmp(r.redir, "<<", 2) && cmd[2] == '\0')
-		ret = launch_in_d(r, t, cmd);
+    check_files_out(r.dest);
+	outfile = open(r.dest, O_TRUNC | O_WRONLY);
+	if (outfile < 0)
+	{
+		perror("minishell: ");
+		exit(EXIT_FAILURE);
+	}
+    if (is_a_builtin(cmd))
+        fork_and_launch_builtin(cmd, t, outfile, STDOUT_FILENO);
     else
-        ret = 0;
-    return (ret);
+        other_redir_and_fork(cmd, t, outfile, STDOUT_FILENO);
 }
 
-// launch cmds with redirections symbol
-void    launch_with_redir(t_parse p, t_tab *t)
+// >>
+t_doors set_out_d(t_redir r, t_doors doors)
 {
-    t_redir *r;
-    int     i;
-    int     len;
-    
-    i = 0;
-    r = stock_redir_infos(p.cmds);
-    len = tab_len(p.cmds);
-    tabfree(p.cmds);
-    p.cmds = rebuilt_cmds(r, len);
-    while (p.cmds[i] != NULL)
+    int		outfile;
+    t_doors new;
+
+    check_files_out(r.dest);
+	outfile = open(r.dest, O_WRONLY | O_APPEND);
+	if (outfile < 0)
+	{
+		perror("minishell: ");
+		exit(EXIT_FAILURE);
+	}
+    new.in = doors.in;
+    new.out = outfile;
+    return (new);
+}
+
+// >>
+void launch_out_d(t_redir r, t_tab *t, char *cmd)
+{
+    int		outfile;
+
+    check_files_out(r.dest);
+	outfile = open(r.dest, O_WRONLY | O_APPEND);
+	if (outfile < 0)
+	{
+		perror("minishell: ");
+		exit(EXIT_FAILURE);
+	}
+    if (is_a_builtin(cmd))
+        fork_and_launch_builtin(cmd, t, outfile, STDOUT_FILENO);
+    else
+        other_redir_and_fork(cmd, t, outfile, STDOUT_FILENO);
+}
+
+// <
+t_doors set_in(t_redir r, t_doors doors)
+{
+    int		infile;
+    t_doors new;
+
+    check_files_in(r.dest);
+	infile = open(r.dest, O_RDONLY);
+	if (infile < 0)
+	{
+		perror("minishell: ");
+		exit(EXIT_FAILURE);
+	}
+    new.in = infile;
+    new.out = doors.out;
+    return (new);
+}
+
+// <
+void launch_in(t_redir r, t_tab *t, char *cmd)
+{
+    int		infile;
+
+    check_files_in(r.dest);
+	infile = open(r.dest, O_RDONLY);
+	if (infile < 0)
+	{
+		perror("minishell: ");
+		exit(EXIT_FAILURE);
+	}
+   if (is_a_builtin(cmd))
+        fork_and_launch_builtin(cmd, t, infile, STDIN_FILENO);
+    else
+        other_redir_and_fork(cmd, t, infile, STDIN_FILENO);
+}
+
+// <<
+void launch_heredoc(char *stop)
+{
+    int     tmpfile;
+    char    *input;
+    pid_t	pid;
+    int		status;
+
+	tmpfile = open(".heredoc", O_CREAT | O_RDWR | O_APPEND, 0644);
+	if (tmpfile < 0)
+	{
+		perror("minishell: ");
+		exit(EXIT_FAILURE);
+	}
+    pid = fork();
+	if (pid < 0)
     {
-        if(launch_redir(r[i], t, p.cmds[i]))
-            return ;
-        i++;
+        perror("minishell: Fork: ");
+		exit(EXIT_FAILURE);
+    }
+	if (pid == 0)
+	{
+        while ((input = readline("> ")) != NULL) 
+        {
+            if (strlen(input) > 0)
+            {
+                if (!ft_strncmp(input, stop, ft_strlen(stop)))
+                    break;
+                write(tmpfile, input, ft_strlen(input));
+                write(tmpfile, "\n", 1);
+            }
+            free(input);
+        }
+        close(tmpfile);
+		exit(0);
+	}
+	else
+    {
+		waitpid(pid, &status, 0);
+        close(tmpfile);
     }
 }
 
-// checker ce qu'il se passe quand il n'y a pas de redir dans une des commandes
-// par exemple : cat test > outfile | echo coucou
+// <<
+t_doors set_in_d(t_redir r, t_doors doors)
+{
+    int     tmpfile;
+    char    *input;
+    pid_t	pid;
+    int		status;
+    t_doors new;
 
-// 1. faire la redirections des chevrons
-// 2. action sur le fichier de sortie/entrée
-// 3. si il y a un pipe la redirection du pipe écrase la redirection précédente
+	tmpfile = open(".heredoc", O_CREAT | O_RDWR | O_APPEND, 0644);
+	if (tmpfile < 0)
+	{
+		perror("minishell: ");
+		exit(EXIT_FAILURE);
+	}
+    pid = fork();
+	if (pid < 0)
+    {
+        perror("minishell: Fork: ");
+		exit(EXIT_FAILURE);
+    }
+	if (pid == 0)
+	{
+        while ((input = readline("> ")) != NULL) 
+        {
+            if (strlen(input) > 0)
+            {
+                if (!ft_strncmp(input, r.dest, ft_strlen(r.dest)))
+                    break;
+                write(tmpfile, input, ft_strlen(input));
+                write(tmpfile, "\n", 1);
+            }
+            free(input);
+        }
+		exit(0);
+	}
+	else {
+		waitpid(pid, &status, 0);
+        new.in = tmpfile;
+        new.out = doors.out;
+        return (new);
+	}
+}
+
+t_doors set_in_d_in_pipe(t_doors doors)
+{
+    int     tmpfile;
+    t_doors new;
+
+	tmpfile = open(".heredoc", O_RDONLY);
+	if (tmpfile < 0)
+	{
+		perror("minishell: ");
+		exit(EXIT_FAILURE);
+	}
+    new.in = tmpfile;
+    new.out = doors.out;
+    return (new);
+}
+
+// <<
+void launch_in_d_in_pipe(t_tab *t, char *cmd)
+{
+    char    *newcmd;
+
+	if (tmpfile < 0)
+	{
+		perror("minishell: ");
+		exit(EXIT_FAILURE);
+	}
+    newcmd = ft_strjoin(cmd, " .heredoc");
+    if (launch_cmds(newcmd, t))
+        other_basic(newcmd, t);
+}
+
+// <<
+void launch_in_d(t_redir r, t_tab *t, char *cmd)
+{
+    int     tmpfile;
+    char    *input;
+    char    *newcmd;
+    pid_t	pid;
+    int		status;
+
+	tmpfile = open(".heredoc", O_CREAT | O_RDWR | O_APPEND, 0644);
+	if (tmpfile < 0)
+	{
+		perror("minishell: ");
+		exit(EXIT_FAILURE);
+	}
+    pid = fork();
+	if (pid < 0)
+		return (perror("Fork: "));
+	if (pid == 0)
+	{
+        while ((input = readline("> ")) != NULL) 
+        {
+            if (strlen(input) > 0)
+            {
+                if (!ft_strncmp(input, r.dest, ft_strlen(r.dest)))
+                    break;
+                write(tmpfile, input, ft_strlen(input));
+                write(tmpfile, "\n", 1);
+            }
+            free(input);
+        }
+        newcmd = ft_strjoin(cmd, " .heredoc");
+        if (launch_cmds(newcmd, t))
+            other_basic(newcmd, t);
+        close(tmpfile);
+		exit(0);
+	}
+	else {
+		waitpid(pid, &status, 0);
+        close(tmpfile);
+        unlink(".heredoc");
+	}
+}
+
+void launch_redir_in_pipe(t_redir r, t_tab *t, char *cmd)
+{
+    if (!ft_strncmp(r.redir, ">", 1) && r.redir[1] == '\0')
+		launch_out(r, t, cmd);
+    else if (!ft_strncmp(r.redir, "<", 1) && r.redir[1] == '\0')
+		launch_in(r, t, cmd);
+    else if (!ft_strncmp(r.redir, ">>", 2) && r.redir[2] == '\0')
+		launch_out_d(r, t, cmd);
+    else if (!ft_strncmp(r.redir, "<<", 2) && r.redir[2] == '\0')
+		launch_in_d_in_pipe(t, cmd);
+}
+
+void launch_redir(t_redir r, t_tab *t, char *cmd)
+{
+    if (!ft_strncmp(r.redir, ">", 1) && r.redir[1] == '\0')
+		launch_out(r, t, cmd);
+    else if (!ft_strncmp(r.redir, "<", 1) && r.redir[1] == '\0')
+		launch_in(r, t, cmd);
+    else if (!ft_strncmp(r.redir, ">>", 2) && r.redir[2] == '\0')
+		launch_out_d(r, t, cmd);
+    else if (!ft_strncmp(r.redir, "<<", 2) && r.redir[2] == '\0')
+		launch_in_d(r, t, cmd);
+}
+
+t_doors set_redir_in_pipe(t_redir r, t_doors doors)
+{
+    t_doors new;
+
+    if (!ft_strncmp(r.redir, ">", 1) && r.redir[1] == '\0')
+		new = set_out(r, doors);
+    else if (!ft_strncmp(r.redir, "<", 1) && r.redir[1] == '\0')
+		new = set_in(r, doors);
+    else if (!ft_strncmp(r.redir, ">>", 2) && r.redir[2] == '\0')
+		new = set_out_d(r, doors);
+    else if (!ft_strncmp(r.redir, "<<", 2) && r.redir[2] == '\0')
+		new = set_in_d_in_pipe(doors);
+    else 
+        new = doors;
+    return (new);
+}
+
+t_doors set_redirection(t_redir r, t_doors doors)
+{
+    t_doors new;
+
+    if (!ft_strncmp(r.redir, ">", 1) && r.redir[1] == '\0')
+		new = set_out(r, doors);
+    else if (!ft_strncmp(r.redir, "<", 1) && r.redir[1] == '\0')
+		new = set_in(r, doors);
+    else if (!ft_strncmp(r.redir, ">>", 2) && r.redir[2] == '\0')
+		new = set_out_d(r, doors);
+    else if (!ft_strncmp(r.redir, "<<", 2) && r.redir[2] == '\0')
+		new = set_in_d(r, doors);
+    else 
+        new = doors;
+    return (new);
+}
+
+void launch_multiple_redir(t_redir *r, t_tab *t, char **cmds)
+{
+    t_doors doors;
+    char *newcmd;
+    int i;
+
+    i = 0;
+    doors.in = STDIN_FILENO;
+    doors.out = STDOUT_FILENO;
+    while (cmds[i] != NULL)
+    {
+        doors = set_redirection(r[i], doors);
+        i++;
+    }
+    if (access(".heredoc", F_OK) == 0)
+    {
+        newcmd = ft_strjoin(r[0].cmd, " .heredoc");
+        free(r[0].cmd);
+        r[0].cmd = newcmd;
+    }
+    if (is_a_builtin(r[0].cmd))
+        launch_builtins_with_doors(r[0].cmd, t, doors);
+    else
+        other_doors_and_fork(r[0].cmd, t, doors);
+    close(doors.in);
+    close(doors.out);
+    if (access(".heredoc", F_OK) == 0)
+        unlink(".heredoc");
+}
+
+void launch_multiple_redir_in_pipes(t_redir *r, t_tab *t, char **cmds)
+{
+    t_doors doors;
+    char *newcmd;
+    int i;
+
+    i = 0;
+    doors.in = STDIN_FILENO;
+    doors.out = STDOUT_FILENO;
+    while (cmds[i] != NULL)
+    {
+        doors = set_redir_in_pipe(r[i], doors);
+        i++;
+    }
+    if (access(".heredoc", F_OK) == 0)
+    {
+        newcmd = ft_strjoin(r[0].cmd, " .heredoc");
+        free(r[0].cmd);
+        r[0].cmd = newcmd;
+    }
+    if (is_a_builtin(r[0].cmd))
+        launch_builtins_with_doors(r[0].cmd, t, doors);
+    else
+        other_doors_and_fork(r[0].cmd, t, doors);
+    close(doors.in);
+    close(doors.out);
+    if (access(".heredoc", F_OK) == 0)
+        unlink(".heredoc");
+}
+
+char *find_cmd(char **token, int start)
+{
+    char *cmd;
+    char *tmp;
+
+    tmp = ft_strdup(token[start - 1]);
+    cmd = ft_strjoin(tmp, " ");
+    free(tmp);
+    while (token[start] != NULL && ft_strncmp(token[start], ">", 1) && ft_strncmp(token[start], "<", 1))
+    {
+        tmp = ft_strjoin(cmd, token[start]);
+        free(cmd);
+        cmd = ft_strjoin(tmp, " ");
+        free(tmp);
+        start++;
+    }
+    return (cmd);
+}
+
+char **join_cmd_and_redir(char *cmd, char **redirs)
+{
+    char **new;
+    char *tmp;
+    int i;
+    int j;
+
+    i = 0;
+    j = 0;
+    tmp = ft_strjoin(cmd, " ");
+    new = malloc(sizeof(char *) * tab_len(redirs) + 1);
+    while (redirs[i] != NULL)
+    {
+        if (redirs[i][0] == '<')
+        {
+            new[j] = ft_strjoin(tmp, redirs[i]);
+            j++;
+        }
+        i++;
+    }
+    i = 0;
+    while (redirs[i] != NULL)
+    {
+        if (redirs[i][0] == '>')
+        {
+            new[j] = ft_strjoin(tmp, redirs[i]);
+            j++;
+        }
+        i++;
+    }
+    new[j] = NULL;
+    free(tmp);
+    return (new);
+}
+
+char **split_with_starting_redir(char **token, char *oldcmd)
+{
+    char *cmd;
+    char *pos;
+    int i;
+    int j;
+    int k;
+    int		*nbr1;
+	int		*nbr2;
+    int     nbr;
+    char **redirs;
+    char **new;
+
+    i = 0;
+    j = 0;
+    k = 0;
+    cmd = ft_strtrim(find_cmd(token, 3), " ");
+    pos = ft_strnstr(oldcmd, cmd, ft_strlen(oldcmd));
+    nbr1 = check_redir(oldcmd, '>');
+	nbr2 = check_redir(oldcmd, '<');
+    nbr = nbr1[0] + nbr1[1] + nbr2[0] + nbr2[1];
+    redirs = malloc(sizeof(char *) * nbr + 1);
+    while (oldcmd[i] && &oldcmd[i] != pos)
+        i++;
+    redirs[k] = malloc(sizeof(char) * i);
+    i = 0;
+    while (oldcmd[i] && &oldcmd[i] != pos)
+    {
+        redirs[k][i] = oldcmd[i];
+        i++;
+    }
+    redirs[k][i] = '\0';
+    i += ft_strlen(cmd);
+    k++;
+    while (oldcmd[i] != '\0' && nbr > 1)
+    {
+        j = i;
+        while (oldcmd[j] && (oldcmd[j] == '>' || oldcmd[j] == '<'))
+            j++;
+        while (oldcmd[j] && (oldcmd[j] != '>' || oldcmd[j] != '<'))
+            j++;
+        redirs[k] = malloc(sizeof(char) * j - i);
+        j = 0;
+        while (oldcmd[i] && (oldcmd[i] == '>' || oldcmd[i] == '<'))
+        {
+            redirs[k][j] = oldcmd[i];
+            j++;
+            i++;
+        }
+        while (oldcmd[i] && oldcmd[i] != '>' && oldcmd[i] != '<')
+        {
+            redirs[k][j] = oldcmd[i];
+            j++;
+            i++;
+        }
+        redirs[k][j] = '\0';
+        k++;
+    }
+    redirs[k] = NULL;
+    new = join_cmd_and_redir(cmd, redirs);
+    return (new);
+}
+
+char **split_with_starting_cmd(char **token, char *oldcmd)
+{
+    char *cmd;
+    int i;
+    int j;
+    int k;
+    int		*nbr1;
+	int		*nbr2;
+    int     nbr;
+    char **redirs;
+    char **new;
+
+    j = 0;
+    k = 0;
+    cmd = ft_strtrim(find_cmd(token, 1), " ");
+    nbr1 = check_redir(oldcmd, '>');
+	nbr2 = check_redir(oldcmd, '<');
+    nbr = nbr1[0] + nbr1[1] + nbr2[0] + nbr2[1];
+    redirs = malloc(sizeof(char *) * nbr + 1);
+    i = ft_strlen(cmd);
+    while (oldcmd[i] != '\0')
+    {
+        j = i;
+        while (oldcmd[j] && (oldcmd[j] == '>' || oldcmd[j] == '<'))
+            j++;
+        while (oldcmd[j] && (oldcmd[j] != '>' || oldcmd[j] != '<'))
+            j++;
+        redirs[k] = malloc(sizeof(char) * j - i);
+        j = 0;
+        while (oldcmd[i] && (oldcmd[i] == '>' || oldcmd[i] == '<'))
+        {
+            redirs[k][j] = oldcmd[i];
+            j++;
+            i++;
+        }
+        while (oldcmd[i] && oldcmd[i] != '>' && oldcmd[i] != '<')
+        {
+            redirs[k][j] = oldcmd[i];
+            j++;
+            i++;
+        }
+        redirs[k][j] = '\0';
+        k++;
+    }
+    redirs[k] = NULL;
+    new = join_cmd_and_redir(cmd, redirs);
+    return (new);
+}
+
+char **split_redir(char *cmd)
+{
+    char **token;
+    char **new;
+
+    token = tokenize(cmd);
+    if (!ft_strncmp(token[0], ">", 1) || !ft_strncmp(token[0], "<", 1))
+        new = split_with_starting_redir(token, cmd);
+    else
+    {
+        new = split_with_starting_cmd(token, cmd);
+    }
+    tabfree(token);
+    return (new);
+}
+
+char **tabjoin(char **tab1, char **tab2)
+{
+    char **new;
+    int len;
+    int i;
+    int j;
+
+    i = 0;
+    j = 0;
+    len = tab_len(tab1) + tab_len(tab2);
+    new = malloc(sizeof(char *) * (len + 1));
+    while (tab1[i] != NULL)
+    {
+        new[i] = ft_strdup(tab1[i]);
+        i++;
+    }
+    while (tab2[j] != NULL)
+    {
+        new[i] = ft_strdup(tab2[j]);
+        i++;
+        j++;
+    }
+    new[i] = NULL;
+    return (new);
+}
+
+void read_heredoc(char *cmd)
+{
+    char **newcmds;
+    char **tmp;
+    t_redir *r;
+    int i;
+
+    i = 0;
+    tmp = add_to_tab(new_tab(), cmd);
+    newcmds = one_redir_pro_cmd(tmp);
+    r = stock_redir_infos(newcmds);
+    while (newcmds[i] != NULL)
+    {
+        if (!ft_strncmp(r[i].redir, "<<", 2))
+            break ;
+        i++;
+    }
+    launch_heredoc(r[i].dest);
+}
+
+int is_heredoc(char *cmd)
+{
+	int		*nbr;
+
+	nbr = check_redir(cmd, '<');
+    return (nbr[1]);
+}
+
+int nbr_of_redir(char *cmd)
+{
+    int		*nbr1;
+	int		*nbr2;
+
+    nbr1 = check_redir(cmd, '>');
+	nbr2 = check_redir(cmd, '<');
+    return (nbr1[0] + nbr1[1] + nbr2[0] + nbr2[1]);
+}
+
+char **add_to_tab(char **oldtab, char *str_to_add)
+{
+    char **new;
+    int i;
+
+    i = 0;
+    new = malloc(sizeof(char *) * (tab_len(oldtab) + 2));
+    while (oldtab[i] != NULL)
+    {
+        new[i] = ft_strdup(oldtab[i]);
+        i++;
+    }
+    new[i] = ft_strdup(str_to_add);
+    i++;
+    new[i] = NULL;
+    return (new);
+}
+
+char **one_redir_pro_cmd(char **oldcmds)
+{
+    char    **new;
+    char    **tmp1;
+    char    **tmp2;
+    int     i;
+
+    i = 0;
+    new = new_tab();
+    while (oldcmds[i] != NULL)
+    {
+        if (nbr_of_redir(oldcmds[i]) == 0)
+        {
+            tmp1 = add_to_tab(new, oldcmds[i]);
+            tabfree(new);
+            new = tmp1;
+        }
+        else
+        {
+            tmp1 = split_redir(oldcmds[i]);
+            tmp2 = tabjoin(new, tmp1);
+            tabfree(new);
+            tabfree(tmp1);
+            new = tmp2;
+        }
+        i++;
+    }
+    return (new);
+}
+
+// this function is used in pipes with redir function
+void    launching_redirs(char *cmd, t_tab *t)
+{
+    t_redir *r;
+    char    **newcmds;
+    char    **tmp;
+    int     len;
+
+    if (nbr_of_redir(cmd) == 0)
+    {
+        if (launch_cmds(cmd, t))
+                other_basic(cmd, t);
+    }
+    else if (nbr_of_redir(cmd) == 1)
+    {
+        newcmds = add_to_tab(new_tab(), cmd);
+        r = stock_redir_infos(newcmds);
+        len = tab_len(newcmds);
+        tabfree(newcmds);
+        newcmds = rebuilt_cmds(r, len);
+        launch_redir_in_pipe(r[0], t, newcmds[0]);
+    }
+    else if (nbr_of_redir(cmd) > 1)
+    {
+        tmp = add_to_tab(new_tab(), cmd);
+        newcmds = one_redir_pro_cmd(tmp);
+        r = stock_redir_infos(newcmds);
+        len = tab_len(newcmds);
+        launch_multiple_redir_in_pipes(r, t, newcmds);
+    }
+}
+
+// launch cmds with redirections symbol
+// this function is used in monitor
+void    launch_with_redir(t_parse p, t_tab *t)
+{
+    t_redir *r;
+    char    **newcmds;
+    int     len;
+    
+    if (tab_len(p.cmds) == 1 && p.redir <= 1)
+    {
+        r = stock_redir_infos(p.cmds);
+        len = tab_len(p.cmds);
+        tabfree(p.cmds);
+        p.cmds = rebuilt_cmds(r, len);
+        launch_redir(r[0], t, p.cmds[0]);
+    }
+    else if (p.pipes == 0 && p.redir > 1)
+    {
+        newcmds = one_redir_pro_cmd(p.cmds);
+        r = stock_redir_infos(newcmds);
+        len = tab_len(newcmds);
+        launch_multiple_redir(r, t, newcmds);
+    }
+    else
+        launch_pipes_with_redir(p, t);
+}

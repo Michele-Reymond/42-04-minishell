@@ -6,7 +6,7 @@
 /*   By: mreymond <mreymond@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/20 12:16:50 by vroch             #+#    #+#             */
-/*   Updated: 2022/06/06 19:14:07 by mreymond         ###   ########.fr       */
+/*   Updated: 2022/06/17 16:24:32 by mreymond         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,18 +70,26 @@ t_tab *ms_b_cd(char *buf, t_tab *t)
 		j++;
 	}	
 	if (chdir(str.param) == -1)
-		ft_putendl_fd("no such file or directory", 2);
+	{
+		// ft_putendl_fd("minishell: cd: ", 2);
+		// ft_putendl_fd(str.param, 2);
+		// ft_putendl_fd("no such file or directory", 2);
+		printf("minishell: cd: %s: ", str.param);
+		printf(ERROR_FILE);
+		exit_status = 1;
+	}
 	else
 	{
 		// maj variables d'environnement
 		var.key = "OLDPWD";
 		var.value = getenv("PWD");
 		update_env(t->env, var, false);
-		printf("old var.value %s : %s",var.key,var.value);
+		// printf("old var.value %s : %s",var.key,var.value);
 		var.key = "PWD";
 		var.value = str.param;
 		update_env(t->env, var, false);
-		printf("new var.value %s : %s",var.key,var.value);
+		exit_status = 0;
+		// printf("new var.value %s : %s",var.key,var.value);
 
 	}
 	free(str.param);

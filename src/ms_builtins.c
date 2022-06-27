@@ -6,7 +6,7 @@
 /*   By: mreymond <mreymond@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/27 13:06:22 by mreymond          #+#    #+#             */
-/*   Updated: 2022/06/09 10:09:17 by mreymond         ###   ########.fr       */
+/*   Updated: 2022/06/20 19:15:29 by mreymond         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -127,36 +127,6 @@ char	**clean_spaces(char *cmd)
 	return (cmds);
 }
 
-char	*tab_to_str(char **tab)
-{
-	char	*str;
-	char	*tmp;
-	int		i;
-
-	i = 0;
-	tmp = ft_strdup("");
-	while (tab[i] != NULL)
-	{
-		if (*tab[i] == '\0')
-		{
-			str = ft_strjoin(tmp, " ");
-			free(tmp);
-			tmp = str;
-		}
-		else
-		{
-			str = ft_strjoin(tmp, tab[i]);
-			free(tmp);
-			tmp = str;
-			str = ft_strjoin(tmp, " ");
-			free(tmp);
-			tmp = str;
-		}
-		i++;
-	}
-	return (str);
-}
-
 char	**clean_quotes(char **cmds, t_parse p)
 {
 	char	**new;
@@ -219,21 +189,72 @@ int	monitor(char *cmd, t_tab *t)
 	p.cmds = clean_spaces(cmd);
 
 	// TO DO > faire une fonction qui verifie les commandes
-	
 	if (tab_len(p.cmds) == 1 && p.redir == 0)
-		launch_cmds(p.cmds[0], t);
+	{
+		if (launch_cmds(p.cmds[0], t))
+			other_with_fork(p.cmds[0], t);
+	}
+	else if (p.pipes > 0 && p.redir == 0)
+		launch_with_pipes(p, t);
 	else if (p.redir > 0)
 		launch_with_redir(p, t);
-	// else if (p.pipes > 0 && p.redir == 0)
-	// 	launch_with_pipes(p, t);
 	return (0);
 }
 
+// si fd vaut zéro il n'y a pas de fork sinon il y a un fork
+// Dans le cas où il y a des pipes la valeur doit être 0 sinon elle doit être true
 int	launch_cmds(char *cmd, t_tab *t)
+{
+	char	**token;
+	char	**cleaned;
+
+	token = tokenize(cmd);
+	if (!ft_strncmp(cmd, "exit", 4) && (cmd[4] == ' ' || cmd[4] == '\0'))
+		ft_exit(cmd, t);
+	else if (!ft_strncmp(cmd, "cd", 2) && (cmd[2] == ' ' || cmd[2] == '\0'))
+		t = ms_b_cd(cmd, t);
+	else if (!ft_strncmp(cmd, "pwd", 3) && (cmd[3] == ' ' || cmd[3] == '\0'))
+		ms_b_pwd();
+	else if (!ft_strncmp(cmd, "echo", 4) && (cmd[4] == ' ' || cmd[4] == '\0'))
+	{
+		cleaned = clean_cmd_for_echo(cmd, t);
+		echo(cleaned, *t);
+	}
+	else if (!ft_strncmp(cmd, "export", 6) && (cmd[6] == ' ' || cmd[6] == '\0'))
+		t = ft_export(t, token);
+	else if (!ft_strncmp(cmd, "unset", 5) && (cmd[5] == ' ' || cmd[5] == '\0'))
+		t = unset_var(t, token);
+	else if (!ft_strncmp(cmd, "env", 3) && (cmd[3] == ' ' || cmd[3] == '\0'))
+		display_env(t->env);
+	else
+		return (1);
+	return (0);
+}
+
+int	is_a_builtin(char *cmd)
+{
+	if (!ft_strncmp(cmd, "cd", 2) && (cmd[2] == ' ' || cmd[2] == '\0'))
+		return (1);
+	else if (!ft_strncmp(cmd, "pwd", 3) && (cmd[3] == ' ' || cmd[3] == '\0'))
+		return (1);
+	else if (!ft_strncmp(cmd, "echo", 4) && (cmd[4] == ' ' || cmd[4] == '\0'))
+		return (1);
+	else if (!ft_strncmp(cmd, "export", 6) && (cmd[6] == ' ' || cmd[6] == '\0'))
+		return (1);
+	else if (!ft_strncmp(cmd, "unset", 5) && (cmd[5] == ' ' || cmd[5] == '\0'))
+		return (1);
+	else if (!ft_strncmp(cmd, "env", 3) && (cmd[3] == ' ' || cmd[3] == '\0'))
+		return (1);
+	else
+		return (0);
+}
+
+int	launch_builtins_with_redir(char *cmd, t_tab *t, int fd, int std)
 {
 	char	**token;
 
 	token = tokenize(cmd);
+	dup2(fd, std);
 	if (!ft_strncmp(cmd, "cd", 2) && (cmd[2] == ' ' || cmd[2] == '\0'))
 		t = ms_b_cd(cmd, t);
 	else if (!ft_strncmp(cmd, "pwd", 3) && (cmd[3] == ' ' || cmd[3] == '\0'))
@@ -247,12 +268,39 @@ int	launch_cmds(char *cmd, t_tab *t)
 	else if (!ft_strncmp(cmd, "env", 3) && (cmd[3] == ' ' || cmd[3] == '\0'))
 		display_env(t->env);
 	else
-		test_other(cmd, t);
+		return (1);
+		// test_other(cmd, t, fd, std);
+		// ms_b_other(cmd);
+	return (0);
+}
+
+int	launch_builtins_with_doors(char *cmd, t_tab *t, t_doors doors)
+{
+	char	**token;
+
+	token = tokenize(cmd);
+	dup2(doors.in, STDIN_FILENO);
+	dup2(doors.out, STDOUT_FILENO);
+	if (!ft_strncmp(cmd, "cd", 2) && (cmd[2] == ' ' || cmd[2] == '\0'))
+		t = ms_b_cd(cmd, t);
+	else if (!ft_strncmp(cmd, "pwd", 3) && (cmd[3] == ' ' || cmd[3] == '\0'))
+		ms_b_pwd();
+	else if (!ft_strncmp(cmd, "echo", 4) && (cmd[4] == ' ' || cmd[4] == '\0'))
+		echo(token, *t);
+	else if (!ft_strncmp(cmd, "export", 6) && (cmd[6] == ' ' || cmd[6] == '\0'))
+		t = ft_export(t, token);
+	else if (!ft_strncmp(cmd, "unset", 5) && (cmd[5] == ' ' || cmd[5] == '\0'))
+		t = unset_var(t, token);
+	else if (!ft_strncmp(cmd, "env", 3) && (cmd[3] == ' ' || cmd[3] == '\0'))
+		display_env(t->env);
+	else
+		return (1);
+		// test_other(cmd, t, fd, std);
 		// ms_b_other(cmd);
 	return (0);
 }
 
 
-// trop de pipes?
 // minishell qui exit sans pipes par exemple avec ls -la
+// > parce que je ne fork pas dans other à cause des pipes. 
 // redirections

@@ -1,32 +1,27 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ms_b_pwd.c                                         :+:      :+:    :+:   */
+/*   ms_signals.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: mreymond <mreymond@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2022/05/20 12:16:50 by vroch             #+#    #+#             */
-/*   Updated: 2022/06/17 16:26:57 by mreymond         ###   ########.fr       */
+/*   Created: 2022/06/20 16:41:41 by mreymond          #+#    #+#             */
+/*   Updated: 2022/06/20 17:16:55 by mreymond         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
-/* **************************************************************************
- *  parameter : none
- *   ces commandes semblent equivalentes: 	
- * 		pwd = getenv("PWD");
- *		pwd = getcwd(NULL, 0); + free
- */
 
+void sig_kill(int signum) {
+   printf("Caught signal %d, coming out...\n", signum);
+   return;
+//    exit(exit_status);
+}
 
-
-int	ms_b_pwd(void)
+//gestionnaire de signaux
+void    signal_handler(void)
 {
-	char	*pwd;
-
-	pwd = getcwd(NULL, 0);
-	ft_putendl_fd(pwd, 2);
-	exit_status = 0;
-	free(pwd);
-	return (0);
+    signal(SIGINT, sig_kill);
+    // kill();
+    return ;
 }
