@@ -6,7 +6,7 @@
 /*   By: mreymond <mreymond@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/20 10:43:17 by mreymond          #+#    #+#             */
-/*   Updated: 2022/06/27 19:57:55 by mreymond         ###   ########.fr       */
+/*   Updated: 2022/06/27 23:47:54 by mreymond         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -203,50 +203,51 @@ void	echo_print(char **args, char **var, int *print)
 	int	i;
 	int	j;
 	int k;
-	// char *tmp;
+	int ok;
 
-	i = 0;
+	i = 1;
 	j = 0;
 	k = 0;
-	display_tab(args);
-	printf("___\n");
 	while (args[i] != NULL)
 	{
-		if (print[i + 2] == 0 || how_many_in_str(args[i], '$') == 0)
+		if (print[i + 1] == 0 || how_many_in_str(args[i], '$') == 0)
+		{
 			printf("%s", args[i]);
+			if (args[i + 1] != NULL)
+				printf(" ");
+		}
 		else
 		{
+			k = 0;
+			ok = 0;
 			while (args[i][k] != '\0')
 			{
-				while (args[i][k] != '$')
+				while (args[i][k] != '\0' && args[i][k] != '$')
 				{
-					write(STDOUT_FILENO, &args[i][k], 1);
+					printf("%c", args[i][k]);
+					ok = 1;
 					k++;
 				}
 				if(args[i][k] == '$')
 				{
-					printf("%s", var[j]);
+					if (var[j][0] != '\0')
+					{
+						printf("%s", var[j]);
+						if (how_many_in_str(&args[i][k + 1], '$') == 0 && args[i + 1] != NULL)
+						{
+							printf(" ");
+							ok = 0;
+						}
+					}
 					j++;
-					while (args[i][k] && args[i][k] != ' ' && args[i][k] != '	')
+					k++;
+					while (args[i][k] != '\0' && args[i][k] != ' ' && args[i][k] != '	' && args[i][k] != '$')
 						k++;
 				}
 			}
-			if (args[i + 1] != NULL)
+			if (ok > 0)
 				printf(" ");
 		}
-
-
-		// if (args[i][0] == '$' && how_many_in_str(args[i], ' ') == 0)
-		// {
-		// 	tmp = ft_strldup(&var[j][1], ft_strlen(var[j]) - 1);
-		// 	printf("%s", tmp);
-		// 	j++;
-		// 	free(tmp);
-		// }
-		// else
-		// 	printf("%s", args[i]);
-		// if (args[i + 1] != NULL && ft_strncmp(args[i + 1], "$ ", 2))
-		// 	printf(" ");
 		i++;
 	}
 }
@@ -291,7 +292,7 @@ char	**echo_vars(char **tab, t_tab t, int nbr, int *print)
 	vars = malloc(sizeof(char *) * nbr + 1);
 	while (tab[i] != NULL)
 	{
-		if (print[i + 2] != 0)
+		if (print[i + 1] != 0)
 		{
 			tmp = ft_strchr(tab[i], '$');
 			while (tmp != NULL)
@@ -299,7 +300,7 @@ char	**echo_vars(char **tab, t_tab t, int nbr, int *print)
 				key = find_key(tmp);
 				pos = var_exist(t.exp, key);
 				if (pos == 0)
-					vars[j] = strdup("");
+					vars[j] = ft_strdup("");
 				else
 					vars[j] = export_to_var(t.exp[pos]);
 				tmp++;
@@ -361,7 +362,6 @@ t_echo	echo_parsing(char **tab, t_tab t, int *print)
 	}
 	else
 		elem.flag = '0';
-	elem.args = tabdup(&tab[i]);
 	i = 0;
 	while (elem.args[i])
 		i++;
@@ -370,7 +370,7 @@ t_echo	echo_parsing(char **tab, t_tab t, int *print)
 	if (nbr_vars == 0)
 		elem.vars = NULL;
 	else
-		elem.vars = echo_vars(elem.args, t, nbr_vars, print);
+		elem.vars = echo_vars(tab, t, nbr_vars, print);
 	return (elem);
 }
 
@@ -1023,21 +1023,22 @@ t_tprint echo_parse_quotes(t_tprint tp)
 void	echo(t_tprint tp, t_tab t)
 {
 	t_echo elem;
-	t_tprint preparsed;
+	// t_tprint preparsed;
 
-	preparsed = echo_parse_quotes(tp);
+	// preparsed = echo_parse_quotes(tp);
 	// display_tab_and_int(preparsed.print, preparsed.tab);
 	if (tab_len(tp.tab) < 2)
 		elem.nbr_args = 0;
 	else
-		elem = echo_parsing(preparsed.tab, t, preparsed.print);
+		elem = echo_parsing(tp.tab, t, tp.print);
+	elem.args = tabdup(tp.tab);
 	if (elem.nbr_args == 0 && elem.flag != 'n')
 		printf("\n");
 	if (elem.nbr_args > 0 && elem.flag == 'n')
-		echo_print(elem.args, elem.vars, preparsed.print);
+		echo_print(elem.args, elem.vars, tp.print);
 	if (elem.nbr_args > 0 && elem.flag != 'n')
 	{
-		echo_print(elem.args, elem.vars, preparsed.print);
+		echo_print(elem.args, elem.vars, tp.print);
 		printf("\n");
 	}
 	exit_status = 0;
