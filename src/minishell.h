@@ -6,7 +6,7 @@
 /*   By: mreymond <mreymond@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/20 10:48:46 by mreymond          #+#    #+#             */
-/*   Updated: 2022/06/22 11:40:27 by mreymond         ###   ########.fr       */
+/*   Updated: 2022/06/27 16:40:56 by mreymond         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -129,6 +129,7 @@ char		**clean_cmds(char *cmd, t_parse p);
 char		**clean_spaces(char *cmd);
 char		**clean_quotes(char **cmds, t_parse p);
 char		**clean_quotes_token(char **token, t_parse p);
+t_tprint	parsing_master(char *cmd);
 
 //			errors
 void		check_args(int argc);
@@ -140,8 +141,8 @@ t_tab		*ms_b_cd(char *buf,t_tab *t);
 int			ms_b_pwd(void);
 
 //			Builtins - echo
-void		echo(char **token, t_tab t);
-void		echo_print(char **args, char **var);
+void		echo(t_tprint tp, t_tab t);
+void		echo_print(char **args, char **var, int *print);
 char		**echo_vars(char **token, t_tab t, int nbr);
 t_echo		echo_parsing(char **token, t_tab t);
 char		**clean_cmd_for_echo(char *cmd, t_tab *t);

@@ -6,7 +6,7 @@
 /*   By: mreymond <mreymond@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/27 13:06:22 by mreymond          #+#    #+#             */
-/*   Updated: 2022/06/20 19:15:29 by mreymond         ###   ########.fr       */
+/*   Updated: 2022/06/27 15:26:47 by mreymond         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -206,7 +206,8 @@ int	monitor(char *cmd, t_tab *t)
 int	launch_cmds(char *cmd, t_tab *t)
 {
 	char	**token;
-	char	**cleaned;
+	// char	**cleaned;
+	t_tprint tp;
 
 	token = tokenize(cmd);
 	if (!ft_strncmp(cmd, "exit", 4) && (cmd[4] == ' ' || cmd[4] == '\0'))
@@ -217,8 +218,9 @@ int	launch_cmds(char *cmd, t_tab *t)
 		ms_b_pwd();
 	else if (!ft_strncmp(cmd, "echo", 4) && (cmd[4] == ' ' || cmd[4] == '\0'))
 	{
-		cleaned = clean_cmd_for_echo(cmd, t);
-		echo(cleaned, *t);
+		// cleaned = clean_cmd_for_echo(cmd, t);
+		tp = parsing_master(cmd);
+		echo(tp, *t);
 	}
 	else if (!ft_strncmp(cmd, "export", 6) && (cmd[6] == ' ' || cmd[6] == '\0'))
 		t = ft_export(t, token);
@@ -260,7 +262,8 @@ int	launch_builtins_with_redir(char *cmd, t_tab *t, int fd, int std)
 	else if (!ft_strncmp(cmd, "pwd", 3) && (cmd[3] == ' ' || cmd[3] == '\0'))
 		ms_b_pwd();
 	else if (!ft_strncmp(cmd, "echo", 4) && (cmd[4] == ' ' || cmd[4] == '\0'))
-		echo(token, *t);
+		printf("En construction\n");
+		// echo(token, *t);
 	else if (!ft_strncmp(cmd, "export", 6) && (cmd[6] == ' ' || cmd[6] == '\0'))
 		t = ft_export(t, token);
 	else if (!ft_strncmp(cmd, "unset", 5) && (cmd[5] == ' ' || cmd[5] == '\0'))
@@ -286,7 +289,8 @@ int	launch_builtins_with_doors(char *cmd, t_tab *t, t_doors doors)
 	else if (!ft_strncmp(cmd, "pwd", 3) && (cmd[3] == ' ' || cmd[3] == '\0'))
 		ms_b_pwd();
 	else if (!ft_strncmp(cmd, "echo", 4) && (cmd[4] == ' ' || cmd[4] == '\0'))
-		echo(token, *t);
+		printf("En construction\n");
+		// echo(token, *t);
 	else if (!ft_strncmp(cmd, "export", 6) && (cmd[6] == ' ' || cmd[6] == '\0'))
 		t = ft_export(t, token);
 	else if (!ft_strncmp(cmd, "unset", 5) && (cmd[5] == ' ' || cmd[5] == '\0'))
@@ -299,8 +303,3 @@ int	launch_builtins_with_doors(char *cmd, t_tab *t, t_doors doors)
 		// ms_b_other(cmd);
 	return (0);
 }
-
-
-// minishell qui exit sans pipes par exemple avec ls -la
-// > parce que je ne fork pas dans other à cause des pipes. 
-// redirections

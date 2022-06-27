@@ -6,7 +6,7 @@
 /*   By: mreymond <mreymond@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/20 10:47:58 by mreymond          #+#    #+#             */
-/*   Updated: 2022/06/21 17:56:29 by mreymond         ###   ########.fr       */
+/*   Updated: 2022/06/27 16:42:59 by mreymond         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,8 +41,7 @@ int	main(int argc, char **argv, char **envp)
 // TO DO!!
 
 // quotes :
-// dans split_all_quotes(char *cmd) >>> return un t_tprint puis echo en fonction
-// quand il y a des single quotes dans des doubles ou l'inverse
+// ressort la variable de export avec les quotes à enlever "poulet"
 // quand il y a des pipes et autres symbols
 // // minishell: "echo": Command not found
 // echo coucou$coucou qui ne prends pas la variable!!
