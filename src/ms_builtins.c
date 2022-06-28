@@ -352,7 +352,6 @@ char	**clean_quotes_token(char **token, t_parse p)
 {
 	char	**new;
 	int		i;
-
 	i = 0;
 	if (p.double_q == 0 && p.single_q == 0)
 		return (token);

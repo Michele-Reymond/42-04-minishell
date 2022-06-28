@@ -83,13 +83,15 @@ t_tab *ms_b_cd(char *buf, t_tab *t)
 		// maj variables d'environnement
 		var.key = "OLDPWD";
 		var.value = getenv("PWD");
-		update_env(t->env, var, false);
-		// printf("old var.value %s : %s",var.key,var.value);
+		t->env = update_env(t->env, var, false);
+		t->exp = update_env(t->exp, var, false);
+		//printf("old var.value %s : %s\n",var.key,var.value);
 		var.key = "PWD";
-		var.value = str.param;
-		update_env(t->env, var, false);
-		exit_status = 0;
-		// printf("new var.value %s : %s",var.key,var.value);
+		var.value = getcwd(NULL, 0);
+		t->env = update_env(t->env, var, false);
+		t->exp = update_env(t->exp, var, false);
+		//printf("new var.value %s : %s\n",var.key,var.value);
+
 
 	}
 	free(str.param);

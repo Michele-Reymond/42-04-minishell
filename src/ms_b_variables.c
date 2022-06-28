@@ -113,8 +113,10 @@ char	**update_var(char **old, t_var var, int pos, bool quotes)
 	(void) pos;
 	new = malloc(sizeof(char *) * (tab_len(old) + 1));
 	while (old[i] != NULL)
-	{
-		// printf("%s\n",old[i]);
+
+		// VR. mise en commentaire
+		//printf("%s\n",old[i]);
+
 		if (!ft_strncmp(old[i], var.key, ft_strlen(var.key)))
 		{
 			if (quotes)
