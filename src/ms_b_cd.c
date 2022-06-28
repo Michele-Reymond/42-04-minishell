@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ms_b_cd.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: vroch <vroch@student.42.fr>                +#+  +:+       +#+        */
+/*   By: mreymond <mreymond@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/20 12:16:50 by vroch             #+#    #+#             */
-/*   Updated: 2022/05/27 17:36:24 by vroch            ###   ########.fr       */
+/*   Updated: 2022/06/17 16:24:32 by mreymond         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,7 +70,14 @@ t_tab *ms_b_cd(char *buf, t_tab *t)
 		j++;
 	}	
 	if (chdir(str.param) == -1)
-		ft_putendl_fd("no such file or directory", 2);
+	{
+		// ft_putendl_fd("minishell: cd: ", 2);
+		// ft_putendl_fd(str.param, 2);
+		// ft_putendl_fd("no such file or directory", 2);
+		printf("minishell: cd: %s: ", str.param);
+		printf(ERROR_FILE);
+		exit_status = 1;
+	}
 	else
 	{
 		// maj variables d'environnement
@@ -84,6 +91,7 @@ t_tab *ms_b_cd(char *buf, t_tab *t)
 		t->env = update_env(t->env, var, false);
 		t->exp = update_env(t->exp, var, false);
 		//printf("new var.value %s : %s\n",var.key,var.value);
+
 
 	}
 	free(str.param);

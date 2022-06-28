@@ -6,7 +6,7 @@
 /*   By: mreymond <mreymond@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/26 12:37:07 by vroch             #+#    #+#             */
-/*   Updated: 2022/06/03 14:48:24 by mreymond         ###   ########.fr       */
+/*   Updated: 2022/06/17 15:35:06 by mreymond         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -333,4 +333,158 @@ int ms_b_other(char *buf)
 		waitpid(pid, &err, WUNTRACED);
 	}
 	return (0);
+}
+
+
+// TEST depuis Pipex
+void	exec_cmd(char **paths, char *first_cmd, char **envp, char **flags)
+{
+	int		i;
+	char	*cmd;
+	int		ret;
+
+	i = 0;
+	while (paths[i])
+	{
+		cmd = ft_strjoin(paths[i], first_cmd);
+		ret = execve(cmd, flags, envp);
+		free(cmd);
+		i++;
+	}
+	if (ret < 0)
+	{
+		printf("minishell: %s: ", &first_cmd[1]);
+		printf(ERROR_CMD_NOT_FOUND);
+		exit(errno);
+	}
+	free(first_cmd);
+}
+
+char	**split_flags(char *cmds)
+{
+	char	**flags;
+
+	if (ft_strnstr(cmds, "awk", 3) == NULL)
+		flags = ft_split(cmds, ' ');
+	else
+	{
+		flags = ft_split(cmds, '\'');
+		flags[0][3] = '\0';
+	}
+	return (flags);
+}
+
+void	launch_child_process(char *buff, char **paths, char **envp)
+{
+	char	*first_cmd;
+	char	**flags;
+	char	**token;
+
+	token = tokenize(buff);
+	first_cmd = ft_strjoin("/", token[0]);
+	flags = split_flags(buff);
+	exec_cmd(paths, first_cmd, envp, flags);
+	tabfree(flags);
+	tabfree(token);
+}
+
+// lancer cette comande dans les pipes
+void other_basic(char *buf, t_tab *t)
+{
+	char	**paths;
+	
+	paths = ft_split(getenv("PATH"), ':');
+	launch_child_process(buf, paths, t->env);
+	tabfree(paths);
+}
+
+void	status_of_child(int status)
+{
+	if (WIFEXITED(status))
+	{
+		if (WEXITSTATUS(status) == 2)
+			exit_status = 127;
+		else
+			exit_status = WEXITSTATUS(status);
+	}
+	if (WIFSIGNALED(status))
+	{
+		exit_status = WTERMSIG(status);
+		if (exit_status != 131)
+			exit_status += 128;
+	}
+}
+
+// lancer cette comande si commande seule sans redirections
+void other_with_fork(char *buf, t_tab *t)
+{
+	char	**paths;
+	pid_t	pid;
+	int		status;
+
+	paths = ft_split(getenv("PATH"), ':');
+	pid = fork();
+	if (pid < 0)
+		return (perror("Fork: "));
+	if (pid == 0)
+	{
+		launch_child_process(buf, paths, t->env);
+		tabfree(paths);
+		exit (0);
+	}
+	else {
+		waitpid(pid, &status, 0);
+		status_of_child(status);
+		tabfree(paths);
+	}
+}
+
+// lancer cette comande si commande seule avec redirections
+void other_redir_and_fork(char *buf, t_tab *t, int fd, int std)
+{
+	char	**paths;
+	pid_t	pid;
+	int		status;
+
+	paths = ft_split(getenv("PATH"), ':');
+	pid = fork();
+	if (pid < 0)
+		return (perror("Fork: "));
+	if (pid == 0)
+	{
+		dup2(fd, std);
+		launch_child_process(buf, paths, t->env);
+		tabfree(paths);
+		exit (0);
+	}
+	else {
+		waitpid(pid, &status, 0);
+		status_of_child(status);
+		tabfree(paths);
+	}
+}
+
+// lancer cette comande si commande seule avec redirections
+void other_doors_and_fork(char *buf, t_tab *t, t_doors doors)
+{
+	char	**paths;
+	pid_t	pid;
+	int		status;
+
+	paths = ft_split(getenv("PATH"), ':');
+	pid = fork();
+	if (pid < 0)
+		return (perror("Fork: "));
+	if (pid == 0)
+	{
+		dup2(doors.in, STDIN_FILENO);
+		dup2(doors.out, STDOUT_FILENO);
+		launch_child_process(buf, paths, t->env);
+		tabfree(paths);
+	}
+	else {
+		waitpid(pid, &status, 0);
+		status_of_child(status);
+		tabfree(paths);
+	}
 }

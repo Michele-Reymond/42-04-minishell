@@ -16,11 +16,17 @@ SRC_NAME = 	minishell.c \
 			ms_b_tabsort.c \
 			ms_b_variables.c \
 			ms_b_var_utils.c \
-			ms_parsing.c \
 			ms_b_export.c \
 			ms_b_cd.c \
 			ms_b_pwd.c \
-			ms_b_other.c 
+			ms_b_other.c \
+			ms_b_exit.c \
+			ms_signals.c \
+			ms_parsing.c \
+			ms_pipes.c \
+			ms_redirections.c \
+			ms_r_utils.c \
+			ms_errors.c
 
 
 OBJ_NAME = $(SRC_NAME:.c=.o)
