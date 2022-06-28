@@ -191,10 +191,10 @@ char	**clean_quotes_token(char **token, t_parse p)
 {
 	char	**new;
 	int		i;
-	int		j;
+	//int		j;
 
 	i = 0;
-	j = 0;
+	//j = 0;
 	if (p.double_q == 0 && p.single_q == 0)
 		return (token);
 	new = malloc(sizeof(char *) * tab_len(token) + 1);

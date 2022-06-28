@@ -82,6 +82,8 @@ void	display_env(char **tab)
 	while (tab[i] != NULL)
 	{
 		if (ft_strchr(tab[i], '=') != NULL)
+			// if specific to VR. - remove for normal usage
+			//if(!ft_strncmp(tab[i],"PWD",3) || !ft_strncmp(tab[i],"OLDPWD",6)) 		
 			printf("%s\n", tab[i]);
 		i++;
 	}
