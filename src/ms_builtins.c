@@ -6,7 +6,7 @@
 /*   By: mreymond <mreymond@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/27 13:06:22 by mreymond          #+#    #+#             */
-/*   Updated: 2022/06/28 15:52:37 by mreymond         ###   ########.fr       */
+/*   Updated: 2022/06/28 22:08:45 by mreymond         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -248,37 +248,28 @@ char *add_quotes(char *old, char quote)
 	return (new);
 }
 
-char *join_strings(t_tprint tp, int pos, int start)
+char *join_strings(char **tab, int pos, int start)
 {
 	int i;
-	char *tmp;
 	char *tmp2;
 	char *tmp3;
 	char *new;
 
 	i = start;
 	new = ft_strdup("");
-	while (tp.tab[i] != NULL && i < pos)
+	while (tab[i] != NULL && i < pos)
 	{
-		if (tp.print[i + 1] == 0 && i != 0)
-			tmp = add_quotes(tp.tab[i], '\'');
-		else if (tp.print[i + 1] == 1 && i != 0)
-			tmp = add_quotes(tp.tab[i], '\"');
-		else
-			tmp = ft_strdup(tp.tab[i]);
-		tmp2 = ft_strjoin(new, tmp);
-		if (tp.tab[i + 1] != NULL)
+		tmp2 = ft_strjoin(new, tab[i]);
+		if (tab[i + 1] != NULL)
 		{
 			tmp3 = ft_strjoin(tmp2, " ");
 			free(new);
-			free(tmp);
 			free(tmp2);
 			new = tmp3;
 		}
 		else
 		{
 			free(new);
-			free(tmp);
 			new = tmp2;
 		}
 		i++;
@@ -286,34 +277,139 @@ char *join_strings(t_tprint tp, int pos, int start)
 	return (new);
 }
 
-// TO DO : reger quand les pipes sont collés a des mots comme : echo|echo|machin truc " coucou | truc" |hello
+int how_many_splits(char *str)
+{
+	char *tmp;
+	int nbr;
+
+	nbr = 0;
+	tmp = ft_strchr(str, '|');
+	if (tmp != str)
+		nbr++;
+	if (tmp == NULL)
+		return (0);
+	else
+		nbr++;
+	while (tmp != NULL)
+	{
+		tmp++;
+		tmp = ft_strchr(tmp, '|');
+		nbr += 2;
+	}
+	return (nbr);
+}
+
+char **split_out(char *str)
+{
+	char **new;
+	int nbr;
+	int i;
+	int j;
+	int start;
+
+	i = 0;
+	j = 0;
+	start = 0;
+	nbr = how_many_splits(str);
+	new = malloc(sizeof(char *) * (nbr + 1));
+	while (str[i] != '\0')
+	{
+		start = i;
+		while (str[i] != '\0' && str[i] != '|')
+			i++;
+		if (i > start)
+		{
+			new[j] = ft_strldup(&str[start], i - start + 1);
+			j++;
+		}
+		if (str[i] == '|')
+		{
+			new[j] = ft_strdup("|");
+			j++;
+		}
+		i++;
+	}
+	new[j] = NULL;
+	return (new);
+}
+
+char **split_pipes_phase_1(t_tprint tp)
+{
+	int i;
+	char **splitted;
+	char **tmp;
+	char **last;
+
+	i = 0;
+	last = new_tab();
+	while (tp.tab[i] != NULL)
+	{
+		if(how_many_in_str(tp.tab[i], '|') > 0 && tp.print[i + 1] == 2 && ft_strlen(tp.tab[i]) > 1)
+		{
+			splitted = split_out(tp.tab[i]);
+			tmp = tabjoin(last, splitted);
+			tabfree(last);
+			last = tmp;
+		}
+		else
+		{
+			tmp = add_to_tab(last, tp.tab[i]);
+			tabfree(last);
+			last = tmp;
+		}
+		i++;
+	}
+	tmp = add_to_tab(last, "");
+	tabfree(last);
+	last = tmp;
+	last[tab_len(tmp) - 1] = NULL;
+	return (last);
+}
+
+// TO DO : splitted est ok mais ensuite il faut joindre les morceau entre les pipes
+// echo|echo|machin| truc " coucou | truc" |hello
+// echo "coucou pouet"|cat yolo| echo "ceci n'est pas un |"
+// echo "coucou pouet"|cat yolo| echo "ceci n'est pas un |" | echo yes
 char **split_pipes(t_tprint tp, int pipes)
 {
 	int i;
 	int start;
 	int j;
+	// int k;
+	char **splitted;
+	// char *tmp;
+	// char *tmp2;
 	char **new;
 
 	i = 0;
 	j = 0;
+	// k = 0;
 	start = 0;
 	// display_tab_and_int(tp.print, tp.tab);
 	// printf("%d\n", pipes);
 	// exit(0);
+	splitted = split_pipes_phase_1(tp);
 	new = malloc(sizeof(char *) * (pipes + 2));
-	while (tp.tab[i] != NULL)
+	while (splitted[i] != NULL)
 	{
 		start = i;
-		while (tp.tab[i] != NULL && (how_many_in_str(tp.tab[i], '|') == 0  || tp.print[i + 1] != 2))	
+		while (splitted[i] != NULL && !(splitted[i][0] == '|' && ft_strlen(splitted[i]) == 1))
 			i++;
-		new[j] = join_strings(tp, i, start);
-		printf("new: %s\n", new[j]);
-		j++;
-		if (tp.tab[i] != NULL)
+		if (i > start)
+		{
+			new[j] = join_strings(splitted, i - 1, start);
+			j++;
+		}
+		if (splitted[i] != NULL)
 			i++;
 	}
 	new[j] = NULL;
+		
 	display_tab(new);
+
+
+	// new[j] = NULL;
+	// display_tab(new);
 	exit(0);
 	return (new);
 }

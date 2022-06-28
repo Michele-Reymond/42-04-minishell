@@ -6,7 +6,7 @@
 /*   By: mreymond <mreymond@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/27 11:28:42 by mreymond          #+#    #+#             */
-/*   Updated: 2022/06/17 16:13:25 by mreymond         ###   ########.fr       */
+/*   Updated: 2022/06/28 19:54:17 by mreymond         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -113,7 +113,7 @@ char	**update_var(char **old, t_var var, int pos, bool quotes)
 	(void) pos;
 	new = malloc(sizeof(char *) * (tab_len(old) + 1));
 	while (old[i] != NULL)
-
+	{
 		// VR. mise en commentaire
 		//printf("%s\n",old[i]);
 
