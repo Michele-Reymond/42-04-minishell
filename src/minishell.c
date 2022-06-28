@@ -6,7 +6,7 @@
 /*   By: mreymond <mreymond@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/20 10:47:58 by mreymond          #+#    #+#             */
-/*   Updated: 2022/06/28 10:19:35 by mreymond         ###   ########.fr       */
+/*   Updated: 2022/06/28 15:52:59 by mreymond         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,7 +41,7 @@ int	main(int argc, char **argv, char **envp)
 // TO DO!!
 
 // quotes :
-// quand il y a des pipes et autres symbols
+// to do: split_pipes(t_tprint tp, int pipes) à continuer
 // // minishell: "echo": Command not found
 
 // 3. signaux

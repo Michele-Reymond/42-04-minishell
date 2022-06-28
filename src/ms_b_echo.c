@@ -6,7 +6,7 @@
 /*   By: mreymond <mreymond@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/20 10:43:17 by mreymond          #+#    #+#             */
-/*   Updated: 2022/06/28 11:42:36 by mreymond         ###   ########.fr       */
+/*   Updated: 2022/06/28 15:38:04 by mreymond         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -792,7 +792,7 @@ char **split_cmds(char *cmd, int tablen)
 	y = 0;
 	tmp = 0;
 	stock = '\0';
-	new = malloc(sizeof(char *) * tablen + 1);
+	new = malloc(sizeof(char *) * (tablen + 1));
 	if (new == NULL)
 		return (NULL);
 	while (cmd[i] != '\0')
@@ -805,7 +805,7 @@ char **split_cmds(char *cmd, int tablen)
 			tmp = i;
 			while (cmd[i] != '\0' && cmd[i] != ' ' && cmd[i] != '	' && cmd[i] != '\'' && cmd[i] != '\"')
 				i++;
-			new[j] = malloc(sizeof(char) * i - tmp + 1);
+			new[j] = malloc(sizeof(char) * (i - tmp + 1));
 			i = tmp;
 			while (cmd[i] != '\0' && cmd[i] != ' ' && cmd[i] != '	' && cmd[i] != '\'' && cmd[i] != '\"')
 			{
@@ -829,7 +829,7 @@ char **split_cmds(char *cmd, int tablen)
 		}
 		while(cmd[i] != '\0' && cmd[i] != stock)
 			i++;
-		new[j] = malloc(sizeof(char) * i - tmp + 1);
+		new[j] = malloc(sizeof(char) * (i - tmp + 2));
 		i = tmp;
 		if (cmd[i] == '\'' || cmd[i] == '\"')
 		{

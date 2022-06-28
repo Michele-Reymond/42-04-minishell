@@ -6,7 +6,7 @@
 /*   By: mreymond <mreymond@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/27 13:06:22 by mreymond          #+#    #+#             */
-/*   Updated: 2022/06/28 12:04:27 by mreymond         ###   ########.fr       */
+/*   Updated: 2022/06/28 15:52:37 by mreymond         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -120,50 +120,65 @@ int count_dollar(t_tprint tp)
 	return (nbr);
 }
 
+void count_redir(t_tprint tp, t_parse *p)
+{
+	int		i;
+	int		*nbr1;
+	int		*nbr2;
+
+	i = 0;
+	p->redir_out = 0;
+	p->redir_out_d = 0;
+	p->redir_in = 0;
+	p->redir_in_d = 0;
+	while (tp.tab[i] != NULL)
+	{
+		if (tp.print[i + 1] == 2)
+		{
+			nbr1 = check_redir(tp.tab[i], '>');
+			if (nbr1[0] == -1 || nbr1[1] == -1)
+			{
+				p->redir_out = nbr1[0];
+				p->redir_out_d = nbr1[1];
+				free(nbr1);
+				if (nbr2)
+					free(nbr2);
+				break ;
+			}
+			p->redir_out += nbr1[0];
+			p->redir_out_d += nbr1[1];
+			nbr2 = check_redir(tp.tab[i], '<');
+			if (nbr2[0] == -1 || nbr2[1] == -1)
+			{
+				p->redir_in = nbr2[0];
+				p->redir_in_d = nbr2[1];
+				free(nbr1);
+				free(nbr2);
+				break ;
+			}
+			p->redir_in += nbr2[0];
+			p->redir_in_d += nbr2[1];
+			free(nbr1);
+			free(nbr2);
+		}
+		i++;
+	}
+	p->redir = p->redir_in + p->redir_in_d + p->redir_out + p->redir_out_d;
+}
+
 
 t_parse	stock_parsing_infos(t_tprint tp)
 {
 	t_parse	p;
-	// int		*nbr1;
-	// int		*nbr2;
 	
 	p.pipes = count_pipes(tp);
 	p.nbr_cmd = p.pipes + 1;
 	p.double_q = count_doubles(tp);
 	p.single_q = count_singles(tp);
 	p.dollar = count_dollar(tp);
-	printf("%d\n", p.dollar);
-	exit(0);
-	// nbr1 = check_redir(cmd, '>');
-	// p.redir_out = nbr1[0];
-	// p.redir_out_d = nbr1[1];
-	// nbr2 = check_redir(cmd, '<');
-	// p.redir_in = nbr2[0];
-	// p.redir_in_d = nbr2[1];
-	// p.redir = p.redir_in + p.redir_in_d + p.redir_out + p.redir_out_d;
+	count_redir(tp, &p);
 	return (p);
 }
-
-// t_parse	stock_parsing_infos(char *cmd)
-// {
-// 	t_parse	p;
-// 	int		*nbr1;
-// 	int		*nbr2;
-	
-// 	p.pipes = how_many_in_str(cmd, '|');
-// 	p.nbr_cmd = p.pipes + 1;
-// 	p.double_q = how_many_in_str(cmd, '\"');
-// 	p.single_q = how_many_in_str(cmd, '\'');
-// 	p.dollar = how_many_in_str(cmd, '$');
-// 	nbr1 = check_redir(cmd, '>');
-// 	p.redir_out = nbr1[0];
-// 	p.redir_out_d = nbr1[1];
-// 	nbr2 = check_redir(cmd, '<');
-// 	p.redir_in = nbr2[0];
-// 	p.redir_in_d = nbr2[1];
-// 	p.redir = p.redir_in + p.redir_in_d + p.redir_out + p.redir_out_d;
-// 	return (p);
-// }
 
 int	pre_parsing_errors(char *cmd, t_parse p)
 {
@@ -213,6 +228,94 @@ char	**clean_spaces(char *cmd)
 	cmds[i] = NULL;
 	tabfree(tmp);
 	return (cmds);
+}
+
+char *add_quotes(char *old, char quote)
+{
+	char *new;
+	int i;
+
+	i = 0;
+	new = malloc(sizeof(char) * ft_strlen(old) + 3);
+	new[0] = quote;
+	while (old[i] != '\0')
+	{
+		new[i + 1] = old[i];
+		i++;
+	}
+	new[i + 1] = quote;
+	new[i + 2] = '\0';
+	return (new);
+}
+
+char *join_strings(t_tprint tp, int pos, int start)
+{
+	int i;
+	char *tmp;
+	char *tmp2;
+	char *tmp3;
+	char *new;
+
+	i = start;
+	new = ft_strdup("");
+	while (tp.tab[i] != NULL && i < pos)
+	{
+		if (tp.print[i + 1] == 0 && i != 0)
+			tmp = add_quotes(tp.tab[i], '\'');
+		else if (tp.print[i + 1] == 1 && i != 0)
+			tmp = add_quotes(tp.tab[i], '\"');
+		else
+			tmp = ft_strdup(tp.tab[i]);
+		tmp2 = ft_strjoin(new, tmp);
+		if (tp.tab[i + 1] != NULL)
+		{
+			tmp3 = ft_strjoin(tmp2, " ");
+			free(new);
+			free(tmp);
+			free(tmp2);
+			new = tmp3;
+		}
+		else
+		{
+			free(new);
+			free(tmp);
+			new = tmp2;
+		}
+		i++;
+	}
+	return (new);
+}
+
+// TO DO : reger quand les pipes sont collés a des mots comme : echo|echo|machin truc " coucou | truc" |hello
+char **split_pipes(t_tprint tp, int pipes)
+{
+	int i;
+	int start;
+	int j;
+	char **new;
+
+	i = 0;
+	j = 0;
+	start = 0;
+	// display_tab_and_int(tp.print, tp.tab);
+	// printf("%d\n", pipes);
+	// exit(0);
+	new = malloc(sizeof(char *) * (pipes + 2));
+	while (tp.tab[i] != NULL)
+	{
+		start = i;
+		while (tp.tab[i] != NULL && (how_many_in_str(tp.tab[i], '|') == 0  || tp.print[i + 1] != 2))	
+			i++;
+		new[j] = join_strings(tp, i, start);
+		printf("new: %s\n", new[j]);
+		j++;
+		if (tp.tab[i] != NULL)
+			i++;
+	}
+	new[j] = NULL;
+	display_tab(new);
+	exit(0);
+	return (new);
 }
 
 char	**clean_quotes(char **cmds, t_parse p)
@@ -291,13 +394,12 @@ int	monitor(char *cmd, t_tab *t)
 	tp = parsing_master(cmd);
 	if (check_closed_quotes(tp))
 		return (1);
-	display_tab_and_int(tp.print, tp.tab);
 	p = stock_parsing_infos(tp);
-	// p = stock_parsing_infos(cmd);
-	t->p = p;
-	if (pre_parsing_errors(cmd, p))
+	if (!(p.redir_in >= 0 && p.redir_out >= 0))
 		return (1);
-	p.cmds = clean_spaces(cmd);
+	t->p = p;
+	p.cmds = split_pipes(tp, p.pipes);
+	display_tab(p.cmds);
 
 	// if (tab_len(p.cmds) == 1 && p.redir == 0)
 	// {
