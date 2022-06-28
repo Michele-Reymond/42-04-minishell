@@ -6,7 +6,7 @@
 /*   By: mreymond <mreymond@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/20 10:48:46 by mreymond          #+#    #+#             */
-/*   Updated: 2022/06/27 21:25:30 by mreymond         ###   ########.fr       */
+/*   Updated: 2022/06/28 11:11:59 by mreymond         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -124,7 +124,7 @@ char		**tokenize(char *buff);
 int			how_many_in_str(char *str, char c);
 int			how_many_in_tab(char **str, char c);
 int			pre_parsing_errors(char *cmd, t_parse p);
-t_parse		stock_parsing_infos(char *cmd);
+t_parse		stock_parsing_infos(t_tprint tp);
 char		**clean_cmds(char *cmd, t_parse p);
 char		**clean_spaces(char *cmd);
 char		**clean_quotes(char **cmds, t_parse p);

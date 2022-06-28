@@ -6,7 +6,7 @@
 /*   By: mreymond <mreymond@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/20 10:43:17 by mreymond          #+#    #+#             */
-/*   Updated: 2022/06/27 23:47:54 by mreymond         ###   ########.fr       */
+/*   Updated: 2022/06/28 11:42:36 by mreymond         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -803,11 +803,11 @@ char **split_cmds(char *cmd, int tablen)
 		{
 			y = 0;
 			tmp = i;
-			while (cmd[i] != '\0' && cmd[i] != ' ' && cmd[i] != '	')
+			while (cmd[i] != '\0' && cmd[i] != ' ' && cmd[i] != '	' && cmd[i] != '\'' && cmd[i] != '\"')
 				i++;
 			new[j] = malloc(sizeof(char) * i - tmp + 1);
 			i = tmp;
-			while (cmd[i] != '\0' && cmd[i] != ' ' && cmd[i] != '	')
+			while (cmd[i] != '\0' && cmd[i] != ' ' && cmd[i] != '	' && cmd[i] != '\'' && cmd[i] != '\"')
 			{
 				new[j][y] = cmd[i];
 				i++;
@@ -815,7 +815,8 @@ char **split_cmds(char *cmd, int tablen)
 			}
 			new[j][y] = '\0';
 			j++;
-			i++;
+			if (cmd[i] == ' ' || cmd[i] == '	')
+				i++;
 		}
 		y = 0;
 		if (cmd[i] == '\0')
@@ -856,7 +857,6 @@ char **split_cmds(char *cmd, int tablen)
 	return (new);
 }
 
-//ICIIII!!
 char **split_both_quotes(char *cmd)
 {
 	int tablen;
@@ -885,15 +885,21 @@ t_tprint parsing_master(char *cmd)
 	tp.print[0] = tab_len(tmp);
 	while (tmp[i] != NULL)
 	{
-		if (tmp[i][0] == '\'')
+		if (tmp[i][0] == '\'' && tmp[i][ft_strlen(tmp[i]) - 1] == '\'')
 		{
 			tp.tab[i] = ft_strtrim(tmp[i], "\'");
 			tp.print[i + 1] = 0;
 		}
-		else if (tmp[i][0] == '\"')
+		else if (tmp[i][0] == '\"' && tmp[i][ft_strlen(tmp[i]) - 1] == '\"')
 		{
 			tp.tab[i] = ft_strtrim(tmp[i], "\"");
 			tp.print[i + 1] = 1;
+		}
+		else if (tmp[i][0] == '\"' || tmp[i][0] == '\'' 
+			|| tmp[i][ft_strlen(tmp[i]) - 1] == '\"' || tmp[i][ft_strlen(tmp[i]) - 1] == '\'')
+		{
+			tp.tab[i] = ft_strdup(tmp[i]);
+			tp.print[i + 1] = -1;
 		}
 		else
 		{

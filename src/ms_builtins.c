@@ -6,7 +6,7 @@
 /*   By: mreymond <mreymond@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/27 13:06:22 by mreymond          #+#    #+#             */
-/*   Updated: 2022/06/27 15:26:47 by mreymond         ###   ########.fr       */
+/*   Updated: 2022/06/28 12:04:27 by mreymond         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,26 +56,114 @@ int	*check_redir(char *cmd, char redir)
 	return (nbr);
 }
 
-t_parse	stock_parsing_infos(char *cmd)
+int count_pipes(t_tprint tp)
+{
+	int i;
+	int nbr;
+
+	i = 0;
+	nbr = 0;
+	while (tp.tab[i] != NULL)
+	{
+		if (tp.print[i + 1] == 2)
+			nbr += how_many_in_str(tp.tab[i], '|');
+		i++;
+	}
+	return (nbr);
+}
+
+int count_doubles(t_tprint tp)
+{
+	int i;
+	int nbr;
+
+	i = 0;
+	nbr = 0;
+	while (tp.tab[i] != NULL)
+	{
+		if (tp.print[i + 1] == 1)
+			nbr++;
+		i++;
+	}
+	return (nbr);
+}
+
+int count_singles(t_tprint tp)
+{
+	int i;
+	int nbr;
+
+	i = 0;
+	nbr = 0;
+	while (tp.tab[i] != NULL)
+	{
+		if (tp.print[i + 1] == 0)
+			nbr++;
+		i++;
+	}
+	return (nbr);
+}
+
+int count_dollar(t_tprint tp)
+{
+	int i;
+	int nbr;
+
+	i = 0;
+	nbr = 0;
+	while (tp.tab[i] != NULL)
+	{
+		if (tp.print[i + 1] != 0)
+			nbr += how_many_in_str(tp.tab[i], '$');
+		i++;
+	}
+	return (nbr);
+}
+
+
+t_parse	stock_parsing_infos(t_tprint tp)
 {
 	t_parse	p;
-	int		*nbr1;
-	int		*nbr2;
+	// int		*nbr1;
+	// int		*nbr2;
 	
-	p.pipes = how_many_in_str(cmd, '|');
+	p.pipes = count_pipes(tp);
 	p.nbr_cmd = p.pipes + 1;
-	p.double_q = how_many_in_str(cmd, '\"');
-	p.single_q = how_many_in_str(cmd, '\'');
-	p.dollar = how_many_in_str(cmd, '$');
-	nbr1 = check_redir(cmd, '>');
-	p.redir_out = nbr1[0];
-	p.redir_out_d = nbr1[1];
-	nbr2 = check_redir(cmd, '<');
-	p.redir_in = nbr2[0];
-	p.redir_in_d = nbr2[1];
-	p.redir = p.redir_in + p.redir_in_d + p.redir_out + p.redir_out_d;
+	p.double_q = count_doubles(tp);
+	p.single_q = count_singles(tp);
+	p.dollar = count_dollar(tp);
+	printf("%d\n", p.dollar);
+	exit(0);
+	// nbr1 = check_redir(cmd, '>');
+	// p.redir_out = nbr1[0];
+	// p.redir_out_d = nbr1[1];
+	// nbr2 = check_redir(cmd, '<');
+	// p.redir_in = nbr2[0];
+	// p.redir_in_d = nbr2[1];
+	// p.redir = p.redir_in + p.redir_in_d + p.redir_out + p.redir_out_d;
 	return (p);
 }
+
+// t_parse	stock_parsing_infos(char *cmd)
+// {
+// 	t_parse	p;
+// 	int		*nbr1;
+// 	int		*nbr2;
+	
+// 	p.pipes = how_many_in_str(cmd, '|');
+// 	p.nbr_cmd = p.pipes + 1;
+// 	p.double_q = how_many_in_str(cmd, '\"');
+// 	p.single_q = how_many_in_str(cmd, '\'');
+// 	p.dollar = how_many_in_str(cmd, '$');
+// 	nbr1 = check_redir(cmd, '>');
+// 	p.redir_out = nbr1[0];
+// 	p.redir_out_d = nbr1[1];
+// 	nbr2 = check_redir(cmd, '<');
+// 	p.redir_in = nbr2[0];
+// 	p.redir_in_d = nbr2[1];
+// 	p.redir = p.redir_in + p.redir_in_d + p.redir_out + p.redir_out_d;
+// 	return (p);
+// }
 
 int	pre_parsing_errors(char *cmd, t_parse p)
 {
@@ -178,31 +266,51 @@ char	**clean_quotes_token(char **token, t_parse p)
 	return (new);
 }
 
+int check_closed_quotes(t_tprint tp)
+{
+	int i;
+
+	i = 1;
+	while (i <= tp.print[0])
+	{
+		if(tp.print[i] == -1)
+		{
+			printf(ERROR_QUOTES);
+			return (1);
+		}
+		i++;
+	}
+	return (0);
+}
+
 int	monitor(char *cmd, t_tab *t)
 {
-	t_parse	p;
+	t_parse		p;
+	t_tprint	tp;
 	
-	p = stock_parsing_infos(cmd);
+	tp = parsing_master(cmd);
+	if (check_closed_quotes(tp))
+		return (1);
+	display_tab_and_int(tp.print, tp.tab);
+	p = stock_parsing_infos(tp);
+	// p = stock_parsing_infos(cmd);
 	t->p = p;
 	if (pre_parsing_errors(cmd, p))
 		return (1);
 	p.cmds = clean_spaces(cmd);
 
-	// TO DO > faire une fonction qui verifie les commandes
-	if (tab_len(p.cmds) == 1 && p.redir == 0)
-	{
-		if (launch_cmds(p.cmds[0], t))
-			other_with_fork(p.cmds[0], t);
-	}
-	else if (p.pipes > 0 && p.redir == 0)
-		launch_with_pipes(p, t);
-	else if (p.redir > 0)
-		launch_with_redir(p, t);
+	// if (tab_len(p.cmds) == 1 && p.redir == 0)
+	// {
+		// if (launch_cmds(p.cmds[0], t))
+		// 	other_with_fork(p.cmds[0], t);
+	// }
+	// else if (p.pipes > 0 && p.redir == 0)
+	// 	launch_with_pipes(p, t);
+	// else if (p.redir > 0)
+	// 	launch_with_redir(p, t);
 	return (0);
 }
 
-// si fd vaut zéro il n'y a pas de fork sinon il y a un fork
-// Dans le cas où il y a des pipes la valeur doit être 0 sinon elle doit être true
 int	launch_cmds(char *cmd, t_tab *t)
 {
 	char	**token;
@@ -218,7 +326,6 @@ int	launch_cmds(char *cmd, t_tab *t)
 		ms_b_pwd();
 	else if (!ft_strncmp(cmd, "echo", 4) && (cmd[4] == ' ' || cmd[4] == '\0'))
 	{
-		// cleaned = clean_cmd_for_echo(cmd, t);
 		tp = parsing_master(cmd);
 		echo(tp, *t);
 	}
