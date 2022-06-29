@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ms_signals.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mreymond <mreymond@student.42.fr>          +#+  +:+       +#+        */
+/*   By: vroch <vroch@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/20 16:41:41 by mreymond          #+#    #+#             */
-/*   Updated: 2022/06/27 15:10:09 by mreymond         ###   ########.fr       */
+/*   Updated: 2022/06/29 13:10:53 by vroch            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,12 +21,12 @@ void    on_sigquit(int sig, siginfo_t *info, void *context)
 	{
 		write(1, "\n", 1);
 		rl_on_new_line();
-		rl_replace_line("", 0);
+		//rl_replace_line("", 0);
 		rl_redisplay();
 	}
 }
 
-void    on_siginit(int sig, siginfo_t *info, void *context)
+void    on_sigint(int sig, siginfo_t *info, void *context)
 {
 	(void)info;
 	(void)context;
@@ -35,7 +35,7 @@ void    on_siginit(int sig, siginfo_t *info, void *context)
 	{
 		write(1, "\n", 1);
 		rl_on_new_line();
-		rl_replace_line("", 0);
+		//rl_replace_line("", 0);
 		rl_redisplay();
 	}
 }
@@ -49,7 +49,8 @@ void    signal_handler(void)
 	sia.sa_flags = SA_SIGINFO;
 	sia.sa_sigaction = on_sigquit;
 	sigaction(SIGQUIT, &sia, NULL);
-	sia.sa_sigaction = on_siginit;
+	sia.sa_sigaction = on_sigint;
 	sigaction(SIGINT, &sia, NULL);
 
-	return ;
+	return;	
+}
