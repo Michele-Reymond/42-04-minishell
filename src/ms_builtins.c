@@ -6,7 +6,7 @@
 /*   By: mreymond <mreymond@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/27 13:06:22 by mreymond          #+#    #+#             */
-/*   Updated: 2022/06/28 22:08:45 by mreymond         ###   ########.fr       */
+/*   Updated: 2022/06/29 09:40:57 by mreymond         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -339,6 +339,7 @@ char **split_pipes_phase_1(t_tprint tp)
 	char **splitted;
 	char **tmp;
 	char **last;
+	char *quoted;
 
 	i = 0;
 	last = new_tab();
@@ -349,12 +350,20 @@ char **split_pipes_phase_1(t_tprint tp)
 			splitted = split_out(tp.tab[i]);
 			tmp = tabjoin(last, splitted);
 			tabfree(last);
+			tabfree(splitted);
 			last = tmp;
 		}
 		else
 		{
-			tmp = add_to_tab(last, tp.tab[i]);
+			if (tp.print[i + 1] == 1 && i != 0)
+				quoted = add_quotes(tp.tab[i], '\"');
+			else if (tp.print[i + 1] == 0 && i != 0)
+				quoted = add_quotes(tp.tab[i], '\'');
+			else
+				quoted = ft_strdup(tp.tab[i]);
+			tmp = add_to_tab(last, quoted);
 			tabfree(last);
+			free(quoted);
 			last = tmp;
 		}
 		i++;
@@ -375,19 +384,12 @@ char **split_pipes(t_tprint tp, int pipes)
 	int i;
 	int start;
 	int j;
-	// int k;
 	char **splitted;
-	// char *tmp;
-	// char *tmp2;
 	char **new;
 
 	i = 0;
 	j = 0;
-	// k = 0;
 	start = 0;
-	// display_tab_and_int(tp.print, tp.tab);
-	// printf("%d\n", pipes);
-	// exit(0);
 	splitted = split_pipes_phase_1(tp);
 	new = malloc(sizeof(char *) * (pipes + 2));
 	while (splitted[i] != NULL)
@@ -397,20 +399,14 @@ char **split_pipes(t_tprint tp, int pipes)
 			i++;
 		if (i > start)
 		{
-			new[j] = join_strings(splitted, i - 1, start);
+			new[j] = join_strings(splitted, i, start);
 			j++;
 		}
 		if (splitted[i] != NULL)
 			i++;
 	}
+	tabfree(splitted);
 	new[j] = NULL;
-		
-	display_tab(new);
-
-
-	// new[j] = NULL;
-	// display_tab(new);
-	exit(0);
 	return (new);
 }
 
@@ -494,17 +490,15 @@ int	monitor(char *cmd, t_tab *t)
 		return (1);
 	t->p = p;
 	p.cmds = split_pipes(tp, p.pipes);
-	display_tab(p.cmds);
-
-	// if (tab_len(p.cmds) == 1 && p.redir == 0)
-	// {
-		// if (launch_cmds(p.cmds[0], t))
-		// 	other_with_fork(p.cmds[0], t);
-	// }
-	// else if (p.pipes > 0 && p.redir == 0)
-	// 	launch_with_pipes(p, t);
-	// else if (p.redir > 0)
-	// 	launch_with_redir(p, t);
+	if (tab_len(p.cmds) == 1 && p.redir == 0)
+	{
+		if (launch_cmds(p.cmds[0], t))
+			other_with_fork(p.cmds[0], t);
+	}
+	else if (p.pipes > 0 && p.redir == 0)
+		launch_with_pipes(p, t);
+	else if (p.redir > 0)
+		launch_with_redir(p, t);
 	return (0);
 }
 
