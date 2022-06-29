@@ -6,7 +6,7 @@
 /*   By: mreymond <mreymond@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/06 15:58:02 by mreymond          #+#    #+#             */
-/*   Updated: 2022/06/22 12:34:18 by mreymond         ###   ########.fr       */
+/*   Updated: 2022/06/29 10:15:51 by mreymond         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -366,11 +366,6 @@ void launch_in_d_in_pipe(t_tab *t, char *cmd)
 {
     char    *newcmd;
 
-	if (tmpfile < 0)
-	{
-		perror("minishell: ");
-		exit(EXIT_FAILURE);
-	}
     newcmd = ft_strjoin(cmd, " .heredoc");
     if (launch_cmds(newcmd, t))
         other_basic(newcmd, t);

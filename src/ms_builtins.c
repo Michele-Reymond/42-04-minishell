@@ -6,7 +6,7 @@
 /*   By: mreymond <mreymond@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/27 13:06:22 by mreymond          #+#    #+#             */
-/*   Updated: 2022/06/20 19:15:29 by mreymond         ###   ########.fr       */
+/*   Updated: 2022/06/29 10:20:26 by mreymond         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,24 +56,127 @@ int	*check_redir(char *cmd, char redir)
 	return (nbr);
 }
 
-t_parse	stock_parsing_infos(char *cmd)
+int count_pipes(t_tprint tp)
 {
-	t_parse	p;
+	int i;
+	int nbr;
+
+	i = 0;
+	nbr = 0;
+	while (tp.tab[i] != NULL)
+	{
+		if (tp.print[i + 1] == 2)
+			nbr += how_many_in_str(tp.tab[i], '|');
+		i++;
+	}
+	return (nbr);
+}
+
+int count_doubles(t_tprint tp)
+{
+	int i;
+	int nbr;
+
+	i = 0;
+	nbr = 0;
+	while (tp.tab[i] != NULL)
+	{
+		if (tp.print[i + 1] == 1)
+			nbr++;
+		i++;
+	}
+	return (nbr);
+}
+
+int count_singles(t_tprint tp)
+{
+	int i;
+	int nbr;
+
+	i = 0;
+	nbr = 0;
+	while (tp.tab[i] != NULL)
+	{
+		if (tp.print[i + 1] == 0)
+			nbr++;
+		i++;
+	}
+	return (nbr);
+}
+
+int count_dollar(t_tprint tp)
+{
+	int i;
+	int nbr;
+
+	i = 0;
+	nbr = 0;
+	while (tp.tab[i] != NULL)
+	{
+		if (tp.print[i + 1] != 0)
+			nbr += how_many_in_str(tp.tab[i], '$');
+		i++;
+	}
+	return (nbr);
+}
+
+void count_redir(t_tprint tp, t_parse *p)
+{
+	int		i;
 	int		*nbr1;
 	int		*nbr2;
+
+	i = 0;
+	p->redir_out = 0;
+	p->redir_out_d = 0;
+	p->redir_in = 0;
+	p->redir_in_d = 0;
+	while (tp.tab[i] != NULL)
+	{
+		if (tp.print[i + 1] == 2)
+		{
+			nbr1 = check_redir(tp.tab[i], '>');
+			if (nbr1[0] == -1 || nbr1[1] == -1)
+			{
+				p->redir_out = nbr1[0];
+				p->redir_out_d = nbr1[1];
+				free(nbr1);
+				if (nbr2)
+					free(nbr2);
+				break ;
+			}
+			p->redir_out += nbr1[0];
+			p->redir_out_d += nbr1[1];
+			nbr2 = check_redir(tp.tab[i], '<');
+			if (nbr2[0] == -1 || nbr2[1] == -1)
+			{
+				p->redir_in = nbr2[0];
+				p->redir_in_d = nbr2[1];
+				free(nbr1);
+				free(nbr2);
+				break ;
+			}
+			p->redir_in += nbr2[0];
+			p->redir_in_d += nbr2[1];
+			free(nbr1);
+			free(nbr2);
+		}
+		i++;
+	}
+	p->redir = p->redir_in + p->redir_in_d + p->redir_out + p->redir_out_d;
+}
+
+
+t_parse	stock_parsing_infos(t_tprint tp)
+{
+	t_parse	p;
 	
-	p.pipes = how_many_in_str(cmd, '|');
+	p.pipes = count_pipes(tp);
 	p.nbr_cmd = p.pipes + 1;
-	p.double_q = how_many_in_str(cmd, '\"');
-	p.single_q = how_many_in_str(cmd, '\'');
-	p.dollar = how_many_in_str(cmd, '$');
-	nbr1 = check_redir(cmd, '>');
-	p.redir_out = nbr1[0];
-	p.redir_out_d = nbr1[1];
-	nbr2 = check_redir(cmd, '<');
-	p.redir_in = nbr2[0];
-	p.redir_in_d = nbr2[1];
-	p.redir = p.redir_in + p.redir_in_d + p.redir_out + p.redir_out_d;
+	p.double_q = count_doubles(tp);
+	p.single_q = count_singles(tp);
+	p.dollar = count_dollar(tp);
+	count_redir(tp, &p);
 	return (p);
 }
 
@@ -127,6 +230,182 @@ char	**clean_spaces(char *cmd)
 	return (cmds);
 }
 
+char *add_quotes(char *old, char quote)
+{
+	char *new;
+	int i;
+
+	i = 0;
+	new = malloc(sizeof(char) * ft_strlen(old) + 3);
+	new[0] = quote;
+	while (old[i] != '\0')
+	{
+		new[i + 1] = old[i];
+		i++;
+	}
+	new[i + 1] = quote;
+	new[i + 2] = '\0';
+	return (new);
+}
+
+char *join_strings(char **tab, int pos, int start)
+{
+	int i;
+	char *tmp2;
+	char *tmp3;
+	char *new;
+
+	i = start;
+	new = ft_strdup("");
+	while (tab[i] != NULL && i < pos)
+	{
+		tmp2 = ft_strjoin(new, tab[i]);
+		if (tab[i + 1] != NULL)
+		{
+			tmp3 = ft_strjoin(tmp2, " ");
+			free(new);
+			free(tmp2);
+			new = tmp3;
+		}
+		else
+		{
+			free(new);
+			new = tmp2;
+		}
+		i++;
+	}
+	return (new);
+}
+
+int how_many_splits(char *str)
+{
+	char *tmp;
+	int nbr;
+
+	nbr = 0;
+	tmp = ft_strchr(str, '|');
+	if (tmp != str)
+		nbr++;
+	if (tmp == NULL)
+		return (0);
+	else
+		nbr++;
+	while (tmp != NULL)
+	{
+		tmp++;
+		tmp = ft_strchr(tmp, '|');
+		nbr += 2;
+	}
+	return (nbr);
+}
+
+char **split_out(char *str)
+{
+	char **new;
+	int nbr;
+	int i;
+	int j;
+	int start;
+
+	i = 0;
+	j = 0;
+	start = 0;
+	nbr = how_many_splits(str);
+	new = malloc(sizeof(char *) * (nbr + 1));
+	while (str[i] != '\0')
+	{
+		start = i;
+		while (str[i] != '\0' && str[i] != '|')
+			i++;
+		if (i > start)
+		{
+			new[j] = ft_strldup(&str[start], i - start + 1);
+			j++;
+		}
+		if (str[i] == '|')
+		{
+			new[j] = ft_strdup("|");
+			j++;
+		}
+		i++;
+	}
+	new[j] = NULL;
+	return (new);
+}
+
+char **split_pipes_phase_1(t_tprint tp)
+{
+	int i;
+	char **splitted;
+	char **tmp;
+	char **last;
+	char *quoted;
+
+	i = 0;
+	last = new_tab();
+	while (tp.tab[i] != NULL)
+	{
+		if(how_many_in_str(tp.tab[i], '|') > 0 && tp.print[i + 1] == 2 && ft_strlen(tp.tab[i]) > 1)
+		{
+			splitted = split_out(tp.tab[i]);
+			tmp = tabjoin(last, splitted);
+			tabfree(last);
+			tabfree(splitted);
+			last = tmp;
+		}
+		else
+		{
+			if (tp.print[i + 1] == 1 && i != 0)
+				quoted = add_quotes(tp.tab[i], '\"');
+			else if (tp.print[i + 1] == 0 && i != 0)
+				quoted = add_quotes(tp.tab[i], '\'');
+			else
+				quoted = ft_strdup(tp.tab[i]);
+			tmp = add_to_tab(last, quoted);
+			tabfree(last);
+			free(quoted);
+			last = tmp;
+		}
+		i++;
+	}
+	tmp = add_to_tab(last, "");
+	tabfree(last);
+	last = tmp;
+	last[tab_len(tmp) - 1] = NULL;
+	return (last);
+}
+
+char **split_pipes(t_tprint tp, int pipes)
+{
+	int i;
+	int start;
+	int j;
+	char **splitted;
+	char **new;
+
+	i = 0;
+	j = 0;
+	start = 0;
+	splitted = split_pipes_phase_1(tp);
+	new = malloc(sizeof(char *) * (pipes + 2));
+	while (splitted[i] != NULL)
+	{
+		start = i;
+		while (splitted[i] != NULL && !(splitted[i][0] == '|' && ft_strlen(splitted[i]) == 1))
+			i++;
+		if (i > start)
+		{
+			new[j] = join_strings(splitted, i, start);
+			j++;
+		}
+		if (splitted[i] != NULL)
+			i++;
+	}
+	tabfree(splitted);
+	new[j] = NULL;
+	return (new);
+}
+
 char	**clean_quotes(char **cmds, t_parse p)
 {
 	char	**new;
@@ -177,17 +456,36 @@ char	**clean_quotes_token(char **token, t_parse p)
 	return (new);
 }
 
+int check_closed_quotes(t_tprint tp)
+{
+	int i;
+
+	i = 1;
+	while (i <= tp.print[0])
+	{
+		if(tp.print[i] == -1)
+		{
+			printf(ERROR_QUOTES);
+			return (1);
+		}
+		i++;
+	}
+	return (0);
+}
+
 int	monitor(char *cmd, t_tab *t)
 {
-	t_parse	p;
+	t_parse		p;
+	t_tprint	tp;
 	
-	p = stock_parsing_infos(cmd);
-	t->p = p;
-	if (pre_parsing_errors(cmd, p))
+	tp = parsing_master(cmd);
+	if (check_closed_quotes(tp))
 		return (1);
-	p.cmds = clean_spaces(cmd);
-
-	// TO DO > faire une fonction qui verifie les commandes
+	p = stock_parsing_infos(tp);
+	if (!(p.redir_in >= 0 && p.redir_out >= 0))
+		return (1);
+	t->p = p;
+	p.cmds = split_pipes(tp, p.pipes);
 	if (tab_len(p.cmds) == 1 && p.redir == 0)
 	{
 		if (launch_cmds(p.cmds[0], t))
@@ -200,14 +498,13 @@ int	monitor(char *cmd, t_tab *t)
 	return (0);
 }
 
-// si fd vaut zéro il n'y a pas de fork sinon il y a un fork
-// Dans le cas où il y a des pipes la valeur doit être 0 sinon elle doit être true
 int	launch_cmds(char *cmd, t_tab *t)
 {
 	char	**token;
-	char	**cleaned;
+	t_tprint tp;
 
 	token = tokenize(cmd);
+	tp = parsing_master(cmd);
 	if (!ft_strncmp(cmd, "exit", 4) && (cmd[4] == ' ' || cmd[4] == '\0'))
 		ft_exit(cmd, t);
 	else if (!ft_strncmp(cmd, "cd", 2) && (cmd[2] == ' ' || cmd[2] == '\0'))
@@ -215,10 +512,7 @@ int	launch_cmds(char *cmd, t_tab *t)
 	else if (!ft_strncmp(cmd, "pwd", 3) && (cmd[3] == ' ' || cmd[3] == '\0'))
 		ms_b_pwd();
 	else if (!ft_strncmp(cmd, "echo", 4) && (cmd[4] == ' ' || cmd[4] == '\0'))
-	{
-		cleaned = clean_cmd_for_echo(cmd, t);
-		echo(cleaned, *t);
-	}
+		echo(tp, *t);
 	else if (!ft_strncmp(cmd, "export", 6) && (cmd[6] == ' ' || cmd[6] == '\0'))
 		t = ft_export(t, token);
 	else if (!ft_strncmp(cmd, "unset", 5) && (cmd[5] == ' ' || cmd[5] == '\0'))
@@ -259,7 +553,8 @@ int	launch_builtins_with_redir(char *cmd, t_tab *t, int fd, int std)
 	else if (!ft_strncmp(cmd, "pwd", 3) && (cmd[3] == ' ' || cmd[3] == '\0'))
 		ms_b_pwd();
 	else if (!ft_strncmp(cmd, "echo", 4) && (cmd[4] == ' ' || cmd[4] == '\0'))
-		echo(token, *t);
+		printf("En construction\n");
+		// echo(token, *t);
 	else if (!ft_strncmp(cmd, "export", 6) && (cmd[6] == ' ' || cmd[6] == '\0'))
 		t = ft_export(t, token);
 	else if (!ft_strncmp(cmd, "unset", 5) && (cmd[5] == ' ' || cmd[5] == '\0'))
@@ -285,7 +580,8 @@ int	launch_builtins_with_doors(char *cmd, t_tab *t, t_doors doors)
 	else if (!ft_strncmp(cmd, "pwd", 3) && (cmd[3] == ' ' || cmd[3] == '\0'))
 		ms_b_pwd();
 	else if (!ft_strncmp(cmd, "echo", 4) && (cmd[4] == ' ' || cmd[4] == '\0'))
-		echo(token, *t);
+		printf("En construction\n");
+		// echo(token, *t);
 	else if (!ft_strncmp(cmd, "export", 6) && (cmd[6] == ' ' || cmd[6] == '\0'))
 		t = ft_export(t, token);
 	else if (!ft_strncmp(cmd, "unset", 5) && (cmd[5] == ' ' || cmd[5] == '\0'))
@@ -298,8 +594,3 @@ int	launch_builtins_with_doors(char *cmd, t_tab *t, t_doors doors)
 		// ms_b_other(cmd);
 	return (0);
 }
-
-
-// minishell qui exit sans pipes par exemple avec ls -la
-// > parce que je ne fork pas dans other à cause des pipes. 
-// redirections

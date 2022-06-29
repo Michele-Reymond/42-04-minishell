@@ -6,7 +6,7 @@
 /*   By: mreymond <mreymond@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/20 10:43:17 by mreymond          #+#    #+#             */
-/*   Updated: 2022/06/23 10:18:25 by mreymond         ###   ########.fr       */
+/*   Updated: 2022/06/28 15:38:04 by mreymond         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -198,91 +198,179 @@ char	**ft_split_one_space(char const *s)
 	return (strtab);
 }
 
-void	echo_print(char **args, char **var)
+void	echo_print(char **args, char **var, int *print)
 {
 	int	i;
 	int	j;
+	int k;
+	int ok;
 
-	i = 0;
+	i = 1;
 	j = 0;
-	display_tab(args);
+	k = 0;
 	while (args[i] != NULL)
 	{
-		if (args[i][0] == '$' && how_many_in_str(args[i], ' ') == 0)
+		if (print[i + 1] == 0 || how_many_in_str(args[i], '$') == 0)
 		{
-			printf("%s", var[j]);
-			j++;
+			printf("%s", args[i]);
+			if (args[i + 1] != NULL)
+				printf(" ");
 		}
 		else
-			printf("%s", args[i]);
-		if (args[i + 1] != NULL && ft_strncmp(args[i + 1], "$ ", 2))
-			printf(" ");
+		{
+			k = 0;
+			ok = 0;
+			while (args[i][k] != '\0')
+			{
+				while (args[i][k] != '\0' && args[i][k] != '$')
+				{
+					printf("%c", args[i][k]);
+					ok = 1;
+					k++;
+				}
+				if(args[i][k] == '$')
+				{
+					if (var[j][0] != '\0')
+					{
+						printf("%s", var[j]);
+						if (how_many_in_str(&args[i][k + 1], '$') == 0 && args[i + 1] != NULL)
+						{
+							printf(" ");
+							ok = 0;
+						}
+					}
+					j++;
+					k++;
+					while (args[i][k] != '\0' && args[i][k] != ' ' && args[i][k] != '	' && args[i][k] != '$')
+						k++;
+				}
+			}
+			if (ok > 0)
+				printf(" ");
+		}
 		i++;
 	}
 }
 
-char	**echo_vars(char **token, t_tab t, int nbr)
+char *find_key(char *str)
+{
+	int i;
+	char *key;
+	
+	i = 0;
+	while (str[i] && str[i] != ' ' && str[i] != '	')
+		i++;
+	key = ft_strldup(&str[1], i);
+	return (key);
+}
+
+char	*export_to_var(char *str)
+{
+	char	*var;
+
+	while (str && *str != '=')
+		str++;
+	str += 2;
+	var = ft_strldup(str, ft_strlen(str));
+	return(var);
+}
+
+// ici tab ne commence pas avec la commande echo
+// on commance donc l'index de print à 2
+char	**echo_vars(char **tab, t_tab t, int nbr, int *print)
 {
 	int i;
 	int j;
 	int pos;
 	char **vars;
 	char *tmp;
+	char *key;
 
 	i = 0;
 	j = 0;
 	pos = 0;
 	vars = malloc(sizeof(char *) * nbr + 1);
-	while (token[i] != NULL)
+	while (tab[i] != NULL)
 	{
-		if (token[i][0] == '$')
+		if (print[i + 1] != 0)
 		{
-			if (token[i][1] == ' ')
-				pos = var_exist(t.exp, &token[i][2]);
-			else
-				pos = var_exist(t.exp, &token[i][1]);
-			if (pos == 0)
-				vars[j] = strdup("");
-			else
+			tmp = ft_strchr(tab[i], '$');
+			while (tmp != NULL)
 			{
-				tmp = strdup(t.exp[pos]);
-				while (tmp && *tmp != '=')
-					tmp++;
+				key = find_key(tmp);
+				pos = var_exist(t.exp, key);
+				if (pos == 0)
+					vars[j] = ft_strdup("");
+				else
+					vars[j] = export_to_var(t.exp[pos]);
 				tmp++;
-				vars[j] = ft_strdup(tmp);
+				tmp = ft_strchr(tmp, '$');
+				j++;
 			}
-			j++;
 		}
+		// if (tab[i][0] == '$')
+		// {
+		// 	if (tab[i][1] == ' ')
+		// 		pos = var_exist(t.exp, &tab[i][2]);
+		// 	else
+		// 		pos = var_exist(t.exp, &tab[i][1]);
+		// 	if (pos == 0)
+		// 		vars[j] = strdup("");
+		// 	else
+		// 	{
+		// 		tmp = strdup(t.exp[pos]);
+		// 		while (tmp && *tmp != '=')
+		// 			tmp++;
+		// 		tmp++;
+		// 		vars[j] = ft_strdup(tmp);
+		// 	}
+		// 	j++;
+		// }
 		i++;
 	}
 	vars[j] = NULL;
 	return (vars);
 }
 
-t_echo	echo_parsing(char **token, t_tab t)
+int how_many_dollars(char **tab, int *print)
+{
+	int i;
+	int nbr;
+
+	i = 0;
+	nbr = 0;
+	while (tab[i] != NULL && i <= print[0])
+	{
+		if (print[i + 1] != 0)
+			nbr = nbr + how_many_in_str(tab[i], '$');
+		i++;
+	}
+	return (nbr);
+}
+
+t_echo	echo_parsing(char **tab, t_tab t, int *print)
 {
 	t_echo elem;
 	int nbr_vars;
 	int i;
 
 	i = 1;
-	if (!ft_strncmp(token[1], "-n", 2))
+	if (!ft_strncmp(tab[1], "-n", 2))
 	{
 		elem.flag = 'n';
 		i++;
 	}
 	else
 		elem.flag = '0';
-	elem.args = tabdup(&token[i]);
 	i = 0;
 	while (elem.args[i])
 		i++;
 	elem.nbr_args = i;
-	nbr_vars = how_many_in_tab(token, '$');
+	nbr_vars = how_many_dollars(tab, print);
 	if (nbr_vars == 0)
 		elem.vars = NULL;
 	else
-		elem.vars = echo_vars(elem.args, t, nbr_vars);
+		elem.vars = echo_vars(tab, t, nbr_vars, print);
 	return (elem);
 }
 
@@ -704,7 +792,7 @@ char **split_cmds(char *cmd, int tablen)
 	y = 0;
 	tmp = 0;
 	stock = '\0';
-	new = malloc(sizeof(char *) * tablen + 1);
+	new = malloc(sizeof(char *) * (tablen + 1));
 	if (new == NULL)
 		return (NULL);
 	while (cmd[i] != '\0')
@@ -715,11 +803,11 @@ char **split_cmds(char *cmd, int tablen)
 		{
 			y = 0;
 			tmp = i;
-			while (cmd[i] != '\0' && cmd[i] != ' ' && cmd[i] != '	')
+			while (cmd[i] != '\0' && cmd[i] != ' ' && cmd[i] != '	' && cmd[i] != '\'' && cmd[i] != '\"')
 				i++;
-			new[j] = malloc(sizeof(char) * i - tmp + 1);
+			new[j] = malloc(sizeof(char) * (i - tmp + 1));
 			i = tmp;
-			while (cmd[i] != '\0' && cmd[i] != ' ' && cmd[i] != '	')
+			while (cmd[i] != '\0' && cmd[i] != ' ' && cmd[i] != '	' && cmd[i] != '\'' && cmd[i] != '\"')
 			{
 				new[j][y] = cmd[i];
 				i++;
@@ -727,7 +815,8 @@ char **split_cmds(char *cmd, int tablen)
 			}
 			new[j][y] = '\0';
 			j++;
-			i++;
+			if (cmd[i] == ' ' || cmd[i] == '	')
+				i++;
 		}
 		y = 0;
 		if (cmd[i] == '\0')
@@ -740,7 +829,7 @@ char **split_cmds(char *cmd, int tablen)
 		}
 		while(cmd[i] != '\0' && cmd[i] != stock)
 			i++;
-		new[j] = malloc(sizeof(char) * i - tmp + 1);
+		new[j] = malloc(sizeof(char) * (i - tmp + 2));
 		i = tmp;
 		if (cmd[i] == '\'' || cmd[i] == '\"')
 		{
@@ -768,7 +857,6 @@ char **split_cmds(char *cmd, int tablen)
 	return (new);
 }
 
-//ICIIII!!
 char **split_both_quotes(char *cmd)
 {
 	int tablen;
@@ -797,15 +885,21 @@ t_tprint parsing_master(char *cmd)
 	tp.print[0] = tab_len(tmp);
 	while (tmp[i] != NULL)
 	{
-		if (tmp[i][0] == '\'')
+		if (tmp[i][0] == '\'' && tmp[i][ft_strlen(tmp[i]) - 1] == '\'')
 		{
 			tp.tab[i] = ft_strtrim(tmp[i], "\'");
 			tp.print[i + 1] = 0;
 		}
-		else if (tmp[i][0] == '\"')
+		else if (tmp[i][0] == '\"' && tmp[i][ft_strlen(tmp[i]) - 1] == '\"')
 		{
 			tp.tab[i] = ft_strtrim(tmp[i], "\"");
 			tp.print[i + 1] = 1;
+		}
+		else if (tmp[i][0] == '\"' || tmp[i][0] == '\'' 
+			|| tmp[i][ft_strlen(tmp[i]) - 1] == '\"' || tmp[i][ft_strlen(tmp[i]) - 1] == '\'')
+		{
+			tp.tab[i] = ft_strdup(tmp[i]);
+			tp.print[i + 1] = -1;
 		}
 		else
 		{
@@ -818,98 +912,139 @@ t_tprint parsing_master(char *cmd)
 	return (tp);
 }
 
-char **split_all_quotes(char *cmd)
+// char **split_all_quotes(char *cmd)
+// {
+// 	char **new;
+// 	t_tprint tp;
+
+// 	tp = parsing_master(cmd);
+// 	// display_tab_and_int(tp.print, tp.tab);
+// 	return (new);
+// }
+
+// char **clean_cmd_for_echo(char *cmd, t_tab *t)
+// {
+// 	char **new;
+
+// 	(void) t;
+
+// 	// if (t->p.double_q == 0 && t->p.single_q == 0)
+// 	// 	new = tokenize(cmd);
+// 	// else if (t->p.double_q > 0 && t->p.single_q == 0)
+// 	// 	new = split_quotes(cmd,  '\"');
+// 	// else if (t->p.double_q == 0 && t->p.single_q > 0)
+// 	// 	new = split_quotes(cmd, '\'');
+// 	// else
+// 		new = split_all_quotes(cmd);
+// 	return (new);
+// }
+
+char **manage_single_quotes(char **tab)
 {
-	// int i;
-	// int j;
-	// int nbrdouble;
-	// int nbrsingle;
+	int i;
+	int j;
 	char **new;
-	t_tprint tp;
 
-	// i = -1;
-	// j = 1;
-	// nbrdouble = 0;
-	// nbrsingle = 0;
-	// while (i != -2)
-	// {
-	// 	if (i == -1)
-	// 		i++;
-	// 	nbrdouble += i;
-	// 	i = check_if_in(cmd, '\"',  '\'', j);
-	// 	if (i == -1)
-	// 		break ;
-	// 	j += 2;
-	// }
-
-	// i = -1;
-	// j = 1;
-	// while (i != -2)
-	// {
-	// 	if (i == -1)
-	// 		i++;
-	// 	nbrsingle += i;
-	// 	i = check_if_in(cmd, '\'',  '\"', j);
-	// 	if (i == -1)
-	// 		break ;
-	// 	j += 2;
-	// }
-
-	// if (nbrdouble == 0 && nbrsingle == 0)
-	// 	new = seperated_quotes(cmd);
-	// else if (nbrdouble > 0 && nbrsingle == 0)
-	// 	tp = doubles_inside(cmd);
-	// else if (nbrdouble == 0 && nbrsingle > 0)
-	// {
-	// 	printf("help\n\n");
-	tp = parsing_master(cmd);
-	display_tab_and_int(tp.print, tp.tab);
-	// }
-	// else
-	// {
-	// 	printf("yeah\n\n");
-	// 	tp = doubles_inside(cmd);
-	// 	display_tab_and_int(tp.print, tp.tab);
-	// }
-	exit(0);
-	new = tokenize(cmd);
+	i = 0;
+	j = 0;
+	new = malloc(sizeof(char *) * tab_len(tab) + 3);
+	while (tab[i] != NULL)
+	{
+		if (tab[i][0] == '\'')
+		{
+			new[j] = ft_strdup("\'");
+			j++;
+			new[j] = ft_strdup(&tab[i][1]);
+		}
+		else if (tab[i][ft_strlen(tab[i]) - 1] == '\'')
+		{
+			new[j] = ft_strldup(tab[i], ft_strlen(tab[i]));
+			j++;
+			new[j] = ft_strdup("\'");
+		}
+		else
+			new[j] = ft_strdup(tab[i]);
+		i++;
+		j++;
+	}
+	new[j] = NULL;
 	return (new);
 }
 
-char **clean_cmd_for_echo(char *cmd, t_tab *t)
+t_tprint echo_parse_quotes(t_tprint tp)
 {
-	char **new;
+	int i;
+	t_tprint new;
+	char **tmp;
+	// char **tmp2;
+	char **splitted;
+	int *intmp;
 
-	(void) t;
-
-	// if (t->p.double_q == 0 && t->p.single_q == 0)
-	// 	new = tokenize(cmd);
-	// else if (t->p.double_q > 0 && t->p.single_q == 0)
-	// 	new = split_quotes(cmd,  '\"');
-	// else if (t->p.double_q == 0 && t->p.single_q > 0)
-	// 	new = split_quotes(cmd, '\'');
-	// else
-		new = split_all_quotes(cmd);
+	i = 0;
+	new.tab = new_tab();
+	new.print = new_inttab();
+	// display_tab_and_int(tp.print, tp.tab);
+	// printf("------\n");
+	while (tp.tab[i] != NULL)
+	{
+		// printf("%d: ", tp.print[i + 1]);
+		// printf("%s\n", tp.tab[i]);
+		if (tp.print[i + 1] == 1)
+		{
+			splitted = ft_split_one_space(tp.tab[i]);
+			// if (how_many_in_str(tp.tab[i], '\'') > 1)
+			// {
+			// 	tmp = tabjoin(new.tab, splitted);
+			// 	tmp2 = manage_single_quotes(tmp);
+			// 	intmp = fill_inttab(new.print, 1, tab_len(splitted) + 2);
+			// 	tabfree(tmp);
+			// }
+			// else
+			// {
+				tmp = tabjoin(new.tab, splitted);
+				intmp = fill_inttab(new.print, 1, tab_len(splitted));
+			// }
+			tabfree(new.tab);
+			free(new.print);
+			free(splitted);
+			new.print = intmp;
+			new.tab = tmp;
+		}
+		else
+		{
+			tmp = add_to_tab(new.tab, tp.tab[i]);
+			intmp = add_to_inttab(new.print, tp.print[i + 1]);
+			free(new.print);
+			new.print = intmp;
+			tabfree(new.tab);
+			new.tab = tmp;
+		}
+		i++;
+	}
+	// display_tab_and_int(new.print, new.tab);
+	// exit(0);
 	return (new);
 }
 
-void	echo(char **token, t_tab t)
+void	echo(t_tprint tp, t_tab t)
 {
 	t_echo elem;
-	// char **cleaned;
+	// t_tprint preparsed;
 
-	// cleaned = clean_quotes_token(token, t.p);
-	if (tab_len(token) < 2)
+	// preparsed = echo_parse_quotes(tp);
+	// display_tab_and_int(preparsed.print, preparsed.tab);
+	if (tab_len(tp.tab) < 2)
 		elem.nbr_args = 0;
 	else
-		elem = echo_parsing(token, t);
+		elem = echo_parsing(tp.tab, t, tp.print);
+	elem.args = tabdup(tp.tab);
 	if (elem.nbr_args == 0 && elem.flag != 'n')
 		printf("\n");
 	if (elem.nbr_args > 0 && elem.flag == 'n')
-		echo_print(elem.args, elem.vars);
+		echo_print(elem.args, elem.vars, tp.print);
 	if (elem.nbr_args > 0 && elem.flag != 'n')
 	{
-		echo_print(elem.args, elem.vars);
+		echo_print(elem.args, elem.vars, tp.print);
 		printf("\n");
 	}
 	exit_status = 0;
