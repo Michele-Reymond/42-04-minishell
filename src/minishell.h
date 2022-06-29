@@ -6,7 +6,7 @@
 /*   By: mreymond <mreymond@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/20 10:48:46 by mreymond          #+#    #+#             */
-/*   Updated: 2022/06/28 21:34:11 by mreymond         ###   ########.fr       */
+/*   Updated: 2022/06/29 11:16:57 by mreymond         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,8 +35,10 @@
 # define ERROR_FILE "No such file or directory\n"
 # define EXIT "exit\n"
 # define ERRORS_EXIT "exit: "
+# define ERRORS_EXP "export: "
 # define ERRORS_EXIT_ARGS "too many arguments\n"
 # define ERRORS_NUM "numeric argument required\n"
+# define ERRORS_IDENTIFIER "not a valid identifier\n"
 
 // ______ Global variable_______
 int	exit_status;
@@ -58,6 +60,7 @@ typedef struct s_var
 {
 	char	*key;
 	char	*value;
+	int		status;
 }	t_var;
 
 typedef struct s_doors
