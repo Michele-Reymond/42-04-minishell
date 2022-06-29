@@ -6,7 +6,7 @@
 /*   By: mreymond <mreymond@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/27 13:06:22 by mreymond          #+#    #+#             */
-/*   Updated: 2022/06/29 09:40:57 by mreymond         ###   ########.fr       */
+/*   Updated: 2022/06/29 10:20:26 by mreymond         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -375,10 +375,6 @@ char **split_pipes_phase_1(t_tprint tp)
 	return (last);
 }
 
-// TO DO : splitted est ok mais ensuite il faut joindre les morceau entre les pipes
-// echo|echo|machin| truc " coucou | truc" |hello
-// echo "coucou pouet"|cat yolo| echo "ceci n'est pas un |"
-// echo "coucou pouet"|cat yolo| echo "ceci n'est pas un |" | echo yes
 char **split_pipes(t_tprint tp, int pipes)
 {
 	int i;
@@ -505,10 +501,10 @@ int	monitor(char *cmd, t_tab *t)
 int	launch_cmds(char *cmd, t_tab *t)
 {
 	char	**token;
-	// char	**cleaned;
 	t_tprint tp;
 
 	token = tokenize(cmd);
+	tp = parsing_master(cmd);
 	if (!ft_strncmp(cmd, "exit", 4) && (cmd[4] == ' ' || cmd[4] == '\0'))
 		ft_exit(cmd, t);
 	else if (!ft_strncmp(cmd, "cd", 2) && (cmd[2] == ' ' || cmd[2] == '\0'))
@@ -516,10 +512,7 @@ int	launch_cmds(char *cmd, t_tab *t)
 	else if (!ft_strncmp(cmd, "pwd", 3) && (cmd[3] == ' ' || cmd[3] == '\0'))
 		ms_b_pwd();
 	else if (!ft_strncmp(cmd, "echo", 4) && (cmd[4] == ' ' || cmd[4] == '\0'))
-	{
-		tp = parsing_master(cmd);
 		echo(tp, *t);
-	}
 	else if (!ft_strncmp(cmd, "export", 6) && (cmd[6] == ' ' || cmd[6] == '\0'))
 		t = ft_export(t, token);
 	else if (!ft_strncmp(cmd, "unset", 5) && (cmd[5] == ' ' || cmd[5] == '\0'))

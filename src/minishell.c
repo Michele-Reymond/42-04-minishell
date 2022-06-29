@@ -6,7 +6,7 @@
 /*   By: mreymond <mreymond@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/20 10:47:58 by mreymond          #+#    #+#             */
-/*   Updated: 2022/06/28 15:52:59 by mreymond         ###   ########.fr       */
+/*   Updated: 2022/06/29 10:01:16 by mreymond         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,8 +41,6 @@ int	main(int argc, char **argv, char **envp)
 // TO DO!!
 
 // quotes :
-// to do: split_pipes(t_tprint tp, int pipes) à continuer
-// // minishell: "echo": Command not found
 
 // 3. signaux
 // 4. .minishell (checker other correctement)
@@ -54,7 +52,5 @@ int	main(int argc, char **argv, char **envp)
 // export foo = bar qui segfault (gestion des erreurs de export)
 // lancer une commande avec le chemin: /bin/ls
 // Test only spaces or tabs. (comment faire avec TAB?)
-// Double Quotes :  echo "cat lol.c | cat > lol.c"
-// echo '$USER' must print $USER
 // Execute commands but this time use a relative path (pas bien compris cett demande)
 // Unset the $PATH and check if it is not working anymore
