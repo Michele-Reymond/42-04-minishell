@@ -6,7 +6,7 @@
 /*   By: mreymond <mreymond@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/26 12:37:07 by vroch             #+#    #+#             */
-/*   Updated: 2022/06/29 17:12:30 by mreymond         ###   ########.fr       */
+/*   Updated: 2022/06/29 17:44:37 by mreymond         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -407,7 +407,13 @@ void	status_of_child(int status)
 	}
 	if (WIFSIGNALED(status))
 	{
-		exit_status = WTERMSIG(status);
+		// printf("%d\n", WIFSIGNALED(status));
+		// printf("%d\n", WTERMSIG(status));
+		// printf("%d\n", SIGINT + 128);
+		// exit_status = WTERMSIG(status);
+		// if (exit_status != 131)
+		// 	exit_status += 128;
+		exit_status = SIGINT;
 		if (exit_status != 131)
 			exit_status += 128;
 	}
