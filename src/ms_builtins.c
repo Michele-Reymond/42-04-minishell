@@ -6,7 +6,7 @@
 /*   By: mreymond <mreymond@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/27 13:06:22 by mreymond          #+#    #+#             */
-/*   Updated: 2022/06/29 10:20:26 by mreymond         ###   ########.fr       */
+/*   Updated: 2022/06/29 10:59:20 by mreymond         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -545,16 +545,17 @@ int	is_a_builtin(char *cmd)
 int	launch_builtins_with_redir(char *cmd, t_tab *t, int fd, int std)
 {
 	char	**token;
+	t_tprint tp;
 
 	token = tokenize(cmd);
+	tp = parsing_master(cmd);
 	dup2(fd, std);
 	if (!ft_strncmp(cmd, "cd", 2) && (cmd[2] == ' ' || cmd[2] == '\0'))
 		t = ms_b_cd(cmd, t);
 	else if (!ft_strncmp(cmd, "pwd", 3) && (cmd[3] == ' ' || cmd[3] == '\0'))
 		ms_b_pwd();
 	else if (!ft_strncmp(cmd, "echo", 4) && (cmd[4] == ' ' || cmd[4] == '\0'))
-		printf("En construction\n");
-		// echo(token, *t);
+		echo(tp, *t);
 	else if (!ft_strncmp(cmd, "export", 6) && (cmd[6] == ' ' || cmd[6] == '\0'))
 		t = ft_export(t, token);
 	else if (!ft_strncmp(cmd, "unset", 5) && (cmd[5] == ' ' || cmd[5] == '\0'))
@@ -571,8 +572,10 @@ int	launch_builtins_with_redir(char *cmd, t_tab *t, int fd, int std)
 int	launch_builtins_with_doors(char *cmd, t_tab *t, t_doors doors)
 {
 	char	**token;
+	t_tprint tp;
 
 	token = tokenize(cmd);
+	tp = parsing_master(cmd);
 	dup2(doors.in, STDIN_FILENO);
 	dup2(doors.out, STDOUT_FILENO);
 	if (!ft_strncmp(cmd, "cd", 2) && (cmd[2] == ' ' || cmd[2] == '\0'))
@@ -580,8 +583,7 @@ int	launch_builtins_with_doors(char *cmd, t_tab *t, t_doors doors)
 	else if (!ft_strncmp(cmd, "pwd", 3) && (cmd[3] == ' ' || cmd[3] == '\0'))
 		ms_b_pwd();
 	else if (!ft_strncmp(cmd, "echo", 4) && (cmd[4] == ' ' || cmd[4] == '\0'))
-		printf("En construction\n");
-		// echo(token, *t);
+		echo(tp, *t);
 	else if (!ft_strncmp(cmd, "export", 6) && (cmd[6] == ' ' || cmd[6] == '\0'))
 		t = ft_export(t, token);
 	else if (!ft_strncmp(cmd, "unset", 5) && (cmd[5] == ' ' || cmd[5] == '\0'))
