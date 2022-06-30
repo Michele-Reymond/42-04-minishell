@@ -6,7 +6,7 @@
 /*   By: mreymond <mreymond@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/20 10:47:58 by mreymond          #+#    #+#             */
-/*   Updated: 2022/06/30 15:03:35 by mreymond         ###   ########.fr       */
+/*   Updated: 2022/06/30 18:07:58 by mreymond         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,10 +39,11 @@ int	main(int argc, char **argv, char **envp)
 }
 
 // TO DO (Michèle)!!
-// 3. parsing dans les redirections
-// verifier toutes les sorties. valeur de exit_status
+// 1. launch_pipes_with_redir(p, t) à fair pour le parsing!!!
+// 2. checker les erreur bash ci-dessous
+// 3. verifier toutes les sorties. valeur de exit_status
 
-// quotes :
+// quotes:
 
 // 4. .minishell (checker other correctement)
 // 5. regler les bugs
