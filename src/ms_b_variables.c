@@ -6,7 +6,7 @@
 /*   By: mreymond <mreymond@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/27 11:28:42 by mreymond          #+#    #+#             */
-/*   Updated: 2022/06/28 19:54:17 by mreymond         ###   ########.fr       */
+/*   Updated: 2022/06/29 16:32:09 by mreymond         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -81,6 +81,14 @@ t_tab	*unset_var(t_tab *t, char **token)
 		ok = 0;
 		while (token[j] != NULL)
 		{
+			if (check_identifier(token[j]))
+			{
+				printf(MINISHELL ERRORS_EXP "\'%s\': ", token[j]);
+				printf(ERRORS_IDENTIFIER);
+				tabfree(new);
+				exit_status = 1;
+				return (t);
+			}
 			if (!ft_strncmp(t->env[i], token[j], ft_strlen(token[j])))
 			{
 				ok = 1;
@@ -100,6 +108,7 @@ t_tab	*unset_var(t_tab *t, char **token)
 	tabfree(t->exp);
 	t->env = new;
 	t->exp = tabsort(t->env);
+	exit_status = 0;
 	return (t);
 }
 

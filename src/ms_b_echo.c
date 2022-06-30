@@ -6,7 +6,7 @@
 /*   By: mreymond <mreymond@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/20 10:43:17 by mreymond          #+#    #+#             */
-/*   Updated: 2022/06/28 15:38:04 by mreymond         ###   ########.fr       */
+/*   Updated: 2022/06/29 16:52:45 by mreymond         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -228,7 +228,7 @@ void	echo_print(char **args, char **var, int *print)
 					ok = 1;
 					k++;
 				}
-				if(args[i][k] == '$')
+				if (args[i][k] == '$')
 				{
 					if (var[j][0] != '\0')
 					{
@@ -242,7 +242,11 @@ void	echo_print(char **args, char **var, int *print)
 					j++;
 					k++;
 					while (args[i][k] != '\0' && args[i][k] != ' ' && args[i][k] != '	' && args[i][k] != '$')
+					{
+						if (args[i][k] == '\'')
+							printf("\'");
 						k++;
+					}
 				}
 			}
 			if (ok > 0)
@@ -363,6 +367,7 @@ t_echo	echo_parsing(char **tab, t_tab t, int *print)
 	else
 		elem.flag = '0';
 	i = 0;
+	elem.args = tabdup(tab);
 	while (elem.args[i])
 		i++;
 	elem.nbr_args = i;
@@ -1029,15 +1034,11 @@ t_tprint echo_parse_quotes(t_tprint tp)
 void	echo(t_tprint tp, t_tab t)
 {
 	t_echo elem;
-	// t_tprint preparsed;
-
-	// preparsed = echo_parse_quotes(tp);
-	// display_tab_and_int(preparsed.print, preparsed.tab);
+	
 	if (tab_len(tp.tab) < 2)
 		elem.nbr_args = 0;
 	else
 		elem = echo_parsing(tp.tab, t, tp.print);
-	elem.args = tabdup(tp.tab);
 	if (elem.nbr_args == 0 && elem.flag != 'n')
 		printf("\n");
 	if (elem.nbr_args > 0 && elem.flag == 'n')
@@ -1049,18 +1050,3 @@ void	echo(t_tprint tp, t_tab t)
 	}
 	exit_status = 0;
 }
-
-
-
-
-	// t_echo		test;
-
-	// test.cmd = "echo";
-	// test.nbr_args = 3;
-	// test.flag = ' ';
-	// test.vars = NULL;
-	// test.args = malloc(sizeof(char *) * 4);
-	// test.args[0] = "bonjour";
-	// test.args[1] = "les";
-	// test.args[2] = "copains";
-	// test.args[3] = NULL;

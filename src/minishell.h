@@ -6,7 +6,7 @@
 /*   By: mreymond <mreymond@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/20 10:48:46 by mreymond          #+#    #+#             */
-/*   Updated: 2022/06/29 11:16:57 by mreymond         ###   ########.fr       */
+/*   Updated: 2022/06/29 16:35:24 by mreymond         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -136,6 +136,7 @@ t_tprint	parsing_master(char *cmd);
 void		display_tab_and_int(int *inttab, char **tab);
 void		display_inttab(int *inttab);
 char		*ft_strldup(const char *src, size_t dstsize);
+int			check_identifier(char *str);
 
 //			errors
 void		check_args(int argc);
