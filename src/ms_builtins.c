@@ -6,7 +6,7 @@
 /*   By: mreymond <mreymond@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/27 13:06:22 by mreymond          #+#    #+#             */
-/*   Updated: 2022/06/29 10:59:20 by mreymond         ###   ########.fr       */
+/*   Updated: 2022/06/29 16:55:24 by mreymond         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -500,10 +500,8 @@ int	monitor(char *cmd, t_tab *t)
 
 int	launch_cmds(char *cmd, t_tab *t)
 {
-	char	**token;
 	t_tprint tp;
 
-	token = tokenize(cmd);
 	tp = parsing_master(cmd);
 	if (!ft_strncmp(cmd, "exit", 4) && (cmd[4] == ' ' || cmd[4] == '\0'))
 		ft_exit(cmd, t);
@@ -514,9 +512,9 @@ int	launch_cmds(char *cmd, t_tab *t)
 	else if (!ft_strncmp(cmd, "echo", 4) && (cmd[4] == ' ' || cmd[4] == '\0'))
 		echo(tp, *t);
 	else if (!ft_strncmp(cmd, "export", 6) && (cmd[6] == ' ' || cmd[6] == '\0'))
-		t = ft_export(t, token);
+		t = ft_export(t, tp.tab);
 	else if (!ft_strncmp(cmd, "unset", 5) && (cmd[5] == ' ' || cmd[5] == '\0'))
-		t = unset_var(t, token);
+		t = unset_var(t, tp.tab);
 	else if (!ft_strncmp(cmd, "env", 3) && (cmd[3] == ' ' || cmd[3] == '\0'))
 		display_env(t->env);
 	else
@@ -544,55 +542,51 @@ int	is_a_builtin(char *cmd)
 
 int	launch_builtins_with_redir(char *cmd, t_tab *t, int fd, int std)
 {
-	char	**token;
 	t_tprint tp;
 
-	token = tokenize(cmd);
 	tp = parsing_master(cmd);
 	dup2(fd, std);
-	if (!ft_strncmp(cmd, "cd", 2) && (cmd[2] == ' ' || cmd[2] == '\0'))
+	if (!ft_strncmp(cmd, "exit", 4) && (cmd[4] == ' ' || cmd[4] == '\0'))
+		ft_exit(cmd, t);
+	else if (!ft_strncmp(cmd, "cd", 2) && (cmd[2] == ' ' || cmd[2] == '\0'))
 		t = ms_b_cd(cmd, t);
 	else if (!ft_strncmp(cmd, "pwd", 3) && (cmd[3] == ' ' || cmd[3] == '\0'))
 		ms_b_pwd();
 	else if (!ft_strncmp(cmd, "echo", 4) && (cmd[4] == ' ' || cmd[4] == '\0'))
 		echo(tp, *t);
 	else if (!ft_strncmp(cmd, "export", 6) && (cmd[6] == ' ' || cmd[6] == '\0'))
-		t = ft_export(t, token);
+		t = ft_export(t, tp.tab);
 	else if (!ft_strncmp(cmd, "unset", 5) && (cmd[5] == ' ' || cmd[5] == '\0'))
-		t = unset_var(t, token);
+		t = unset_var(t, tp.tab);
 	else if (!ft_strncmp(cmd, "env", 3) && (cmd[3] == ' ' || cmd[3] == '\0'))
 		display_env(t->env);
 	else
 		return (1);
-		// test_other(cmd, t, fd, std);
-		// ms_b_other(cmd);
 	return (0);
 }
 
 int	launch_builtins_with_doors(char *cmd, t_tab *t, t_doors doors)
 {
-	char	**token;
 	t_tprint tp;
 
-	token = tokenize(cmd);
 	tp = parsing_master(cmd);
 	dup2(doors.in, STDIN_FILENO);
 	dup2(doors.out, STDOUT_FILENO);
-	if (!ft_strncmp(cmd, "cd", 2) && (cmd[2] == ' ' || cmd[2] == '\0'))
+	if (!ft_strncmp(cmd, "exit", 4) && (cmd[4] == ' ' || cmd[4] == '\0'))
+		ft_exit(cmd, t);
+	else if (!ft_strncmp(cmd, "cd", 2) && (cmd[2] == ' ' || cmd[2] == '\0'))
 		t = ms_b_cd(cmd, t);
 	else if (!ft_strncmp(cmd, "pwd", 3) && (cmd[3] == ' ' || cmd[3] == '\0'))
 		ms_b_pwd();
 	else if (!ft_strncmp(cmd, "echo", 4) && (cmd[4] == ' ' || cmd[4] == '\0'))
 		echo(tp, *t);
 	else if (!ft_strncmp(cmd, "export", 6) && (cmd[6] == ' ' || cmd[6] == '\0'))
-		t = ft_export(t, token);
+		t = ft_export(t, tp.tab);
 	else if (!ft_strncmp(cmd, "unset", 5) && (cmd[5] == ' ' || cmd[5] == '\0'))
-		t = unset_var(t, token);
+		t = unset_var(t, tp.tab);
 	else if (!ft_strncmp(cmd, "env", 3) && (cmd[3] == ' ' || cmd[3] == '\0'))
 		display_env(t->env);
 	else
 		return (1);
-		// test_other(cmd, t, fd, std);
-		// ms_b_other(cmd);
 	return (0);
 }

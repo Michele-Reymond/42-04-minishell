@@ -6,7 +6,7 @@
 /*   By: mreymond <mreymond@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/26 12:37:07 by vroch             #+#    #+#             */
-/*   Updated: 2022/06/17 15:35:06 by mreymond         ###   ########.fr       */
+/*   Updated: 2022/06/29 17:44:37 by mreymond         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -360,32 +360,30 @@ void	exec_cmd(char **paths, char *first_cmd, char **envp, char **flags)
 	free(first_cmd);
 }
 
-char	**split_flags(char *cmds)
-{
-	char	**flags;
+// char	**split_flags(char *cmds)
+// {
+// 	char	**flags;
 
-	if (ft_strnstr(cmds, "awk", 3) == NULL)
-		flags = ft_split(cmds, ' ');
-	else
-	{
-		flags = ft_split(cmds, '\'');
-		flags[0][3] = '\0';
-	}
-	return (flags);
-}
+// 	if (ft_strnstr(cmds, "awk", 3) == NULL)
+// 		flags = ft_split(cmds, ' ');
+// 	else
+// 	{
+// 		flags = ft_split(cmds, '\'');
+// 		flags[0][3] = '\0';
+// 	}
+// 	return (flags);
+// }
 
 void	launch_child_process(char *buff, char **paths, char **envp)
 {
 	char	*first_cmd;
-	char	**flags;
-	char	**token;
+	t_tprint	tp;
 
-	token = tokenize(buff);
-	first_cmd = ft_strjoin("/", token[0]);
-	flags = split_flags(buff);
-	exec_cmd(paths, first_cmd, envp, flags);
-	tabfree(flags);
-	tabfree(token);
+	tp = parsing_master(buff);
+	first_cmd = ft_strjoin("/", tp.tab[0]);
+	exec_cmd(paths, first_cmd, envp, tp.tab);
+	tabfree(tp.tab);
+	free(tp.print);
 }
 
 // lancer cette comande dans les pipes
@@ -409,7 +407,13 @@ void	status_of_child(int status)
 	}
 	if (WIFSIGNALED(status))
 	{
-		exit_status = WTERMSIG(status);
+		// printf("%d\n", WIFSIGNALED(status));
+		// printf("%d\n", WTERMSIG(status));
+		// printf("%d\n", SIGINT + 128);
+		// exit_status = WTERMSIG(status);
+		// if (exit_status != 131)
+		// 	exit_status += 128;
+		exit_status = SIGINT;
 		if (exit_status != 131)
 			exit_status += 128;
 	}

@@ -6,7 +6,7 @@
 /*   By: mreymond <mreymond@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/20 10:43:17 by mreymond          #+#    #+#             */
-/*   Updated: 2022/06/29 11:48:52 by mreymond         ###   ########.fr       */
+/*   Updated: 2022/06/29 16:34:47 by mreymond         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,6 +50,20 @@ int var_check(t_var var)
 	return (0);
 }
 
+int check_identifier(char *str)
+{
+	int i;
+
+	i = 0;
+	while (str[i] != '\0')
+	{
+		if (((!ft_isalpha(str[i]) && i == 0) || str[i] == '_') || ((!ft_isalnum(str[i]) && i > 0) || str[i] == '_'))
+			return (1);
+		i++;
+	}
+	return (0);
+}
+
 t_tab	*ft_export(t_tab *t, char **token)
 {
 	t_var	*vartab;
@@ -68,7 +82,7 @@ t_tab	*ft_export(t_tab *t, char **token)
 		while (token[i])
 		{
 			vartab[j] = str_to_var(token[i]);
-			if (vartab[j].key == NULL)
+			if (vartab[j].key == NULL || check_identifier(token[i]))
 			{
 				vartab[j].key = ft_strdup(token[i]);
 				vartab[j].status = -1;
@@ -91,6 +105,7 @@ t_tab	*ft_export(t_tab *t, char **token)
 				tabfree(t->exp);
 				t->env = tmp;
 				t->exp = tabsort(tmp2);
+				exit_status = 0;
 				j++;
 				i--;
 			}
@@ -98,6 +113,7 @@ t_tab	*ft_export(t_tab *t, char **token)
 			{
 				printf(MINISHELL ERRORS_EXP "\'%s\': ", vartab[j].key);
 				printf(ERRORS_IDENTIFIER);
+				exit_status = 1;
 				j++;
 				i--;
 			}
@@ -105,6 +121,7 @@ t_tab	*ft_export(t_tab *t, char **token)
 			{
 				j++;
 				i--;
+				exit_status = 0;
 			}
 		}
 	}

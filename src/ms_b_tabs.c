@@ -6,7 +6,7 @@
 /*   By: mreymond <mreymond@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/27 11:26:36 by mreymond          #+#    #+#             */
-/*   Updated: 2022/06/27 21:58:36 by mreymond         ###   ########.fr       */
+/*   Updated: 2022/06/29 16:37:26 by mreymond         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,7 +29,11 @@ void	tabfree(char **tab)
 	i = 0;
 	while (tab[i] != NULL)
 	{
-		free(tab[i]);
+		if (tab[i] != NULL)
+		{
+			free(tab[i]);
+			tab[i] = NULL;
+		}
 		i++;
 	}
 	free(tab);
