@@ -6,7 +6,7 @@
 /*   By: mreymond <mreymond@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/20 10:47:58 by mreymond          #+#    #+#             */
-/*   Updated: 2022/06/30 18:07:58 by mreymond         ###   ########.fr       */
+/*   Updated: 2022/06/30 20:34:28 by mreymond         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,8 +39,6 @@ int	main(int argc, char **argv, char **envp)
 }
 
 // TO DO (Michèle)!!
-// 1. launch_pipes_with_redir(p, t) à fair pour le parsing!!!
-// 2. checker les erreur bash ci-dessous
 // 3. verifier toutes les sorties. valeur de exit_status
 
 // quotes:
@@ -56,10 +54,3 @@ int	main(int argc, char **argv, char **envp)
 // Unset the $PATH and check if it is not working anymore
 
 // FAUX par rapport a bash :
-
-//1. 
-//echo " > << > >>> <<<"     << truc qui sort :
-// > << > >>> <<< .heredoc
-
-//2. echo " > << > >>> <<<"     < truc
-// dois sortir l'erreur : bash: truc: No such file or directory

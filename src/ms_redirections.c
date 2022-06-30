@@ -6,7 +6,7 @@
 /*   By: mreymond <mreymond@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/06 15:58:02 by mreymond          #+#    #+#             */
-/*   Updated: 2022/06/30 17:54:18 by mreymond         ###   ########.fr       */
+/*   Updated: 2022/06/30 20:34:16 by mreymond         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -173,6 +173,33 @@ void	check_files_out(char *file)
 	}
 }
 
+int	check_files_in_basic(char *file)
+{
+	if (access(file, F_OK) != 0)
+	{
+		printf("minishell: %s : %s \n", file,  strerror(errno));
+		return (1);
+	}
+	if (access(file, R_OK) != 0)
+	{
+		printf("minishell: %s : %s \n", file,  strerror(errno));
+		return (1);
+	}
+    return (0);
+}
+
+int	check_files_out_basic(char *file)
+{
+	if (access(file, F_OK) != 0)
+		open(file, O_CREAT | O_RDWR | O_TRUNC, 0644);
+	if (access(file, W_OK) != 0)
+	{
+		printf("minishell: %s : %s \n", file,  strerror(errno));
+		return (1);
+	}
+    return (0);
+}
+
 void fork_and_launch_builtin(char *cmd, t_tab *t, int fd, int std)
 {
     pid_t	pid;
@@ -287,6 +314,25 @@ void launch_in(t_redir r, t_tab *t, char *cmd)
     int		infile;
 
     check_files_in(r.dest);
+	infile = open(r.dest, O_RDONLY);
+	if (infile < 0)
+	{
+		perror("minishell: ");
+		exit(EXIT_FAILURE);
+	}
+   if (is_a_builtin(cmd))
+        fork_and_launch_builtin(cmd, t, infile, STDIN_FILENO);
+    else
+        other_redir_and_fork(cmd, t, infile, STDIN_FILENO);
+}
+
+// <
+void launch_in_basic(t_redir r, t_tab *t, char *cmd)
+{
+    int		infile;
+
+    if (check_files_in_basic(r.dest))
+        return;
 	infile = open(r.dest, O_RDONLY);
 	if (infile < 0)
 	{
@@ -416,6 +462,7 @@ void launch_in_d_in_pipe(t_tab *t, char *cmd)
 void launch_in_d(t_redir r, t_tab *t, char *cmd)
 {
     int     tmpfile;
+    int     fd;
     char    *input;
     char    *newcmd;
     pid_t	pid;
@@ -443,7 +490,9 @@ void launch_in_d(t_redir r, t_tab *t, char *cmd)
             }
             free(input);
         }
-        newcmd = ft_strjoin(cmd, " .heredoc");
+        newcmd = ft_strdup(cmd);
+        fd = open(".heredoc", O_RDONLY);
+        dup2(fd, STDIN_FILENO);
         if (launch_cmds(newcmd, t))
             other_basic(newcmd, t);
         close(tmpfile);
@@ -473,7 +522,7 @@ void launch_redir(t_redir r, t_tab *t, char *cmd)
     if (!ft_strncmp(r.redir, ">", 1) && r.redir[1] == '\0')
 		launch_out(r, t, cmd);
     else if (!ft_strncmp(r.redir, "<", 1) && r.redir[1] == '\0')
-		launch_in(r, t, cmd);
+		launch_in_basic(r, t, cmd);
     else if (!ft_strncmp(r.redir, ">>", 2) && r.redir[2] == '\0')
 		launch_out_d(r, t, cmd);
     else if (!ft_strncmp(r.redir, "<<", 2) && r.redir[2] == '\0')
@@ -1175,7 +1224,6 @@ void    launching_redirs(char *cmd, t_tab *t)
 {
     t_redir *r;
     char    **newcmds;
-    char    **tmp;
     int     len;
 
     if (nbr_of_redir(cmd) == 0)
@@ -1194,8 +1242,7 @@ void    launching_redirs(char *cmd, t_tab *t)
     }
     else if (nbr_of_redir(cmd) > 1)
     {
-        tmp = add_to_tab(new_tab(), cmd);
-        newcmds = one_redir_pro_cmd(tmp);
+        newcmds = a_redir_pro_cmd(cmd);
         r = stock_redir_infos(newcmds);
         len = tab_len(newcmds);
         launch_multiple_redir_in_pipes(r, t, newcmds);
