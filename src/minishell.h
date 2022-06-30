@@ -226,6 +226,7 @@ char		**tabjoin(char **tab1, char **tab2);
 
 //			Signaux
 void    	signal_handler(void);
+void		rl_replace_line (const char *text, int clear_undo);
 
 //			à checker si utilisé
 void		display(char **env);

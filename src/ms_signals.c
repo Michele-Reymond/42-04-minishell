@@ -21,7 +21,7 @@ void    on_sigquit(int sig, siginfo_t *info, void *context)
 	{
 		write(1, "\n", 1);
 		rl_on_new_line();
-		//rl_replace_line("", 0);
+		rl_replace_line("", 0);
 		rl_redisplay();
 	}
 }
@@ -35,7 +35,7 @@ void    on_sigint(int sig, siginfo_t *info, void *context)
 	{
 		write(1, "\n", 1);
 		rl_on_new_line();
-		//rl_replace_line("", 0);
+		rl_replace_line("", 0);
 		rl_redisplay();
 	}
 }

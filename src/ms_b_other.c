@@ -353,6 +353,12 @@ void	exec_cmd(char **paths, char *first_cmd, char **envp, char **flags)
 	}
 	if (ret < 0)
 	{
+		cmd = first_cmd;
+		ret = execve(cmd, flags, envp);
+	}
+	if (ret < 0)
+	{
+
 		printf("minishell: %s: ", &first_cmd[1]);
 		printf(ERROR_CMD_NOT_FOUND);
 		exit(errno);
