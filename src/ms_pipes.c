@@ -6,7 +6,7 @@
 /*   By: mreymond <mreymond@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/06 11:15:36 by mreymond          #+#    #+#             */
-/*   Updated: 2022/06/17 11:20:13 by mreymond         ###   ########.fr       */
+/*   Updated: 2022/06/30 19:58:22 by mreymond         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -171,6 +171,25 @@ void launch_with_pipes(t_parse p, t_tab *t)
     }
 }
 
+void check_files_needs(char *cmd)
+{
+    t_redir *r;
+    char **newcmds;
+   
+    if (is_heredoc(cmd))
+        read_heredoc(cmd);
+    newcmds = add_to_tab(new_tab(), cmd);
+    r = stock_redir_infos(newcmds);
+    if (r[0].redir[0] == '<' && ft_strlen(r[0].redir) == 1)
+    {
+        
+        if (access(r[0].dest, F_OK) != 0)
+            printf("minishell: %s : %s \n", r[0].dest,  strerror(errno));
+        else if (access(r[0].dest, R_OK) != 0)
+            printf("minishell: %s : %s \n", r[0].dest,  strerror(errno));
+    }
+}
+
 ///pipes & redirections
 void launch_pipes_with_redir(t_parse p, t_tab *t)
 {
@@ -193,8 +212,9 @@ void launch_pipes_with_redir(t_parse p, t_tab *t)
     i = 0;
     while (i < p.nbr_cmd)
     {
-        if (is_heredoc(p.cmds[i]))
-            read_heredoc(p.cmds[i]);
+        check_files_needs(p.cmds[i]);
+        // if (is_heredoc(p.cmds[i]))
+        //     read_heredoc(p.cmds[i]);
         pid[i] = fork();
         if (pid[i] < 0)
             return ;

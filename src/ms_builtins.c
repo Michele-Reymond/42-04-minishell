@@ -6,7 +6,7 @@
 /*   By: mreymond <mreymond@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/27 13:06:22 by mreymond          #+#    #+#             */
-/*   Updated: 2022/06/29 16:55:24 by mreymond         ###   ########.fr       */
+/*   Updated: 2022/06/30 16:26:35 by mreymond         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -140,9 +140,16 @@ void count_redir(t_tprint tp, t_parse *p)
 			{
 				p->redir_out = nbr1[0];
 				p->redir_out_d = nbr1[1];
-				free(nbr1);
+				if (nbr1)
+				{
+					free(nbr1);
+					nbr1 = NULL;
+				}
 				if (nbr2)
+				{
 					free(nbr2);
+					nbr2 = NULL;
+				}
 				break ;
 			}
 			p->redir_out += nbr1[0];
@@ -152,14 +159,30 @@ void count_redir(t_tprint tp, t_parse *p)
 			{
 				p->redir_in = nbr2[0];
 				p->redir_in_d = nbr2[1];
-				free(nbr1);
-				free(nbr2);
+				if (nbr1)
+				{
+					free(nbr1);
+					nbr1 = NULL;
+				}
+				if (nbr2)
+				{
+					free(nbr2);
+					nbr2 = NULL;
+				}
 				break ;
 			}
 			p->redir_in += nbr2[0];
 			p->redir_in_d += nbr2[1];
-			free(nbr1);
-			free(nbr2);
+			if (nbr1)
+			{
+				free(nbr1);
+				nbr2 = NULL;
+			}
+			if (nbr2)
+			{
+				free(nbr2);
+				nbr2 = NULL;
+			}
 		}
 		i++;
 	}
