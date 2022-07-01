@@ -6,7 +6,7 @@
 /*   By: mreymond <mreymond@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/20 10:43:17 by mreymond          #+#    #+#             */
-/*   Updated: 2022/07/01 19:51:03 by mreymond         ###   ########.fr       */
+/*   Updated: 2022/07/01 21:09:22 by mreymond         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -833,7 +833,6 @@ int count_quotes(char *cmd)
 	int i;
 	char stock;
 	int nbr;
-
 	i = 0;
 	nbr = 0;
 	stock = '\0';
@@ -849,10 +848,9 @@ int count_quotes(char *cmd)
 		}
 		if (cmd[i] == '\0')
 			return (nbr);
-		else if ((cmd[i] == '\'' || cmd[i] == '\"'))
+		else if (cmd[i] == '\'' || cmd[i] == '\"')
 		{
-			if (cmd[i - 1] != '=')
-				nbr++;
+			nbr++;
 			stock = cmd[i];
 			i++;
 		}
@@ -864,13 +862,56 @@ int count_quotes(char *cmd)
 		{
 			stock = '\0';
 			i++;
-			if (cmd[i] == '=')
-				while (cmd[i] != '\0' && cmd[i] != '\'' && cmd[i] != '\"' && cmd[i] != ' ' && cmd[i] != '	')
-					i++;
 		}
 	}
 	return (nbr);
 }
+
+
+// AVEC LE COMPTAGE DES =
+// int count_quotes(char *cmd)
+// {
+// 	int i;
+// 	char stock;
+// 	int nbr;
+
+// 	i = 0;
+// 	nbr = 0;
+// 	stock = '\0';
+// 	while (cmd[i] != '\0')
+// 	{
+// 		if (cmd[i] != ' ' && cmd[i] != '	' && cmd[i] != '\'' && cmd[i] != '\"')
+// 			nbr++;
+// 		while (cmd[i] != '\0' && cmd[i] != '\'' && cmd[i] != '\"')
+// 		{
+// 			if (cmd[i - 1] == ' ' || cmd[i - 1] == '	')
+// 				nbr++;
+// 			i++;
+// 		}
+// 		if (cmd[i] == '\0')
+// 			return (nbr);
+// 		else if ((cmd[i] == '\'' || cmd[i] == '\"'))
+// 		{
+// 			if (cmd[i - 1] != '=')
+// 				nbr++;
+// 			stock = cmd[i];
+// 			i++;
+// 		}
+// 		while(cmd[i] != '\0' && cmd[i] != stock)
+// 			i++;
+// 		if (cmd[i] == '\0')
+// 			return (nbr);
+// 		else if (cmd[i] == stock)
+// 		{
+// 			stock = '\0';
+// 			i++;
+// 			if (cmd[i] == '=')
+// 				while (cmd[i] != '\0' && cmd[i] != '\'' && cmd[i] != '\"' && cmd[i] != ' ' && cmd[i] != '	')
+// 					i++;
+// 		}
+// 	}
+// 	return (nbr);
+// }
 
 // char **split_cmds(char *cmd, int tablen)
 // {
@@ -1161,8 +1202,6 @@ t_tprint split_both_quotes(char *cmd)
 
 	tablen = count_quotes(cmd);
 	splitted = split_cmds(cmd, tablen);
-	// display_tab_and_int(splitted.print, splitted.tab);
-	// exit(0);
 	return (splitted);
 }
 
@@ -1179,7 +1218,8 @@ t_tprint parsing_master(char *cmd)
 
 	i = 0;
 	tmp = split_both_quotes(cmd);
-	// display_tab(tmp.tab);
+	// display_tab_and_int(tmp.print, tmp.tab);
+	// exit(0);
 	tp.tab = malloc(sizeof(char *) * tab_len(tmp.tab) + 1);
 	tp.print = malloc(sizeof(int) * tab_len(tmp.tab) + 1);
 	tp.print[0] = tab_len(tmp.tab);
@@ -1187,14 +1227,7 @@ t_tprint parsing_master(char *cmd)
 	{
 		if (tmp.tab[i][0] == '\'' && tmp.tab[i][ft_strlen(tmp.tab[i]) - 1] == '\'')
 		{
-			// str = ft_strtrim(tmp.tab[i], "\'");
-			// if (tmp.print[i + 1] == 1)
-			// 	tp.tab[i] = ft_strjoin(str, " ");
-			// else
-			// 	tp.tab[i] = ft_strdup(str);
-			// free(str);
 			tp.tab[i] = ft_strtrim(tmp.tab[i], "\'");
-			// tp.print[i + 1] = 0;
 			if (tmp.print[i + 1] == 1)
 				tp.print[i + 1] = 3;
 			else
@@ -1202,13 +1235,7 @@ t_tprint parsing_master(char *cmd)
 		}
 		else if (tmp.tab[i][0] == '\"' && tmp.tab[i][ft_strlen(tmp.tab[i]) - 1] == '\"')
 		{
-			// str = ft_strtrim(tmp.tab[i], "\"");
-			// if (tmp.print[i + 1] == 1)
-			// 	tp.tab[i] = ft_strjoin(str, " ");
-			// else
-			// 	tp.tab[i] = ft_strdup(str);
 			tp.tab[i] = ft_strtrim(tmp.tab[i], "\"");
-			// tp.print[i + 1] = 1;
 			if (tmp.print[i + 1] == 1)
 				tp.print[i + 1] = 4;
 			else
@@ -1217,21 +1244,12 @@ t_tprint parsing_master(char *cmd)
 		else if (tmp.tab[i][0] == '\"' || tmp.tab[i][0] == '\'' 
 			|| tmp.tab[i][ft_strlen(tmp.tab[i]) - 1] == '\"' || tmp.tab[i][ft_strlen(tmp.tab[i]) - 1] == '\'')
 		{
-			// if (tmp.print[i + 1] == 1)
-			// 	tp.tab[i] = ft_strjoin(tmp.tab[i], " ");
-			// else
-			// 	tp.tab[i] = ft_strdup(tmp.tab[i]);
 			tp.tab[i] = ft_strdup(tmp.tab[i]);
 			tp.print[i + 1] = -1;
 		}
 		else
 		{
-			// if (tmp.print[i + 1] == 1)
-			// 	tp.tab[i] = ft_strjoin(tmp.tab[i], " ");
-			// else
-			// 	tp.tab[i] = ft_strdup(tmp.tab[i]);
 			tp.tab[i] = ft_strdup(tmp.tab[i]);
-			// tp.print[i + 1] = 2;
 			if (tmp.print[i + 1] == 1)
 				tp.print[i + 1] = 5;
 			else

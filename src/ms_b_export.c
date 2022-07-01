@@ -6,7 +6,7 @@
 /*   By: mreymond <mreymond@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/20 10:43:17 by mreymond          #+#    #+#             */
-/*   Updated: 2022/07/01 11:22:17 by mreymond         ###   ########.fr       */
+/*   Updated: 2022/07/01 21:27:54 by mreymond         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,16 +65,59 @@ int check_identifier(char *str)
 	return (0);
 }
 
-t_tab	*ft_export(t_tab *t, char **token)
+// compter les commandes pour export
+int equal_count(t_tprint tp)
+{
+	int i;
+	int nbr;
+
+	i = 0;
+	nbr = 0;
+	display_tab_and_int(tp.print, tp.tab);
+	exit(0);
+	while (tp.tab[i] != NULL)
+	{
+		while (tp.tab[i] != NULL && how_many_in_str(tp.tab[i], '=') == 0)
+			i++;
+		nbr += i;
+		if (tp.tab[i] != NULL && tp.tab[i][ft_strlen(tp.tab[i]) - 1] == '=' && tp.print[i + 1] < 3)
+		{
+
+			i++;
+		}
+		nbr += i;
+	i = nbr;
+		i++;
+	}
+	return (0);
+}
+
+char **parsing_for_export(t_tprint tp)
+{
+	int i;
+
+	i = 0;
+	equal_count(tp);
+	while (tp.tab[i])
+	{
+
+		i++;
+	}
+	return (tp.tab);
+}
+
+t_tab	*ft_export(t_tab *t, t_tprint tp)
 {
 	t_var	*vartab;
 	char	**tmp;
 	char	**tmp2;
+	char	**token;
 	int		i;
 	int		j;
 
 	i = 1;
 	j = 0;
+	token = parsing_for_export(tp);
 	if (tab_len(token) == 1)
 		display_export(t->exp);
 	else

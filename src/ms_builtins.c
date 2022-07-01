@@ -6,7 +6,7 @@
 /*   By: mreymond <mreymond@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/27 13:06:22 by mreymond          #+#    #+#             */
-/*   Updated: 2022/07/01 19:02:04 by mreymond         ###   ########.fr       */
+/*   Updated: 2022/07/01 21:18:35 by mreymond         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -639,7 +639,7 @@ int	launch_cmds(char *cmd, t_tab *t)
 	else if (!ft_strncmp(cmd, "echo", 4) && (cmd[4] == ' ' || cmd[4] == '\0'))
 		echo(tp, *t);
 	else if (!ft_strncmp(cmd, "export", 6) && (cmd[6] == ' ' || cmd[6] == '\0'))
-		t = ft_export(t, tp.tab);
+		t = ft_export(t, tp);
 	else if (!ft_strncmp(cmd, "unset", 5) && (cmd[5] == ' ' || cmd[5] == '\0'))
 		t = unset_var(t, tp.tab);
 	else if (!ft_strncmp(cmd, "env", 3) && (cmd[3] == ' ' || cmd[3] == '\0'))
@@ -682,7 +682,7 @@ int	launch_builtins_with_redir(char *cmd, t_tab *t, int fd, int std)
 	else if (!ft_strncmp(cmd, "echo", 4) && (cmd[4] == ' ' || cmd[4] == '\0'))
 		echo(tp, *t);
 	else if (!ft_strncmp(cmd, "export", 6) && (cmd[6] == ' ' || cmd[6] == '\0'))
-		t = ft_export(t, tp.tab);
+		t = ft_export(t, tp);
 	else if (!ft_strncmp(cmd, "unset", 5) && (cmd[5] == ' ' || cmd[5] == '\0'))
 		t = unset_var(t, tp.tab);
 	else if (!ft_strncmp(cmd, "env", 3) && (cmd[3] == ' ' || cmd[3] == '\0'))
@@ -708,7 +708,7 @@ int	launch_builtins_with_doors(char *cmd, t_tab *t, t_doors doors)
 	else if (!ft_strncmp(cmd, "echo", 4) && (cmd[4] == ' ' || cmd[4] == '\0'))
 		echo(tp, *t);
 	else if (!ft_strncmp(cmd, "export", 6) && (cmd[6] == ' ' || cmd[6] == '\0'))
-		t = ft_export(t, tp.tab);
+		t = ft_export(t, tp);
 	else if (!ft_strncmp(cmd, "unset", 5) && (cmd[5] == ' ' || cmd[5] == '\0'))
 		t = unset_var(t, tp.tab);
 	else if (!ft_strncmp(cmd, "env", 3) && (cmd[3] == ' ' || cmd[3] == '\0'))
