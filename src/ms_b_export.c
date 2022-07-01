@@ -6,7 +6,7 @@
 /*   By: mreymond <mreymond@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/20 10:43:17 by mreymond          #+#    #+#             */
-/*   Updated: 2022/06/29 16:34:47 by mreymond         ###   ########.fr       */
+/*   Updated: 2022/07/01 11:22:17 by mreymond         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,7 +57,8 @@ int check_identifier(char *str)
 	i = 0;
 	while (str[i] != '\0')
 	{
-		if (((!ft_isalpha(str[i]) && i == 0) || str[i] == '_') || ((!ft_isalnum(str[i]) && i > 0) || str[i] == '_'))
+		if (!(((ft_isalpha(str[i]) && i == 0) || str[i] == '_' || str[i] == '=') 
+				|| ((ft_isalnum(str[i]) && i > 0) || str[i] == '_' || str[i] == '=')))
 			return (1);
 		i++;
 	}
@@ -82,7 +83,7 @@ t_tab	*ft_export(t_tab *t, char **token)
 		while (token[i])
 		{
 			vartab[j] = str_to_var(token[i]);
-			if (vartab[j].key == NULL || check_identifier(token[i]))
+			if (vartab[j].key == NULL || check_identifier(vartab[j].key))
 			{
 				vartab[j].key = ft_strdup(token[i]);
 				vartab[j].status = -1;

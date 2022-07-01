@@ -6,7 +6,7 @@
 /*   By: mreymond <mreymond@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/20 10:43:17 by mreymond          #+#    #+#             */
-/*   Updated: 2022/06/29 16:52:45 by mreymond         ###   ########.fr       */
+/*   Updated: 2022/07/01 19:51:03 by mreymond         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -200,32 +200,25 @@ char	**ft_split_one_space(char const *s)
 
 void	echo_print(char **args, char **var, int *print)
 {
-	int	i;
-	int	j;
+	int i;
 	int k;
-	int ok;
+	int j;
 
-	i = 1;
-	j = 0;
+	i = 0;
 	k = 0;
+	j = 0;
 	while (args[i] != NULL)
 	{
-		if (print[i + 1] == 0 || how_many_in_str(args[i], '$') == 0)
-		{
+		if (print[i + 1] == 0 || print[i + 1] == 3 || how_many_in_str(args[i], '$') == 0)
 			printf("%s", args[i]);
-			if (args[i + 1] != NULL)
-				printf(" ");
-		}
 		else
 		{
 			k = 0;
-			ok = 0;
 			while (args[i][k] != '\0')
 			{
 				while (args[i][k] != '\0' && args[i][k] != '$')
 				{
 					printf("%c", args[i][k]);
-					ok = 1;
 					k++;
 				}
 				if (args[i][k] == '$')
@@ -234,10 +227,7 @@ void	echo_print(char **args, char **var, int *print)
 					{
 						printf("%s", var[j]);
 						if (how_many_in_str(&args[i][k + 1], '$') == 0 && args[i + 1] != NULL)
-						{
 							printf(" ");
-							ok = 0;
-						}
 					}
 					j++;
 					k++;
@@ -249,12 +239,72 @@ void	echo_print(char **args, char **var, int *print)
 					}
 				}
 			}
-			if (ok > 0)
-				printf(" ");
 		}
+		if (args[i + 1] != NULL && print[i + 1] > 2)
+			printf(" ");
 		i++;
 	}
 }
+
+// void	echo_print(char **args, char **var, int *print)
+// {
+// 	int	i;
+// 	int	j;
+// 	int k;
+// 	int ok;
+
+// 	i = 0;
+// 	j = 0;
+// 	k = 0;
+// 	display_tab_and_int(print, args);
+// 	exit(0);
+// 	while (args[i] != NULL)
+// 	{
+// 		if (print[i + 1] == 0 || how_many_in_str(args[i], '$') == 0)
+// 		{
+// 			printf("%s", args[i]);
+// 			if (args[i + 1] != NULL)
+// 				printf(" ");
+// 		}
+// 		else
+// 		{
+// 			k = 0;
+// 			ok = 0;
+// 			while (args[i][k] != '\0')
+// 			{
+// 				while (args[i][k] != '\0' && args[i][k] != '$')
+// 				{
+// 					printf("%c", args[i][k]);
+// 					ok = 1;
+// 					k++;
+// 				}
+// 				if (args[i][k] == '$')
+// 				{
+// 					if (var[j][0] != '\0')
+// 					{
+// 						printf("%s", var[j]);
+// 						if (how_many_in_str(&args[i][k + 1], '$') == 0 && args[i + 1] != NULL)
+// 						{
+// 							printf(" ");
+// 							ok = 0;
+// 						}
+// 					}
+// 					j++;
+// 					k++;
+// 					while (args[i][k] != '\0' && args[i][k] != ' ' && args[i][k] != '	' && args[i][k] != '$')
+// 					{
+// 						if (args[i][k] == '\'')
+// 							printf("\'");
+// 						k++;
+// 					}
+// 				}
+// 			}
+// 			if (ok > 0)
+// 				printf(" ");
+// 		}
+// 		i++;
+// 	}
+// }
 
 char *find_key(char *str)
 {
@@ -262,7 +312,7 @@ char *find_key(char *str)
 	char *key;
 	
 	i = 0;
-	while (str[i] && str[i] != ' ' && str[i] != '	')
+	while (str[i] && str[i] != ' ' && str[i] != '	' && str[i] != '\'')
 		i++;
 	key = ft_strldup(&str[1], i);
 	return (key);
@@ -296,7 +346,7 @@ char	**echo_vars(char **tab, t_tab t, int nbr, int *print)
 	vars = malloc(sizeof(char *) * nbr + 1);
 	while (tab[i] != NULL)
 	{
-		if (print[i + 1] != 0)
+		if (print[i + 1] != 0 && print[i + 1] != 3)
 		{
 			tmp = ft_strchr(tab[i], '$');
 			while (tmp != NULL)
@@ -345,11 +395,30 @@ int how_many_dollars(char **tab, int *print)
 	nbr = 0;
 	while (tab[i] != NULL && i <= print[0])
 	{
-		if (print[i + 1] != 0)
+		if (print[i + 1] != 0 && print[i + 1] != 3)
 			nbr = nbr + how_many_in_str(tab[i], '$');
 		i++;
 	}
 	return (nbr);
+}
+
+int *copy_spaces_tab(int *print)
+{
+	int i;
+	int j;
+	int *new;
+
+	i = 1;
+	j = 2;
+	new = malloc(sizeof(int) * print[0]);
+	new[0] = print[0] - 1;
+	while (i <= print[0])
+	{
+		new[i] = print[j];
+		i++;
+		j++;
+	}
+	return (new);
 }
 
 t_echo	echo_parsing(char **tab, t_tab t, int *print)
@@ -359,15 +428,16 @@ t_echo	echo_parsing(char **tab, t_tab t, int *print)
 	int i;
 
 	i = 1;
-	if (!ft_strncmp(tab[1], "-n", 2))
+	if (!ft_strncmp(tab[1], "-n", 2) && ft_strlen(tab[1]) == 2)
 	{
 		elem.flag = 'n';
 		i++;
 	}
 	else
 		elem.flag = '0';
-	i = 0;
-	elem.args = tabdup(tab);
+	// i = 0;
+	elem.args = tabdup(&tab[i]);
+	elem.spaces = copy_spaces_tab(print);
 	while (elem.args[i])
 		i++;
 	elem.nbr_args = i;
@@ -586,6 +656,21 @@ int *fill_inttab(int *inttab, int add, int nbr)
 	return (new);
 }
 
+int *inttabdup(int *inttab)
+{
+	int i;
+	int *new;
+
+	i = 0;
+	new = malloc(sizeof(int) * (inttab[0] + 1));
+	while (i <= inttab[0])
+	{
+		new[i] = inttab[i];
+		i++;
+	}
+	return (new);
+}
+
 void display_inttab(int *inttab)
 {
 	int i;
@@ -764,9 +849,10 @@ int count_quotes(char *cmd)
 		}
 		if (cmd[i] == '\0')
 			return (nbr);
-		else if (cmd[i] == '\'' || cmd[i] == '\"')
+		else if ((cmd[i] == '\'' || cmd[i] == '\"'))
 		{
-			nbr++;
+			if (cmd[i - 1] != '=')
+				nbr++;
 			stock = cmd[i];
 			i++;
 		}
@@ -778,28 +864,225 @@ int count_quotes(char *cmd)
 		{
 			stock = '\0';
 			i++;
+			if (cmd[i] == '=')
+				while (cmd[i] != '\0' && cmd[i] != '\'' && cmd[i] != '\"' && cmd[i] != ' ' && cmd[i] != '	')
+					i++;
 		}
 	}
 	return (nbr);
 }
 
-char **split_cmds(char *cmd, int tablen)
+// char **split_cmds(char *cmd, int tablen)
+// {
+// 	int i;
+// 	int j;
+// 	int y;
+// 	int k;
+// 	int tmp;
+// 	int ok;
+// 	char stock;
+// 	char *equal;
+// 	char *after;
+// 	// char *quote;
+// 	char *equaltmp;
+// 	char *aftertmp;
+// 	char *tmp2;
+// 	char **new;
+// 	char *str;
+
+// 	i = 0;
+// 	j = 0;
+// 	y = 0;
+// 	k = 0;
+// 	ok = 0;
+// 	tmp = 0;
+// 	stock = '\0';
+// 	equal = NULL;
+// 	after = NULL;
+// 	new = malloc(sizeof(char *) * (tablen + 1));
+// 	if (new == NULL)
+// 		return (NULL);
+// 	while (cmd[i] != '\0')
+// 	{
+// 		while (cmd[i] == ' ' || cmd[i] == '	')
+// 			i++;
+// 		while (cmd[i] != '\0' && cmd[i] != '\'' && cmd[i] != '\"')
+// 		{
+// 			y = 0;
+// 			tmp = i;
+// 			while (cmd[i] != '\0' && cmd[i] != ' ' && cmd[i] != '	' && cmd[i] != '\'' && cmd[i] != '\"')
+// 				i++;
+// 			if (cmd[i - 1] == '=')
+// 			{
+// 				equal = malloc(sizeof(char) * (i - tmp + 1));
+// 				i = tmp;
+// 				while (cmd[i] != '\0' && cmd[i] != ' ' && cmd[i] != '	' && cmd[i] != '\'' && cmd[i] != '\"')
+// 				{
+// 					equal[y] = cmd[i];
+// 					i++;
+// 					y++;
+// 				}
+// 				equal[y] = '\0';
+// 			}
+// 			else
+// 			{
+// 				if (cmd[i] != '\0' && (cmd[i] == ' ' || cmd[i] == '	'))
+// 					i++;
+// 				new[j] = malloc(sizeof(char) * (i - tmp + 1));
+// 				i = tmp;
+// 				while (cmd[i] != '\0' && cmd[i] != ' ' && cmd[i] != '	' && cmd[i] != '\'' && cmd[i] != '\"')
+// 				{
+// 					new[j][y] = cmd[i];
+// 					i++;
+// 					y++;
+// 				}
+// 				if (cmd[i] != '\0' && (cmd[i] == ' ' || cmd[i] == '	'))
+// 				{
+// 					new[j][y] = cmd[i];
+// 					i++;
+// 					y++;
+// 				}
+// 				new[j][y] = '\0';
+// 				j++;
+// 			}
+// 		}
+// 		y = 0;
+// 		if (cmd[i] == '\0')
+// 			break ;
+// 		else if (cmd[i] == '\'' || cmd[i] == '\"')
+// 		{
+// 			stock = cmd[i];
+// 			tmp = i;
+// 			i++;
+// 		}
+// 		while(cmd[i] != '\0' && cmd[i] != stock)
+// 			i++;
+// 		if (cmd[i] != '\0' && (cmd[i + 1] == ' ' || cmd[i + 1] == '	'))
+// 			i++;
+// 		str = malloc(sizeof(char) * (i - tmp + 2));
+// 		i = tmp;
+// 		if (cmd[i] == '\'' || cmd[i] == '\"')
+// 		{
+// 			i++;
+// 			str[y] = cmd[i];
+// 			i++;
+// 			y++;
+// 		}
+// 		while(cmd[i] != '\0' && cmd[i] != stock)
+// 		{
+// 			str[y] = cmd[i];
+// 			i++;
+// 			y++;
+// 		}
+// 		if (cmd[i] == stock)
+// 		{
+// 			str[y] = cmd[i];
+// 			i++;
+// 			y++;
+// 		}
+// 		if (cmd[i] != '\0' && (cmd[i] == ' ' || cmd[i] == '	'))
+// 		{
+// 			str[y] = cmd[i];
+// 			i++;
+// 			y++;
+// 		}
+// 		str[y] = '\0';
+// 		y = 0;
+
+// // equal after
+// 		if (cmd[i] == '=')
+// 		{
+// 			tmp = i;
+// 			while (cmd[i] != '\0' && !(cmd[i] == ' ' && cmd[i] == '	' && ok == 1) && !(cmd[i] == '\'' && cmd[i] == '\"' && (cmd[i + 1] == '=' || cmd[i - 1] == '=')))
+// 			{
+// 				if (cmd[i] == '\'' || cmd[i] == '\"')
+// 				{
+// 					k++;
+// 					if (ok == 0)
+// 						ok = 1;
+// 					else
+// 						ok = 0;
+// 				}
+// 				i++;
+// 			}
+// 			after = malloc(sizeof(char) * (i - k - tmp + 1));
+// 			i = tmp;
+// 			while (cmd[i] != '\0' && !(cmd[i] == ' ' && cmd[i] == '	' && ok == 1) && !(cmd[i] == '\'' && cmd[i] == '\"' && (cmd[i + 1] == '=' || cmd[i - 1] == '=')))
+// 			{
+// 				if (cmd[i] == '\'' || cmd[i] == '\"')
+// 					i++;
+// 				after[y] = cmd[i];
+// 				i++;
+// 				y++;
+// 			}
+// 			after[y] = '\0';
+// 		}
+// 		if (equal == NULL && after == NULL)
+// 			new[j] = ft_strjoin("\"", str);
+// 		else if (equal != NULL && after == NULL)
+// 		{
+// 			equaltmp = ft_strjoin("\"", equal);
+// 			new[j] = ft_strjoin(equaltmp, str);
+// 			free(equal);
+// 			equal = NULL;
+// 			free(equaltmp);
+// 		}
+// 		else if (equal == NULL && after != NULL)
+// 		{
+// 			str[ft_strlen(str) - 1] = '\0';
+// 			equaltmp = ft_strjoin("\"", str);
+// 			aftertmp = ft_strjoin(after, "\"");
+// 			new[j] = ft_strjoin(equaltmp, aftertmp);
+// 			free(after);
+// 			after = NULL;
+// 			free(equaltmp);
+// 			free(aftertmp);
+// 		}
+// 		else
+// 		{
+// 			str[ft_strlen(str) - 1] = '\0';
+// 			equaltmp = ft_strjoin("\"", equal);
+// 			aftertmp = ft_strjoin(after, "\"");
+// 			tmp2 = ft_strjoin(equaltmp, str);
+// 			new[j] = ft_strjoin(tmp2, aftertmp);
+// 			free(after);
+// 			after = NULL;
+// 			free(equal);
+// 			equal = NULL;
+// 			free(equaltmp);
+// 			free(aftertmp);
+// 			free(tmp2);
+// 		}
+// 		free(str);
+// 		stock = '\0';
+// 		j++;
+// 	}
+// 	new[j] = NULL;
+// 	return (new);
+// }
+
+t_tprint split_cmds(char *cmd, int tablen)
 {
 	int i;
 	int j;
 	int y;
 	int tmp;
 	char stock;
-	char **new;
+	t_tprint new;
 
 	i = 0;
 	j = 0;
 	y = 0;
 	tmp = 0;
 	stock = '\0';
-	new = malloc(sizeof(char *) * (tablen + 1));
-	if (new == NULL)
-		return (NULL);
+	new.tab = malloc(sizeof(char *) * (tablen + 1));
+	if (new.tab == NULL)
+	{
+		new.print = NULL;
+		return (new);
+	}
+	new.print = malloc(sizeof(int) * tablen + 1);
+	new.print[0] = tablen;
 	while (cmd[i] != '\0')
 	{
 		while (cmd[i] == ' ' || cmd[i] == '	')
@@ -810,15 +1093,19 @@ char **split_cmds(char *cmd, int tablen)
 			tmp = i;
 			while (cmd[i] != '\0' && cmd[i] != ' ' && cmd[i] != '	' && cmd[i] != '\'' && cmd[i] != '\"')
 				i++;
-			new[j] = malloc(sizeof(char) * (i - tmp + 1));
+			if (cmd[i] == ' ' || cmd[i] == '	')
+				new.print[j + 1] = 1;
+			else
+				new.print[j + 1] = 0;
+			new.tab[j] = malloc(sizeof(char) * (i - tmp + 1));
 			i = tmp;
 			while (cmd[i] != '\0' && cmd[i] != ' ' && cmd[i] != '	' && cmd[i] != '\'' && cmd[i] != '\"')
 			{
-				new[j][y] = cmd[i];
+				new.tab[j][y] = cmd[i];
 				i++;
 				y++;
 			}
-			new[j][y] = '\0';
+			new.tab[j][y] = '\0';
 			j++;
 			if (cmd[i] == ' ' || cmd[i] == '	')
 				i++;
@@ -834,42 +1121,48 @@ char **split_cmds(char *cmd, int tablen)
 		}
 		while(cmd[i] != '\0' && cmd[i] != stock)
 			i++;
-		new[j] = malloc(sizeof(char) * (i - tmp + 2));
+		new.tab[j] = malloc(sizeof(char) * (i - tmp + 2));
 		i = tmp;
 		if (cmd[i] == '\'' || cmd[i] == '\"')
 		{
-			new[j][y] = cmd[i];
+			new.tab[j][y] = cmd[i];
 			i++;
 			y++;
 		}
 		while(cmd[i] != '\0' && cmd[i] != stock)
 		{
-			new[j][y] = cmd[i];
+			new.tab[j][y] = cmd[i];
 			i++;
 			y++;
 		}
 		if (cmd[i] == stock)
 		{
 			stock = '\0';
-			new[j][y] = cmd[i];
+			new.tab[j][y] = cmd[i];
 			i++;
 			y++;
 		}
-		new[j][y] = '\0';
+		if (cmd[i] == ' ' || cmd[i] == '	')
+			new.print[j + 1] = 1;
+		else
+			new.print[j + 1] = 0;
+		new.tab[j][y] = '\0';
 		j++;
 	}
-	new[j] = NULL;
+	new.tab[j] = NULL;
 	return (new);
 }
 
-char **split_both_quotes(char *cmd)
+t_tprint split_both_quotes(char *cmd)
 {
 	int tablen;
-	char **splitted;
-
+	// char **splitted;
+	t_tprint splitted;
 
 	tablen = count_quotes(cmd);
 	splitted = split_cmds(cmd, tablen);
+	// display_tab_and_int(splitted.print, splitted.tab);
+	// exit(0);
 	return (splitted);
 }
 
@@ -879,41 +1172,75 @@ char **split_both_quotes(char *cmd)
 // utiliser display_tab_and_int(tp.print, tp.tab); pour afficher les 2
 t_tprint parsing_master(char *cmd)
 {
-	char **tmp;
-	int i;
+	t_tprint tmp;
 	t_tprint tp;
+	// char *str;
+	int i;
 
 	i = 0;
 	tmp = split_both_quotes(cmd);
-	tp.tab = malloc(sizeof(char *) * tab_len(tmp) + 1);
-	tp.print = malloc(sizeof(int) * tab_len(tmp) + 1);
-	tp.print[0] = tab_len(tmp);
-	while (tmp[i] != NULL)
+	// display_tab(tmp.tab);
+	tp.tab = malloc(sizeof(char *) * tab_len(tmp.tab) + 1);
+	tp.print = malloc(sizeof(int) * tab_len(tmp.tab) + 1);
+	tp.print[0] = tab_len(tmp.tab);
+	while (tmp.tab[i] != NULL)
 	{
-		if (tmp[i][0] == '\'' && tmp[i][ft_strlen(tmp[i]) - 1] == '\'')
+		if (tmp.tab[i][0] == '\'' && tmp.tab[i][ft_strlen(tmp.tab[i]) - 1] == '\'')
 		{
-			tp.tab[i] = ft_strtrim(tmp[i], "\'");
-			tp.print[i + 1] = 0;
+			// str = ft_strtrim(tmp.tab[i], "\'");
+			// if (tmp.print[i + 1] == 1)
+			// 	tp.tab[i] = ft_strjoin(str, " ");
+			// else
+			// 	tp.tab[i] = ft_strdup(str);
+			// free(str);
+			tp.tab[i] = ft_strtrim(tmp.tab[i], "\'");
+			// tp.print[i + 1] = 0;
+			if (tmp.print[i + 1] == 1)
+				tp.print[i + 1] = 3;
+			else
+				tp.print[i + 1] = 0;
 		}
-		else if (tmp[i][0] == '\"' && tmp[i][ft_strlen(tmp[i]) - 1] == '\"')
+		else if (tmp.tab[i][0] == '\"' && tmp.tab[i][ft_strlen(tmp.tab[i]) - 1] == '\"')
 		{
-			tp.tab[i] = ft_strtrim(tmp[i], "\"");
-			tp.print[i + 1] = 1;
+			// str = ft_strtrim(tmp.tab[i], "\"");
+			// if (tmp.print[i + 1] == 1)
+			// 	tp.tab[i] = ft_strjoin(str, " ");
+			// else
+			// 	tp.tab[i] = ft_strdup(str);
+			tp.tab[i] = ft_strtrim(tmp.tab[i], "\"");
+			// tp.print[i + 1] = 1;
+			if (tmp.print[i + 1] == 1)
+				tp.print[i + 1] = 4;
+			else
+				tp.print[i + 1] = 1;
 		}
-		else if (tmp[i][0] == '\"' || tmp[i][0] == '\'' 
-			|| tmp[i][ft_strlen(tmp[i]) - 1] == '\"' || tmp[i][ft_strlen(tmp[i]) - 1] == '\'')
+		else if (tmp.tab[i][0] == '\"' || tmp.tab[i][0] == '\'' 
+			|| tmp.tab[i][ft_strlen(tmp.tab[i]) - 1] == '\"' || tmp.tab[i][ft_strlen(tmp.tab[i]) - 1] == '\'')
 		{
-			tp.tab[i] = ft_strdup(tmp[i]);
+			// if (tmp.print[i + 1] == 1)
+			// 	tp.tab[i] = ft_strjoin(tmp.tab[i], " ");
+			// else
+			// 	tp.tab[i] = ft_strdup(tmp.tab[i]);
+			tp.tab[i] = ft_strdup(tmp.tab[i]);
 			tp.print[i + 1] = -1;
 		}
 		else
 		{
-			tp.tab[i] = ft_strdup(tmp[i]);
-			tp.print[i + 1] = 2;
+			// if (tmp.print[i + 1] == 1)
+			// 	tp.tab[i] = ft_strjoin(tmp.tab[i], " ");
+			// else
+			// 	tp.tab[i] = ft_strdup(tmp.tab[i]);
+			tp.tab[i] = ft_strdup(tmp.tab[i]);
+			// tp.print[i + 1] = 2;
+			if (tmp.print[i + 1] == 1)
+				tp.print[i + 1] = 5;
+			else
+				tp.print[i + 1] = 2;
 		}
 		i++;
 	}
 	tp.tab[i] = NULL;
+	// display_tab_and_int(tp.print, tp.tab);
 	return (tp);
 }
 
@@ -994,7 +1321,7 @@ t_tprint echo_parse_quotes(t_tprint tp)
 	{
 		// printf("%d: ", tp.print[i + 1]);
 		// printf("%s\n", tp.tab[i]);
-		if (tp.print[i + 1] == 1)
+		if (tp.print[i + 1] == 1 || tp.print[i + 1] == 4)
 		{
 			splitted = ft_split_one_space(tp.tab[i]);
 			// if (how_many_in_str(tp.tab[i], '\'') > 1)
@@ -1042,10 +1369,10 @@ void	echo(t_tprint tp, t_tab t)
 	if (elem.nbr_args == 0 && elem.flag != 'n')
 		printf("\n");
 	if (elem.nbr_args > 0 && elem.flag == 'n')
-		echo_print(elem.args, elem.vars, tp.print);
+		echo_print(elem.args, elem.vars, elem.spaces);
 	if (elem.nbr_args > 0 && elem.flag != 'n')
 	{
-		echo_print(elem.args, elem.vars, tp.print);
+		echo_print(elem.args, elem.vars, elem.spaces);
 		printf("\n");
 	}
 	exit_status = 0;

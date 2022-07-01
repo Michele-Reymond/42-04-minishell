@@ -6,7 +6,7 @@
 /*   By: mreymond <mreymond@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/27 13:06:22 by mreymond          #+#    #+#             */
-/*   Updated: 2022/06/30 16:26:35 by mreymond         ###   ########.fr       */
+/*   Updated: 2022/07/01 19:02:04 by mreymond         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,7 +65,7 @@ int count_pipes(t_tprint tp)
 	nbr = 0;
 	while (tp.tab[i] != NULL)
 	{
-		if (tp.print[i + 1] == 2)
+		if (tp.print[i + 1] == 2 || tp.print[i + 1] == 5)
 			nbr += how_many_in_str(tp.tab[i], '|');
 		i++;
 	}
@@ -81,7 +81,7 @@ int count_doubles(t_tprint tp)
 	nbr = 0;
 	while (tp.tab[i] != NULL)
 	{
-		if (tp.print[i + 1] == 1)
+		if (tp.print[i + 1] == 1 || tp.print[i + 1] == 4)
 			nbr++;
 		i++;
 	}
@@ -97,7 +97,7 @@ int count_singles(t_tprint tp)
 	nbr = 0;
 	while (tp.tab[i] != NULL)
 	{
-		if (tp.print[i + 1] == 0)
+		if (tp.print[i + 1] == 0 || tp.print[i + 1] == 3)
 			nbr++;
 		i++;
 	}
@@ -113,7 +113,7 @@ int count_dollar(t_tprint tp)
 	nbr = 0;
 	while (tp.tab[i] != NULL)
 	{
-		if (tp.print[i + 1] != 0)
+		if (tp.print[i + 1] != 0 && tp.print[i + 1] != 3)
 			nbr += how_many_in_str(tp.tab[i], '$');
 		i++;
 	}
@@ -133,7 +133,7 @@ void count_redir(t_tprint tp, t_parse *p)
 	p->redir_in_d = 0;
 	while (tp.tab[i] != NULL)
 	{
-		if (tp.print[i + 1] == 2)
+		if (tp.print[i + 1] == 2 || tp.print[i + 1] == 5)
 		{
 			nbr1 = check_redir(tp.tab[i], '>');
 			if (nbr1[0] == -1 || nbr1[1] == -1)
@@ -271,7 +271,7 @@ char *add_quotes(char *old, char quote)
 	return (new);
 }
 
-char *join_strings(char **tab, int pos, int start)
+char *join_strings(t_tprint tp, int pos, int start)
 {
 	int i;
 	char *tmp2;
@@ -280,10 +280,10 @@ char *join_strings(char **tab, int pos, int start)
 
 	i = start;
 	new = ft_strdup("");
-	while (tab[i] != NULL && i < pos)
+	while (tp.tab[i] != NULL && i < pos)
 	{
-		tmp2 = ft_strjoin(new, tab[i]);
-		if (tab[i + 1] != NULL)
+		tmp2 = ft_strjoin(new, tp.tab[i]);
+		if (tp.tab[i + 1] != NULL && tp.print[i + 1] > 2)
 		{
 			tmp3 = ft_strjoin(tmp2, " ");
 			free(new);
@@ -302,22 +302,51 @@ char *join_strings(char **tab, int pos, int start)
 
 int how_many_splits(char *str)
 {
-	char *tmp;
+	// char *tmp;
 	int nbr;
 
 	nbr = 0;
-	tmp = ft_strchr(str, '|');
-	if (tmp != str)
+	nbr += how_many_in_str(str, '|');
+	if (str[ft_strlen(str) - 1] != '|' && str[0] != '|')
 		nbr++;
-	if (tmp == NULL)
-		return (0);
-	else
-		nbr++;
-	while (tmp != NULL)
+	if (str[ft_strlen(str) - 1] == '|' && str[0] == '|')
+		nbr--;
+	nbr += how_many_in_str(str, '|');
+	// tmp = ft_strchr(str, '|');
+	// if (tmp != str)
+	// 	nbr++;
+	// if (tmp == NULL)
+	// 	return (0);
+	// else
+	// 	nbr++;
+	// while (tmp != NULL)
+	// {
+	// 	tmp++;
+	// 	tmp = ft_strchr(tmp, '|');
+	// 	nbr += 2;
+	// }
+	return (nbr);
+}
+
+int count_multi_pipes_cmds(t_tprint tp)
+{
+	int i;
+	int nbr;
+
+	i = 0;
+	nbr = 0;
+	while (tp.tab[i] != 0)
 	{
-		tmp++;
-		tmp = ft_strchr(tmp, '|');
-		nbr += 2;
+		if (how_many_in_str(tp.tab[i], '|') > 0 && (tp.print[i + 1] == 2 || tp.print[i + 1] == 5) && ft_strlen(tp.tab[i]) > 1)
+		{
+			nbr += how_many_in_str(tp.tab[i], '|');
+			if (tp.tab[i][ft_strlen(tp.tab[i]) - 1] != '|' && tp.tab[i][0] != '|')
+				nbr++;
+			if (tp.tab[i][ft_strlen(tp.tab[i]) - 1] == '|' && tp.tab[i][0] == '|')
+				nbr--;
+			nbr += how_many_in_str(tp.tab[i], '|');
+		}
+		i++;
 	}
 	return (nbr);
 }
@@ -347,55 +376,126 @@ char **split_out(char *str)
 		}
 		if (str[i] == '|')
 		{
-			new[j] = ft_strdup("|");
+			new[j] = ft_strdup("|");;
 			j++;
 		}
-		i++;
+		if (str[i] != '\0')
+			i++;
 	}
 	new[j] = NULL;
 	return (new);
 }
 
-char **split_pipes_phase_1(t_tprint tp)
+t_tprint split_pipes_phase_1(t_tprint tp)
 {
 	int i;
+	int j;
+	int k;
 	char **splitted;
 	char **tmp;
-	char **last;
+	t_tprint last;
 	char *quoted;
+	int pipes;
 
 	i = 0;
-	last = new_tab();
+	j = 1;
+	last.tab = new_tab();
+	pipes = count_multi_pipes_cmds(tp);
+	last.print = malloc(sizeof(char *) * (pipes + tp.print[0] + 1));
+	last.print[0] = pipes + tp.print[0];
 	while (tp.tab[i] != NULL)
 	{
-		if(how_many_in_str(tp.tab[i], '|') > 0 && tp.print[i + 1] == 2 && ft_strlen(tp.tab[i]) > 1)
+		if(how_many_in_str(tp.tab[i], '|') > 0 && (tp.print[i + 1] == 2 || tp.print[i + 1] == 5) && ft_strlen(tp.tab[i]) > 1)
 		{
 			splitted = split_out(tp.tab[i]);
-			tmp = tabjoin(last, splitted);
-			tabfree(last);
+			tmp = tabjoin(last.tab, splitted);
+			k = 0;
+			while (k < tab_len(splitted) - 1)
+			{
+				last.print[j] = 2;
+				j++;
+				k++;
+			}
+			if (tp.print[i + 1] == 2)
+				last.print[j] = 2;
+			else
+				last.print[j] = 5;
+			j++;
+			tabfree(last.tab);
 			tabfree(splitted);
-			last = tmp;
+			last.tab = tmp;
 		}
 		else
 		{
 			if (tp.print[i + 1] == 1 && i != 0)
+			{
+				last.print[j] = 1;
 				quoted = add_quotes(tp.tab[i], '\"');
+			}
+			else if (tp.print[i + 1] == 4 && i != 0)
+			{
+				last.print[j] = 4;
+				quoted = add_quotes(tp.tab[i], '\"');
+			}
 			else if (tp.print[i + 1] == 0 && i != 0)
+			{
+				last.print[j] = 0;
 				quoted = add_quotes(tp.tab[i], '\'');
-			else
+			}
+			else if (tp.print[i + 1] == 3 && i != 0)
+			{
+				last.print[j] = 3;
+				quoted = add_quotes(tp.tab[i], '\'');
+			}
+			else if (tp.print[i + 1] == 5)
+			{
+				last.print[j] = 5;
 				quoted = ft_strdup(tp.tab[i]);
-			tmp = add_to_tab(last, quoted);
-			tabfree(last);
+			}
+			else
+			{
+				last.print[j] = 2;
+				quoted = ft_strdup(tp.tab[i]);
+			}
+			tmp = add_to_tab(last.tab, quoted);
+			tabfree(last.tab);
 			free(quoted);
-			last = tmp;
+			quoted = NULL;
+			last.tab = tmp;
+			tmp = NULL;
+			j++;
 		}
 		i++;
 	}
-	tmp = add_to_tab(last, "");
-	tabfree(last);
-	last = tmp;
-	last[tab_len(tmp) - 1] = NULL;
+	tmp = add_to_tab(last.tab, "");
+	tabfree(last.tab);
+	last.tab = tmp;
+	last.tab[tab_len(tmp) - 1] = NULL;
 	return (last);
+}
+
+int check_doubles_pipes(t_tprint tp)
+{
+	int i;
+
+	i = 0;
+	while (tp.tab[i] != NULL)
+	{
+		if (tp.tab[i][0] == '|' && tp.tab[i + 1][0] == '|' 
+			&& (tp.print[i + 2] == 2 || tp.print[i + 1] == 5)
+			&& (tp.print[i + 2] == 2 || tp.print[i + 1] == 5))
+			{
+				printf(ERROR_UNEXPECTED_TOKEN);
+				if (tp.tab[i + 2][0] == '|')
+					printf("\'||\'\n");
+				else
+					printf("\'|\'\n");
+				exit_status = 258;
+				return (1);
+			}
+		i++;
+	}
+	return (0);
 }
 
 char **split_pipes(t_tprint tp, int pipes)
@@ -403,28 +503,30 @@ char **split_pipes(t_tprint tp, int pipes)
 	int i;
 	int start;
 	int j;
-	char **splitted;
+	t_tprint splitted;
 	char **new;
 
 	i = 0;
 	j = 0;
 	start = 0;
 	splitted = split_pipes_phase_1(tp);
+	if (check_doubles_pipes(splitted))
+		return (NULL);
 	new = malloc(sizeof(char *) * (pipes + 2));
-	while (splitted[i] != NULL)
+	while (splitted.tab[i] != NULL)
 	{
 		start = i;
-		while (splitted[i] != NULL && !(splitted[i][0] == '|' && ft_strlen(splitted[i]) == 1))
+		while (splitted.tab[i] != NULL && !(splitted.tab[i][0] == '|' && ft_strlen(splitted.tab[i]) == 1))
 			i++;
 		if (i > start)
 		{
 			new[j] = join_strings(splitted, i, start);
 			j++;
 		}
-		if (splitted[i] != NULL)
+		if (splitted.tab[i] != NULL)
 			i++;
 	}
-	tabfree(splitted);
+	tabfree(splitted.tab);
 	new[j] = NULL;
 	return (new);
 }
@@ -509,6 +611,8 @@ int	monitor(char *cmd, t_tab *t)
 		return (1);
 	t->p = p;
 	p.cmds = split_pipes(tp, p.pipes);
+	if (p.cmds == NULL)
+		return (1);
 	if (tab_len(p.cmds) == 1 && p.redir == 0)
 	{
 		if (launch_cmds(p.cmds[0], t))

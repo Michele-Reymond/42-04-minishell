@@ -6,7 +6,7 @@
 /*   By: mreymond <mreymond@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/27 11:26:36 by mreymond          #+#    #+#             */
-/*   Updated: 2022/06/29 16:37:26 by mreymond         ###   ########.fr       */
+/*   Updated: 2022/07/01 18:17:17 by mreymond         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,6 +37,7 @@ void	tabfree(char **tab)
 		i++;
 	}
 	free(tab);
+	tab = NULL;
 }
 
 char	**tabdup(char **tab)

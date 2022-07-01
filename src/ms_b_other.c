@@ -6,7 +6,7 @@
 /*   By: mreymond <mreymond@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/26 12:37:07 by vroch             #+#    #+#             */
-/*   Updated: 2022/06/30 20:15:21 by mreymond         ###   ########.fr       */
+/*   Updated: 2022/07/01 09:53:58 by mreymond         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -387,12 +387,6 @@ void	launch_child_process(char *buff, char **paths, char **envp)
 
 	tp = parsing_master(buff);
 	first_cmd = ft_strjoin("/", tp.tab[0]);
-	printf("%s\n", first_cmd);
-	printf("_______\n");
-	display_tab(paths);
-	printf("_______\n");
-	display_tab(tp.tab);
-	printf("_______\n");
 	exec_cmd(paths, first_cmd, envp, tp.tab);
 	tabfree(tp.tab);
 	free(tp.print);
