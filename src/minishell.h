@@ -6,7 +6,7 @@
 /*   By: mreymond <mreymond@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/20 10:48:46 by mreymond          #+#    #+#             */
-/*   Updated: 2022/06/30 16:12:06 by mreymond         ###   ########.fr       */
+/*   Updated: 2022/07/01 21:18:11 by mreymond         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,6 +48,7 @@ typedef struct s_echo {
 	unsigned int	nbr_args;
 	char			flag;
 	char			**args;
+	int				*spaces;
 	char			**vars;
 }	t_echo;
 
@@ -138,7 +139,11 @@ void		display_inttab(int *inttab);
 char		*ft_strldup(const char *src, size_t dstsize);
 int			check_identifier(char *str);
 char		*add_quotes(char *old, char quote);
-char		*join_strings(char **tab, int pos, int start);
+char		*join_strings(t_tprint tp, int pos, int start);
+int			*new_inttab(void);
+int			*add_to_inttab(int *printing, int add);
+int			*fill_inttab(int *inttab, int add, int nbr);
+int			*inttabdup(int *inttab);
 
 //			errors
 void		check_args(int argc);
@@ -158,7 +163,7 @@ t_echo		echo_parsing(char **tab, t_tab t, int *print);
 char		**clean_cmd_for_echo(char *cmd, t_tab *t);
 
 //			Builtins - export
-t_tab		*ft_export(t_tab *t, char **token);
+t_tab		*ft_export(t_tab *t, t_tprint tp);
 void		display_export(char **env);
 char		**make_export(char **env);
 

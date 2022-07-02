@@ -6,7 +6,7 @@
 /*   By: mreymond <mreymond@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/27 11:28:42 by mreymond          #+#    #+#             */
-/*   Updated: 2022/06/29 16:32:09 by mreymond         ###   ########.fr       */
+/*   Updated: 2022/07/01 19:55:41 by mreymond         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,7 @@ t_var	str_to_var(char *str)
 	new_var.value = NULL;
 	if (!str || !(ft_isalpha(str[i]) != 0 || str[i] == '_'))
 		return (new_var);
-	while (str[i] && str[i] != '=' && (ft_isalnum(str[i]) != 0 || str[i] == '_'))
+	while (str[i] && str[i] != '=')
 		i++;
 	new_var.key = malloc(sizeof(char) * i + 1);
 	ft_strlcpy(new_var.key, str, i + 1);
@@ -60,7 +60,7 @@ char	**add_var(char **old, t_var var, bool quotes)
 	return (new);
 }
 
-// ajouter une variable à un tableau
+// enlever une variable à un tableau
 t_tab	*unset_var(t_tab *t, char **token)
 {
 	char	**new;
