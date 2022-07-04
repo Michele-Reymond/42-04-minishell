@@ -50,6 +50,38 @@ static char *ms_b_cd_init(char *new,t_tprint tp, t_tab *t)
 	return (new);
 }
 
+static char *ms_getenv(t_tab *t, char *vgetenv)
+{
+	int	len;
+	int	i;
+	int	j;
+	int	k;
+	char	*value;
+
+	len = ft_strlen(vgetenv);
+	i = 0;
+		while (t->env[i] != NULL)
+		{
+			if (!ft_strncmp(t->env[i], vgetenv, len))
+			{
+				j = len + 1;
+//				printf ("%s\n",t->env[i]);
+//				printf ("%s\n",vgetenv);
+				while (t->env[i][j] != '\0')
+				{
+					value[j - (len + 1)] = t->env[i][j];
+				 	j++;
+				}
+				value[j - (len + 1)] = '\0';
+				vgetenv = value;
+				break;
+			}
+			i++;
+		}
+	
+	return (vgetenv);
+}
+
 
 /* **************************************************************************
  *  parameter : buf = full line from readline.
@@ -63,11 +95,12 @@ t_tab *ms_b_cd(t_tprint tp, t_tab *t)
 
 	char		*new;
 	t_var 		var;
+	char		*vgetenv;
 
-	new = malloc (200 * sizeof (char));
+	new = calloc (4, 200);
 	new = ms_b_cd_init(new, tp, t);
 	
-	//printf("%s\n",new);
+	printf("new: %s\n",new);
 	if (chdir(new) == -1)
 	{
 		printf("minishell: cd: %s: ", tp.tab[1]);
@@ -78,7 +111,11 @@ t_tab *ms_b_cd(t_tprint tp, t_tab *t)
 	{
 		// maj variables d'environnement
 		var.key = "OLDPWD";
-		var.value = getenv("PWD");
+		vgetenv = "PWD";
+		var.value = ms_getenv(t, vgetenv);
+		printf("var.key:%s\n",var.key);
+		printf("var.value:%s\n",var.value);
+		//free (vgetenv);
 		t->env = update_env(t->env, var, false);
 		t->exp = update_env(t->exp, var, false);
 		//printf("old var.value %s : %s\n",var.key,var.value);
