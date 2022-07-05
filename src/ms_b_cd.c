@@ -6,7 +6,7 @@
 /*   By: mreymond <mreymond@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/20 12:16:50 by vroch             #+#    #+#             */
-/*   Updated: 2022/06/17 16:24:32 by mreymond         ###   ########.fr       */
+/*   Updated: 2022/07/05 13:50:19 by mreymond         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,8 +55,8 @@ static char *ms_getenv(t_tab *t, char *vgetenv)
 	int	len;
 	int	i;
 	int	j;
-	int	k;
-	char	*value;
+	// int	k;
+	char	*value = NULL;
 
 	len = ft_strlen(vgetenv);
 	i = 0;

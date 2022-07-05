@@ -6,7 +6,7 @@
 /*   By: mreymond <mreymond@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/20 10:43:17 by mreymond          #+#    #+#             */
-/*   Updated: 2022/07/01 21:27:54 by mreymond         ###   ########.fr       */
+/*   Updated: 2022/07/05 14:34:43 by mreymond         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -86,7 +86,7 @@ int equal_count(t_tprint tp)
 			i++;
 		}
 		nbr += i;
-	i = nbr;
+		i = nbr;
 		i++;
 	}
 	return (0);
