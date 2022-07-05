@@ -6,7 +6,7 @@
 /*   By: mreymond <mreymond@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/20 10:48:46 by mreymond          #+#    #+#             */
-/*   Updated: 2022/07/01 21:18:11 by mreymond         ###   ########.fr       */
+/*   Updated: 2022/07/05 16:01:03 by mreymond         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,6 +36,7 @@
 # define EXIT "exit\n"
 # define ERRORS_EXIT "exit: "
 # define ERRORS_EXP "export: "
+# define ERRORS_UNSET "unset: "
 # define ERRORS_EXIT_ARGS "too many arguments\n"
 # define ERRORS_NUM "numeric argument required\n"
 # define ERRORS_IDENTIFIER "not a valid identifier\n"
@@ -162,12 +163,13 @@ char		**echo_vars(char **tab, t_tab t, int nbr, int *print);
 t_echo		echo_parsing(char **tab, t_tab t, int *print);
 char		**clean_cmd_for_echo(char *cmd, t_tab *t);
 
-//			Builtins - export
+//			Builtins - export and unset
 t_tab		*ft_export(t_tab *t, t_tprint tp);
 void		display_export(char **env);
 char		**make_export(char **env);
-
-//			Builtins - unset
+char		**parsing_for_export(t_tprint tp);
+int			spaces_count(t_tprint tp);
+t_tab		*unset(t_tab *t, t_tprint tp);
 
 //			Builtins - env
 char		**sort(char **env);
