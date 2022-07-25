@@ -6,7 +6,7 @@
 /*   By: mreymond <mreymond@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/27 11:28:42 by mreymond          #+#    #+#             */
-/*   Updated: 2022/07/01 19:55:41 by mreymond         ###   ########.fr       */
+/*   Updated: 2022/07/05 17:03:00 by mreymond         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -73,22 +73,31 @@ t_tab	*unset_var(t_tab *t, char **token)
 	i = 0;
 	ok = 0;
 	k = 0;
-	len = (tab_len(t->env) - tab_len(token)) + 2;
+	j = 1;
+	len = tab_len(t->env) + 1;
+	while (token[j] != NULL)
+	{
+		if (check_identifier(token[j]))
+		{
+			printf(MINISHELL ERRORS_UNSET "\'%s\': ", token[j]);
+			printf(ERRORS_IDENTIFIER);
+			len--;
+			ok = -1;
+		}
+		j++;
+	}
+	if (ok == -1)
+		exit_status = 1;
+	else
+		exit_status = 0;
 	new = malloc(sizeof(char *) * len);
+	i = 0;
 	while (t->env[i] != NULL)
 	{
 		j = 1;
 		ok = 0;
 		while (token[j] != NULL)
 		{
-			if (check_identifier(token[j]))
-			{
-				printf(MINISHELL ERRORS_EXP "\'%s\': ", token[j]);
-				printf(ERRORS_IDENTIFIER);
-				tabfree(new);
-				exit_status = 1;
-				return (t);
-			}
 			if (!ft_strncmp(t->env[i], token[j], ft_strlen(token[j])))
 			{
 				ok = 1;
@@ -108,7 +117,6 @@ t_tab	*unset_var(t_tab *t, char **token)
 	tabfree(t->exp);
 	t->env = new;
 	t->exp = tabsort(t->env);
-	exit_status = 0;
 	return (t);
 }
 

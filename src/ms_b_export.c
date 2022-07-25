@@ -6,7 +6,11 @@
 /*   By: mreymond <mreymond@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/20 10:43:17 by mreymond          #+#    #+#             */
+<<<<<<< HEAD
 /*   Updated: 2022/07/25 11:40:53 by mreymond         ###   ########.fr       */
+=======
+/*   Updated: 2022/07/05 15:55:35 by mreymond         ###   ########.fr       */
+>>>>>>> 5760613d17751ff4513987d85ffb2bc3129abd26
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +26,7 @@ void	display_export(char **env)
 	while (env[i] != NULL)
 	{
 		// if specific to VR. - remove for normal us
-		if(!ft_strncmp(env[i],"PWD",3) || !ft_strncmp(env[i],"OLDPWD",6)) 
+		// if(!ft_strncmp(env[i],"PWD",3) || !ft_strncmp(env[i],"OLDPWD",6)) 
 		printf("declare -x %s\n", env[i]);
 		i++;
 	}
@@ -66,44 +70,72 @@ int check_identifier(char *str)
 }
 
 // compter les commandes pour export
-int equal_count(t_tprint tp)
+int spaces_count(t_tprint tp)
 {
-	int i;
-	int nbr;
+	int		i;
+	int		nbr;
 
 	i = 0;
 	nbr = 0;
+<<<<<<< HEAD
 	// display_tab_and_int(tp.print, tp.tab);
 	// exit(0);
+=======
+>>>>>>> 5760613d17751ff4513987d85ffb2bc3129abd26
 	while (tp.tab[i] != NULL)
 	{
-		while (tp.tab[i] != NULL && how_many_in_str(tp.tab[i], '=') == 0)
-			i++;
-		nbr += i;
-		if (tp.tab[i] != NULL && tp.tab[i][ft_strlen(tp.tab[i]) - 1] == '=' && tp.print[i + 1] < 3)
+		if (tp.print[i + 1] > 2)
+			nbr++;
+		else
 		{
-
-			i++;
+			nbr++;
+			while (tp.tab[i] != NULL && tp.print[i + 1] < 3)
+				i++;
 		}
-		nbr += i;
-	i = nbr;
-		i++;
+		if (tp.tab[i] != NULL)
+			i++;
 	}
-	return (0);
+	return (nbr);
 }
 
 char **parsing_for_export(t_tprint tp)
 {
 	int i;
+	int j;
+	char **new;
+	char *tmp;
+	char *joined;
+	int tablen;
 
 	i = 0;
-	equal_count(tp);
-	while (tp.tab[i])
+	j = 0;
+	tablen = spaces_count(tp);
+	new = malloc(sizeof(char *) * tablen + 1);
+	while (tp.tab[i] != NULL)
 	{
-
-		i++;
+		if (tp.print[i + 1] < 3)
+		{
+			joined = ft_strdup(tp.tab[i]);
+			i++;
+			while (tp.tab[i] != NULL && tp.print[i] < 3)
+			{
+				tmp = ft_strjoin(joined, tp.tab[i]);
+				free(joined);
+				joined = tmp;
+				i++;
+			}
+			new[j] = ft_strdup(joined);
+			j++;
+		}
+		else
+		{
+			new[j] = ft_strdup(tp.tab[i]);
+			j++;
+			i++;
+		}
 	}
-	return (tp.tab);
+	new[j] = NULL;
+	return (new);
 }
 
 t_tab	*ft_export(t_tab *t, t_tprint tp)
@@ -170,4 +202,14 @@ t_tab	*ft_export(t_tab *t, t_tprint tp)
 		}
 	}
 	return (t);
+}
+
+t_tab	*unset(t_tab *t, t_tprint tp)
+{
+	char	**pased;
+	t_tab	*new_t;
+
+	pased = parsing_for_export(tp);
+	new_t = unset_var(t, pased);
+	return (new_t);
 }
