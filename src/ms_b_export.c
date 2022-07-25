@@ -22,7 +22,7 @@ void	display_export(char **env)
 	while (env[i] != NULL)
 	{
 		// if specific to VR. - remove for normal us
-		//if(!ft_strncmp(env[i],"PWD",3) || !ft_strncmp(env[i],"OLDPWD",6)) 
+		if(!ft_strncmp(env[i],"PWD",3) || !ft_strncmp(env[i],"OLDPWD",6)) 
 		printf("declare -x %s\n", env[i]);
 		i++;
 	}

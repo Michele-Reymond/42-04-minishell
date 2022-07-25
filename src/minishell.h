@@ -149,7 +149,8 @@ int			*inttabdup(int *inttab);
 void		check_args(int argc);
 
 //			Builtins - cd
-t_tab		*ms_b_cd(char *buf,t_tab *t);
+//t_tab		*ms_b_cd(char *buf,t_tab *t);
+t_tab 		*ms_b_cd(t_tprint tp, t_tab *t);
 
 //			Builtins - pwd
 int			ms_b_pwd(void);

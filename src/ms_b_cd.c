@@ -11,70 +11,99 @@
 /* ************************************************************************** */
 
 #include "minishell.h"
-/* **************************************************************************
- *  parameter : buf = full line from readline.
- *  buf is going to be separated from "cd " --> param
- *  and re-created in case of :
- *   ~ --> usage of value from variable HOME
- *  structur returned 
- */
 
-static t_ms_b_cd	ms_b_cd_init(char *buf)
+static char *ms_b_cd_init(char *new,t_tprint tp, t_tab *t)
 {
-	t_ms_b_cd	str;
-	int			i;
-	int			j;	
-
-	str.home = getenv("HOME");
-	str.len = ft_strlen(buf) + ft_strlen(str.home);
-	str.param = malloc(str.len * sizeof(char));
-	i = 0;
-	while (i < str.len)
-		str.param[i++] = '\0';
-	i = 3;
-	j = 0;
-	if (buf[i] == '~')
-	{
-		while (str.home[j] != '\0')
-		{
-			str.param[j] = str.home[j];
-			j++;
-		}
-		i = 4;
-	}
-	str.pos_buf = i;
-	str.pos_param = j;
-	return (str);
-}
-/* **************************************************************************
- *  parameter : buf = full line from readline.
- *  buf is going to be separated from "cd " --> param
- *  and re-created in case of :
- *   ~ --> usage of value from variable HOME
- */
-
-t_tab *ms_b_cd(char *buf, t_tab *t)
-{
-	t_ms_b_cd	str;
 	int			i;
 	int			j;
-	t_var 		var;
+	int			k;
 
-	str = ms_b_cd_init(buf);
-	i = str.pos_buf;
-	j = str.pos_param;
-	while (buf[i] != '\0')
+	if (tp.tab[1][0] == '~')
 	{
-		str.param [j] = buf[i];
-		i++;
-		j++;
-	}	
-	if (chdir(str.param) == -1)
+		i = 0;
+		while (t->env[i] != NULL)
+		{
+			if (!ft_strncmp(t->env[i], "HOME", 4))
+			{
+				j = 5;
+				while (t->env[i][j] != '\0')
+				{
+					new[j-5] = t->env[i][j];
+					j++;
+				}
+				k = 1;
+				while (tp.tab[1][k] != '\0')
+				{
+					new[j-5] = tp.tab[1][k];
+					j++;
+					k++;
+				}
+				break;
+			}
+			i++;
+		}
+	}
+	else
 	{
-		// ft_putendl_fd("minishell: cd: ", 2);
-		// ft_putendl_fd(str.param, 2);
-		// ft_putendl_fd("no such file or directory", 2);
-		printf("minishell: cd: %s: ", str.param);
+		new = tp.tab[1];
+	}
+	return (new);
+}
+
+static char *ms_getenv(t_tab *t, char *vgetenv)
+{
+	int	len;
+	int	i;
+	int	j;
+	int	k;
+	char	*value;
+
+	len = ft_strlen(vgetenv);
+	i = 0;
+		while (t->env[i] != NULL)
+		{
+			if (!ft_strncmp(t->env[i], vgetenv, len))
+			{
+				j = len + 1;
+//				printf ("%s\n",t->env[i]);
+//				printf ("%s\n",vgetenv);
+				while (t->env[i][j] != '\0')
+				{
+					value[j - (len + 1)] = t->env[i][j];
+				 	j++;
+				}
+				value[j - (len + 1)] = '\0';
+				vgetenv = value;
+				break;
+			}
+			i++;
+		}
+	
+	return (vgetenv);
+}
+
+
+/* **************************************************************************
+ *  parameter : buf = full line from readline.
+ *  buf is going to be separated from "cd " --> param
+ *  and re-created in case of :
+ *   ~ --> usage of value from variable HOME
+ */
+
+t_tab *ms_b_cd(t_tprint tp, t_tab *t)
+{
+
+	char		*new;
+	t_var 		var;
+	char		*vgetenv;
+
+	new = calloc (4, 200);
+	new = ms_b_cd_init(new, tp, t);
+	
+	printf("new: %s\n",new);
+	if (chdir(new) == -1)
+	{
+		printf("minishell: cd: %s: ", tp.tab[1]);
 		printf(ERROR_FILE);
 		exit_status = 1;
 	}
@@ -82,7 +111,11 @@ t_tab *ms_b_cd(char *buf, t_tab *t)
 	{
 		// maj variables d'environnement
 		var.key = "OLDPWD";
-		var.value = getenv("PWD");
+		vgetenv = "PWD";
+		var.value = ms_getenv(t, vgetenv);
+		printf("var.key:%s\n",var.key);
+		printf("var.value:%s\n",var.value);
+		//free (vgetenv);
 		t->env = update_env(t->env, var, false);
 		t->exp = update_env(t->exp, var, false);
 		//printf("old var.value %s : %s\n",var.key,var.value);
@@ -94,6 +127,6 @@ t_tab *ms_b_cd(char *buf, t_tab *t)
 
 
 	}
-	free(str.param);
+	free(new);
     return (t);
 }
