@@ -6,7 +6,7 @@
 /*   By: mreymond <mreymond@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/06 15:58:02 by mreymond          #+#    #+#             */
-/*   Updated: 2022/06/30 20:34:16 by mreymond         ###   ########.fr       */
+/*   Updated: 2022/07/25 12:23:59 by mreymond         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -87,13 +87,13 @@ void parse_for_redir_infos(char *cmd, t_redir *r, int index)
     r->redir = NULL;
     while (tp.tab[i] != NULL && r->redir == NULL)
     {
-        if (tp.print[i + 1] == 2 && tp.tab[i][0] == '>' && ft_strlen(tp.tab[i]) == 1)
+        if ((tp.print[i + 1] == 2 || tp.print[i + 1] == 5 ) && tp.tab[i][0] == '>' && ft_strlen(tp.tab[i]) == 1)
             r->redir = ft_strdup(">");
-        else if (tp.print[i + 1] == 2 && tp.tab[i][0] == '>' && ft_strlen(tp.tab[i]) == 2)
+        else if ((tp.print[i + 1] == 2 || tp.print[i + 1] == 5 ) && tp.tab[i][0] == '>' && ft_strlen(tp.tab[i]) == 2)
             r->redir = ft_strdup(">>");
-        else if (tp.print[i + 1] == 2 && tp.tab[i][0] == '<' && ft_strlen(tp.tab[i]) == 1)
+        else if ((tp.print[i + 1] == 2 || tp.print[i + 1] == 5 ) && tp.tab[i][0] == '<' && ft_strlen(tp.tab[i]) == 1)
             r->redir = ft_strdup("<");
-        else if (tp.print[i + 1] == 2 && tp.tab[i][0] == '<' && ft_strlen(tp.tab[i]) == 2)
+        else if ((tp.print[i + 1] == 2 || tp.print[i + 1] == 5 ) && tp.tab[i][0] == '<' && ft_strlen(tp.tab[i]) == 2)
             r->redir = ft_strdup("<<");
         else if (tp.tab[i + 1] == NULL)
             r->redir = ft_strdup("");
@@ -204,7 +204,9 @@ void fork_and_launch_builtin(char *cmd, t_tab *t, int fd, int std)
 {
     pid_t	pid;
 	int		status;
+    t_tprint tp;
 
+	tp = parsing_master(cmd);
     pid = fork();
 	if (pid < 0)
 		return (perror("Fork: "));
@@ -215,7 +217,15 @@ void fork_and_launch_builtin(char *cmd, t_tab *t, int fd, int std)
 		exit (0);
 	}
 	else
+    {
 		waitpid(pid, &status, 0);
+        if (!ft_strncmp(cmd, "cd", 2) && (cmd[2] == ' ' || cmd[2] == '\0'))
+		    t = ms_b_cd(cmd, t);
+        else if (!ft_strncmp(cmd, "export", 6) && (cmd[6] == ' ' || cmd[6] == '\0'))
+            t = ft_export(t, tp);
+        else if (!ft_strncmp(cmd, "unset", 5) && (cmd[5] == ' ' || cmd[5] == '\0'))
+            t = unset_var(t, tp.tab);
+    }
 }
 
 // >
@@ -963,7 +973,7 @@ char **split_redirs_tp(t_tprint tp)
 	last = new_tab();
 	while (tp.tab[i] != NULL)
 	{
-		if((how_many_in_str(tp.tab[i], '>') > 0 || how_many_in_str(tp.tab[i], '<') > 0) && tp.print[i + 1] == 2 && ft_strlen(tp.tab[i]) > 1)
+		if((how_many_in_str(tp.tab[i], '>') > 0 || how_many_in_str(tp.tab[i], '<') > 0) && (tp.print[i + 1] == 2 || tp.print[i + 1] == 5) && ft_strlen(tp.tab[i]) > 1)
 		{
 			splitted = split_out_r(tp.tab[i]);
 			tmp = tabjoin(last, splitted);
@@ -973,9 +983,9 @@ char **split_redirs_tp(t_tprint tp)
 		}
 		else
 		{
-			if (tp.print[i + 1] == 1 && i != 0)
+			if ((tp.print[i + 1] == 1 || tp.print[i + 1] == 4) && i != 0)
 				quoted = add_quotes(tp.tab[i], '\"');
-			else if (tp.print[i + 1] == 0 && i != 0)
+			else if ((tp.print[i + 1] == 0 || tp.print[i + 1] == 3) && i != 0)
 				quoted = add_quotes(tp.tab[i], '\'');
 			else
 				quoted = ft_strdup(tp.tab[i]);

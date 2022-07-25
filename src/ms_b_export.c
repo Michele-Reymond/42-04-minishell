@@ -6,7 +6,7 @@
 /*   By: mreymond <mreymond@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/20 10:43:17 by mreymond          #+#    #+#             */
-/*   Updated: 2022/07/01 21:27:54 by mreymond         ###   ########.fr       */
+/*   Updated: 2022/07/25 11:40:53 by mreymond         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -73,8 +73,8 @@ int equal_count(t_tprint tp)
 
 	i = 0;
 	nbr = 0;
-	display_tab_and_int(tp.print, tp.tab);
-	exit(0);
+	// display_tab_and_int(tp.print, tp.tab);
+	// exit(0);
 	while (tp.tab[i] != NULL)
 	{
 		while (tp.tab[i] != NULL && how_many_in_str(tp.tab[i], '=') == 0)
