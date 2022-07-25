@@ -6,7 +6,7 @@
 /*   By: mreymond <mreymond@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/06 15:58:02 by mreymond          #+#    #+#             */
-/*   Updated: 2022/07/25 12:23:59 by mreymond         ###   ########.fr       */
+/*   Updated: 2022/07/25 12:46:09 by mreymond         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -220,7 +220,7 @@ void fork_and_launch_builtin(char *cmd, t_tab *t, int fd, int std)
     {
 		waitpid(pid, &status, 0);
         if (!ft_strncmp(cmd, "cd", 2) && (cmd[2] == ' ' || cmd[2] == '\0'))
-		    t = ms_b_cd(cmd, t);
+		    t = ms_b_cd(tp, t);
         else if (!ft_strncmp(cmd, "export", 6) && (cmd[6] == ' ' || cmd[6] == '\0'))
             t = ft_export(t, tp);
         else if (!ft_strncmp(cmd, "unset", 5) && (cmd[5] == ' ' || cmd[5] == '\0'))

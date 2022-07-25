@@ -6,11 +6,7 @@
 /*   By: mreymond <mreymond@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/20 10:43:17 by mreymond          #+#    #+#             */
-<<<<<<< HEAD
-/*   Updated: 2022/07/25 11:40:53 by mreymond         ###   ########.fr       */
-=======
-/*   Updated: 2022/07/05 15:55:35 by mreymond         ###   ########.fr       */
->>>>>>> 5760613d17751ff4513987d85ffb2bc3129abd26
+/*   Updated: 2022/07/25 12:44:41 by mreymond         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -77,11 +73,6 @@ int spaces_count(t_tprint tp)
 
 	i = 0;
 	nbr = 0;
-<<<<<<< HEAD
-	// display_tab_and_int(tp.print, tp.tab);
-	// exit(0);
-=======
->>>>>>> 5760613d17751ff4513987d85ffb2bc3129abd26
 	while (tp.tab[i] != NULL)
 	{
 		if (tp.print[i + 1] > 2)
