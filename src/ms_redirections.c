@@ -6,7 +6,7 @@
 /*   By: mreymond <mreymond@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/06 15:58:02 by mreymond          #+#    #+#             */
-/*   Updated: 2022/07/25 12:46:09 by mreymond         ###   ########.fr       */
+/*   Updated: 2022/07/26 10:26:26 by mreymond         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -573,6 +573,34 @@ t_doors set_redirection(t_redir r, t_doors doors)
     return (new);
 }
 
+void fork_and_launch_builtin_doors(char *cmd, t_tab *t, t_doors doors)
+{
+    pid_t	pid;
+	int		status;
+    t_tprint tp;
+
+	tp = parsing_master(cmd);
+    pid = fork();
+	if (pid < 0)
+		return (perror("Fork: "));
+	if (pid == 0)
+	{
+		launch_builtins_with_doors(cmd, t, doors);
+        close(doors.in);
+        close(doors.out);
+		exit (0);
+	}
+	else {
+		waitpid(pid, &status, 0);
+        if (!ft_strncmp(cmd, "cd", 2) && (cmd[2] == ' ' || cmd[2] == '\0'))
+		    t = ms_b_cd(tp, t);
+        else if (!ft_strncmp(cmd, "export", 6) && (cmd[6] == ' ' || cmd[6] == '\0'))
+            t = ft_export(t, tp);
+        else if (!ft_strncmp(cmd, "unset", 5) && (cmd[5] == ' ' || cmd[5] == '\0'))
+            t = unset_var(t, tp.tab);
+	}
+}
+
 void launch_multiple_redir(t_redir *r, t_tab *t, char **cmds)
 {
     t_doors doors;
@@ -594,11 +622,9 @@ void launch_multiple_redir(t_redir *r, t_tab *t, char **cmds)
         r[0].cmd = newcmd;
     }
     if (is_a_builtin(r[0].cmd))
-        launch_builtins_with_doors(r[0].cmd, t, doors);
+        fork_and_launch_builtin_doors(r[0].cmd, t, doors);
     else
         other_doors_and_fork(r[0].cmd, t, doors);
-    close(doors.in);
-    close(doors.out);
     if (access(".heredoc", F_OK) == 0)
         unlink(".heredoc");
 }
