@@ -637,3 +637,39 @@
 // 	new[j] = NULL;
 // 	return (new);
 // }
+
+// int count_quotes(char *cmd)
+// {
+// 	int i;
+// 	char stock;
+// 	int nbr;
+
+// 	i = 0;
+// 	nbr = 0;
+// 	stock = '\0';
+// 	while (cmd[i] != '\0')
+// 	{
+// 		if (cmd[i] != ' ' && cmd[i] != '	' && cmd[i] != '\'' && cmd[i] != '\"')
+// 			nbr++;
+// 		while (cmd[i] != '\0' && cmd[i] != '\'' && cmd[i] != '\"')
+// 		{
+// 			if (cmd[i - 1] == ' ' || cmd[i - 1] == '	')
+// 				nbr++;
+// 			i++;
+// 		}
+// 		if (cmd[i] == '\0')
+// 			return (nbr);
+// 		else if (cmd[i] == '\'' || cmd[i] == '\"')
+// 		{
+// 			nbr++;
+// 			stock = cmd[i++];
+// 		}
+// 		while(cmd[i] != '\0' && cmd[i] != stock)
+// 			i++;
+// 		if (cmd[i] == '\0')
+// 			return (nbr);
+// 		else if (cmd[i++] == stock)
+// 			stock = '\0';
+// 	}
+// 	return (nbr);
+// }
