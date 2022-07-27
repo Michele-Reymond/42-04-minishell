@@ -6,7 +6,7 @@
 /*   By: mreymond <mreymond@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/20 10:48:46 by mreymond          #+#    #+#             */
-/*   Updated: 2022/07/05 16:01:03 by mreymond         ###   ########.fr       */
+/*   Updated: 2022/07/27 10:10:05 by mreymond         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,6 +70,13 @@ typedef struct s_doors
 	int in;
 	int out;
 }	t_doors;
+
+// coordonnées d'un tableaux de char
+typedef struct s_c
+{
+	int i;
+	int j;
+}	t_c;
 
 typedef struct s_ms_b_cd
 {

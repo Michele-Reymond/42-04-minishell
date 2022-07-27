@@ -6,7 +6,7 @@
 /*   By: mreymond <mreymond@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/27 13:06:22 by mreymond          #+#    #+#             */
-/*   Updated: 2022/07/26 12:00:49 by mreymond         ###   ########.fr       */
+/*   Updated: 2022/07/27 09:16:43 by mreymond         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -133,6 +133,49 @@ int count_dollar(t_tprint tp)
 	return (nbr);
 }
 
+void free_redirs(int *nbr1, int *nbr2)
+{
+	if (nbr1)
+	{
+		free(nbr1);
+		nbr2 = NULL;
+	}
+	if (nbr2)
+	{
+		free(nbr2);
+		nbr2 = NULL;
+	}
+}
+
+int redir_errors(int *nbr1, int *nbr2, t_parse *p)
+{
+	if (nbr1[0] == -1 || nbr1[1] == -1)
+	{
+		p->redir_out = nbr1[0];
+		p->redir_out_d = nbr1[1];
+		if (nbr1)
+		{
+			free(nbr1);
+			nbr1 = NULL;
+		}
+		if (nbr2)
+		{
+			free(nbr2);
+			nbr2 = NULL;
+		}
+		return (1);
+	}
+	return (0);
+}
+
+void init_redirections(t_parse *p)
+{
+	p->redir_out = 0;
+	p->redir_out_d = 0;
+	p->redir_in = 0;
+	p->redir_in_d = 0;
+}
+
 void count_redir(t_tprint tp, t_parse *p)
 {
 	int		i;
@@ -140,68 +183,27 @@ void count_redir(t_tprint tp, t_parse *p)
 	int		*nbr2;
 
 	i = 0;
-	p->redir_out = 0;
-	p->redir_out_d = 0;
-	p->redir_in = 0;
-	p->redir_in_d = 0;
+	init_redirections(p);
 	while (tp.tab[i] != NULL)
 	{
 		if (tp.print[i + 1] == 2 || tp.print[i + 1] == 5)
 		{
 			nbr1 = check_redir(tp.tab[i], '>');
-			if (nbr1[0] == -1 || nbr1[1] == -1)
-			{
-				p->redir_out = nbr1[0];
-				p->redir_out_d = nbr1[1];
-				if (nbr1)
-				{
-					free(nbr1);
-					nbr1 = NULL;
-				}
-				if (nbr2)
-				{
-					free(nbr2);
-					nbr2 = NULL;
-				}
+			if (redir_errors(nbr1, nbr2, p))
 				break ;
-			}
 			p->redir_out += nbr1[0];
 			p->redir_out_d += nbr1[1];
 			nbr2 = check_redir(tp.tab[i], '<');
-			if (nbr2[0] == -1 || nbr2[1] == -1)
-			{
-				p->redir_in = nbr2[0];
-				p->redir_in_d = nbr2[1];
-				if (nbr1)
-				{
-					free(nbr1);
-					nbr1 = NULL;
-				}
-				if (nbr2)
-				{
-					free(nbr2);
-					nbr2 = NULL;
-				}
+			if (redir_errors(nbr2, nbr1, p))
 				break ;
-			}
 			p->redir_in += nbr2[0];
 			p->redir_in_d += nbr2[1];
-			if (nbr1)
-			{
-				free(nbr1);
-				nbr2 = NULL;
-			}
-			if (nbr2)
-			{
-				free(nbr2);
-				nbr2 = NULL;
-			}
+			free_redirs(nbr1, nbr2);
 		}
 		i++;
 	}
 	p->redir = p->redir_in + p->redir_in_d + p->redir_out + p->redir_out_d;
 }
-
 
 t_parse	stock_parsing_infos(t_tprint tp)
 {
@@ -510,98 +512,6 @@ t_tprint split_pipes_phase_1(t_tprint tp)
 	last.tab[tab_len(tmp) - 1] = NULL;
 	return (last);
 }
-
-
-
-// t_tprint split_pipes_phase_1(t_tprint tp)
-// {
-// 	int i;
-// 	int j;
-// 	int k;
-// 	char **splitted;
-// 	char **tmp;
-// 	t_tprint last;
-// 	char *quoted;
-// 	int pipes;
-
-// 	i = 0;
-// 	j = 1;
-// 	last.tab = new_tab();
-// 	pipes = count_multi_pipes_cmds(tp);
-// 	last.print = malloc(sizeof(char *) * (pipes + tp.print[0] + 1));
-// 	last.print[0] = pipes + tp.print[0];
-// 	while (tp.tab[i] != NULL)
-// 	{
-// 		if(how_many_in_str(tp.tab[i], '|') > 0 
-// 			&& (tp.print[i + 1] == 2 || tp.print[i + 1] == 5) 
-// 			&& ft_strlen(tp.tab[i]) > 1)
-// 		{
-// 			splitted = split_out(tp.tab[i]);
-// 			tmp = tabjoin(last.tab, splitted);
-// 			k = 0;
-// 			while (k < tab_len(splitted) - 1)
-// 			{
-// 				last.print[j] = 2;
-// 				j++;
-// 				k++;
-// 			}
-// 			if (tp.print[i + 1] == 2)
-// 				last.print[j] = 2;
-// 			else
-// 				last.print[j] = 5;
-// 			j++;
-// 			tabfree(last.tab);
-// 			tabfree(splitted);
-// 			last.tab = tmp;
-// 		}
-// 		else
-// 		{
-// 			if (tp.print[i + 1] == 1 && i != 0)
-// 			{
-// 				last.print[j] = 1;
-// 				quoted = add_quotes(tp.tab[i], '\"');
-// 			}
-// 			else if (tp.print[i + 1] == 4 && i != 0)
-// 			{
-// 				last.print[j] = 4;
-// 				quoted = add_quotes(tp.tab[i], '\"');
-// 			}
-// 			else if (tp.print[i + 1] == 0 && i != 0)
-// 			{
-// 				last.print[j] = 0;
-// 				quoted = add_quotes(tp.tab[i], '\'');
-// 			}
-// 			else if (tp.print[i + 1] == 3 && i != 0)
-// 			{
-// 				last.print[j] = 3;
-// 				quoted = add_quotes(tp.tab[i], '\'');
-// 			}
-// 			else if (tp.print[i + 1] == 5)
-// 			{
-// 				last.print[j] = 5;
-// 				quoted = ft_strdup(tp.tab[i]);
-// 			}
-// 			else
-// 			{
-// 				last.print[j] = 2;
-// 				quoted = ft_strdup(tp.tab[i]);
-// 			}
-// 			tmp = add_to_tab(last.tab, quoted);
-// 			tabfree(last.tab);
-// 			free(quoted);
-// 			quoted = NULL;
-// 			last.tab = tmp;
-// 			tmp = NULL;
-// 			j++;
-// 		}
-// 		i++;
-// 	}
-// 	tmp = add_to_tab(last.tab, "");
-// 	tabfree(last.tab);
-// 	last.tab = tmp;
-// 	last.tab[tab_len(tmp) - 1] = NULL;
-// 	return (last);
-// }
 
 int check_doubles_pipes(t_tprint tp)
 {
