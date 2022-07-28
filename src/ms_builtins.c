@@ -6,7 +6,7 @@
 /*   By: mreymond <mreymond@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/27 13:06:22 by mreymond          #+#    #+#             */
-/*   Updated: 2022/07/27 09:16:43 by mreymond         ###   ########.fr       */
+/*   Updated: 2022/07/28 13:13:21 by mreymond         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -579,34 +579,34 @@ char **split_pipes(t_tprint tp, int pipes)
 	return (new);
 }
 
-char	**clean_quotes(char **cmds, t_parse p)
-{
-	char	**new;
-	char	**token;
-	char	**tmp;
-	int		i;
-	int		j;
+// char	**clean_quotes(char **cmds, t_parse p)
+// {
+// 	char	**new;
+// 	char	**token;
+// 	char	**tmp;
+// 	int		i;
+// 	int		j;
 
-	j = 0;
-	if (p.double_q == 0 && p.single_q == 0)
-		return (cmds);
-	new = malloc(sizeof(char *) * tab_len(cmds) + 1);
-	while (cmds[j] != NULL)
-	{
-		i = 0;
-		tmp = tokenize(cmds[j]);
-		token = malloc(sizeof(char *) * tab_len(tmp) + 1);
-		while (tmp[i] != NULL)
-		{
-			token[i] = ft_strtrim(tmp[i], "\"");
-			i++;
-		}
-		token[i] = NULL;
-		new[j] = tab_to_str(token);
-		j++;
-	}
-	return (cmds);
-}
+// 	j = 0;
+// 	if (p.double_q == 0 && p.single_q == 0)
+// 		return (cmds);
+// 	new = malloc(sizeof(char *) * tab_len(cmds) + 1);
+// 	while (cmds[j] != NULL)
+// 	{
+// 		i = 0;
+// 		tmp = tokenize(cmds[j]);
+// 		token = malloc(sizeof(char *) * tab_len(tmp) + 1);
+// 		while (tmp[i] != NULL)
+// 		{
+// 			token[i] = ft_strtrim(tmp[i], "\"");
+// 			i++;
+// 		}
+// 		token[i] = NULL;
+// 		new[j] = tab_to_str(token);
+// 		j++;
+// 	}
+// 	return (cmds);
+// }
 
 char	**clean_quotes_token(char **token, t_parse p)
 {

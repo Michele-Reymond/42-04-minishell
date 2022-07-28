@@ -6,51 +6,50 @@
 /*   By: mreymond <mreymond@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/20 11:38:04 by mreymond          #+#    #+#             */
-/*   Updated: 2022/05/30 19:26:06 by mreymond         ###   ########.fr       */
+/*   Updated: 2022/07/28 13:17:51 by mreymond         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
+char *convert_var(int *k, int *i, int nbr_vars, char **vars)
+{
+	char	*new;
+
+	if (k == 0 && tab_len(vars) > nbr_vars)
+		new = vars[*k];
+	else if (k == 0 && tab_len(vars) == nbr_vars)
+		new = ft_strjoin("$", vars[*k]);
+	else
+		new = ft_strjoin("$ ", vars[*k]);
+	(*i)++;
+	(*k)++;
+	return (new);
+}
+
 char **check_varstr(char **tmp)
 {
 	char	**new;
 	char 	**vars;
-	int		nbr_vars;
 	int		i;
 	int		j;
 	int		k;
-	int		len;
 	
 	i = 0;
 	j = 0;
-	k = 0;
-	len = how_many_in_tab(tmp, '$') + tab_len(tmp);
-	new = malloc(sizeof(char *) * (len + 1));
-	while (tmp[j])
+	new = malloc(sizeof(char *) * 
+		(how_many_in_tab(tmp, '$') + tab_len(tmp) + 1));
+	while (tmp[j] != NULL)
 	{
 		k = 0;
-		nbr_vars = how_many_in_str(tmp[j],  '$');
 		if (ft_strchr(tmp[j], '$'))
 		{
 			vars = ft_split(tmp[j], '$');
-			while (vars[k])
-			{
-				if (k == 0 && tab_len(vars) > nbr_vars)
-					new[i] = vars[k];
-				else if (k == 0 && tab_len(vars) == nbr_vars)
-					new[i] = ft_strjoin("$", vars[k]);
-				else
-					new[i] = ft_strjoin("$ ", vars[k]);
-				i++;
-				k++;
-			}
+			while (vars[k] != NULL)
+				new[i] = convert_var(&k, &i, how_many_in_str(tmp[j], '$'), vars);
 		}
 		else
-		{
-			new[i] = ft_strdup(tmp[j]);
-			i++;
-		}
+			new[i++] = ft_strdup(tmp[j]);
 		j++;
 	}
 	new[i] = NULL;

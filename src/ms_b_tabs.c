@@ -6,7 +6,7 @@
 /*   By: mreymond <mreymond@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/27 11:26:36 by mreymond          #+#    #+#             */
-/*   Updated: 2022/07/01 18:17:17 by mreymond         ###   ########.fr       */
+/*   Updated: 2022/07/28 12:17:54 by mreymond         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -100,9 +100,9 @@ char	*tab_to_str(char **tab)
 	char	*tmp;
 	int		i;
 
-	i = 0;
+	i = -1;
 	tmp = ft_strdup("");
-	while (tab[i] != NULL)
+	while (tab[i++] != NULL)
 	{
 		if (*tab[i] == '\0')
 		{
@@ -119,7 +119,6 @@ char	*tab_to_str(char **tab)
 			free(tmp);
 			tmp = str;
 		}
-		i++;
 	}
 	return (str);
 }
