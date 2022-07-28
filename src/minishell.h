@@ -6,7 +6,7 @@
 /*   By: mreymond <mreymond@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/20 10:48:46 by mreymond          #+#    #+#             */
-/*   Updated: 2022/07/27 10:10:05 by mreymond         ###   ########.fr       */
+/*   Updated: 2022/07/28 14:37:41 by mreymond         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -209,7 +209,7 @@ void		launch_out_d(t_redir r, t_tab *t, char *cmd);
 void		launch_out(t_redir r, t_tab *t, char *cmd);
 int			is_heredoc(char *cmd);
 void		read_heredoc(char *cmd);
-char		**one_redir_pro_cmd(char **oldcmds);
+char 		**a_redir_pro_cmd(char *cmd);
 
 //			Bin
 int			ms_b_other(char *buf);

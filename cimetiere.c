@@ -1063,3 +1063,274 @@
 // 	// sorted[len] = NULL;
 // 	return (sorted);
 // }
+
+// void launch_with_pipes(t_parse p, t_tab *t)
+// {
+//     pid_t	*pid;
+//     int		**fd;
+//     int		status;
+//     int     i;
+//     int k;
+
+//     i = 0;
+//     k = 0;
+//     pid = malloc(sizeof(pid_t) * p.nbr_cmd);
+//     fd = malloc(sizeof(int *) * p.pipes);
+//     while (i < p.pipes)
+//     {
+//         fd[i] = malloc(sizeof(int) * 2);
+//         i++;
+//     }
+//     create_pipes(fd, p.pipes);
+//     i = 0;
+//     while (i < p.nbr_cmd)
+//     {
+//         pid[i] = fork();
+//         if (pid[i] < 0)
+//             return ;
+//         if (pid[i] == 0)
+//         {
+//             child_process(fd, i, p.pipes);
+//             if (launch_cmds(p.cmds[i], t))
+//                 other_basic(p.cmds[i], t);
+//             closing_loop_out(fd, i, p.pipes);
+//             while (k < p.pipes)
+//             {
+//                 free(fd[k]);
+//                 k++;
+//             }
+//             free(fd);
+//             free(pid);
+//             exit (0);
+//         }
+//         i++;
+//     }
+//     if (pid != 0)
+//     {
+//         parent_closing_loop(fd, p.pipes);
+//         i = 0;
+//         while (i < p.nbr_cmd)
+//         {
+//             waitpid(pid[i], &status, 0);
+//             i++;
+//         }
+//         i = 0;
+//         while (i < p.pipes)
+//         {
+//             free(fd[i]);
+//             i++;
+//         }
+//         free(fd);
+//         free(pid);
+//     }
+// }
+
+// char **one_redir_pro_cmd(char **oldcmds)
+// {
+//     char    **new;
+//     char    **tmp1;
+//     char    **tmp2;
+//     int     i;
+
+//     i = 0;
+//     new = new_tab();
+//     while (oldcmds[i] != NULL)
+//     {
+//         if (nbr_of_redir(oldcmds[i]) == 0)
+//         {
+//             tmp1 = add_to_tab(new, oldcmds[i]);
+//             tabfree(new);
+//             new = tmp1;
+//         }
+//         else
+//         {
+//             tmp1 = split_redir(oldcmds[i]);
+//             tmp2 = tabjoin(new, tmp1);
+//             tabfree(new);
+//             tabfree(tmp1);
+//             new = tmp2;
+//         }
+//         i++;
+//     }
+//     return (new);
+// }
+
+// char *find_cmd(char **token, int start)
+// {
+//     char *cmd;
+//     char *tmp;
+
+//     tmp = ft_strdup(token[start - 1]);
+//     cmd = ft_strjoin(tmp, " ");
+//     free(tmp);
+//     while (token[start] != NULL && ft_strncmp(token[start], ">", 1) && ft_strncmp(token[start], "<", 1))
+//     {
+//         tmp = ft_strjoin(cmd, token[start]);
+//         free(cmd);
+//         cmd = ft_strjoin(tmp, " ");
+//         free(tmp);
+//         start++;
+//     }
+//     return (cmd);
+// }
+
+// char **join_cmd_and_redir(char *cmd, char **redirs)
+// {
+//     char **new;
+//     char *tmp;
+//     int i;
+//     int j;
+
+//     i = 0;
+//     j = 0;
+//     tmp = ft_strjoin(cmd, " ");
+//     new = malloc(sizeof(char *) * tab_len(redirs) + 1);
+//     while (redirs[i] != NULL)
+//     {
+//         if (redirs[i][0] == '<')
+//         {
+//             new[j] = ft_strjoin(tmp, redirs[i]);
+//             j++;
+//         }
+//         i++;
+//     }
+//     i = 0;
+//     while (redirs[i] != NULL)
+//     {
+//         if (redirs[i][0] == '>')
+//         {
+//             new[j] = ft_strjoin(tmp, redirs[i]);
+//             j++;
+//         }
+//         i++;
+//     }
+//     new[j] = NULL;
+//     free(tmp);
+//     return (new);
+// }
+
+// char **split_with_starting_redir(char **token, char *oldcmd)
+// {
+//     char *cmd;
+//     char *pos;
+//     int i;
+//     int j;
+//     int k;
+//     int		*nbr1;
+// 	int		*nbr2;
+//     int     nbr;
+//     char **redirs;
+//     char **new;
+
+//     i = 0;
+//     j = 0;
+//     k = 0;
+//     cmd = ft_strtrim(find_cmd(token, 3), " ");
+//     pos = ft_strnstr(oldcmd, cmd, ft_strlen(oldcmd));
+//     nbr1 = check_redir(oldcmd, '>');
+// 	nbr2 = check_redir(oldcmd, '<');
+//     nbr = nbr1[0] + nbr1[1] + nbr2[0] + nbr2[1];
+//     redirs = malloc(sizeof(char *) * nbr + 1);
+//     while (oldcmd[i] && &oldcmd[i] != pos)
+//         i++;
+//     redirs[k] = malloc(sizeof(char) * i);
+//     i = 0;
+//     while (oldcmd[i] && &oldcmd[i] != pos)
+//     {
+//         redirs[k][i] = oldcmd[i];
+//         i++;
+//     }
+//     redirs[k][i] = '\0';
+//     i += ft_strlen(cmd);
+//     k++;
+//     while (oldcmd[i] != '\0' && nbr > 1)
+//     {
+//         j = i;
+//         while (oldcmd[j] && (oldcmd[j] == '>' || oldcmd[j] == '<'))
+//             j++;
+//         while (oldcmd[j] && (oldcmd[j] != '>' || oldcmd[j] != '<'))
+//             j++;
+//         redirs[k] = malloc(sizeof(char) * j - i);
+//         j = 0;
+//         while (oldcmd[i] && (oldcmd[i] == '>' || oldcmd[i] == '<'))
+//         {
+//             redirs[k][j] = oldcmd[i];
+//             j++;
+//             i++;
+//         }
+//         while (oldcmd[i] && oldcmd[i] != '>' && oldcmd[i] != '<')
+//         {
+//             redirs[k][j] = oldcmd[i];
+//             j++;
+//             i++;
+//         }
+//         redirs[k][j] = '\0';
+//         k++;
+//     }
+//     redirs[k] = NULL;
+//     new = join_cmd_and_redir(cmd, redirs);
+//     return (new);
+// }
+
+// char **split_with_starting_cmd(char **token, char *oldcmd)
+// {
+//     char *cmd;
+//     int i;
+//     int j;
+//     int k;
+//     int		*nbr1;
+// 	int		*nbr2;
+//     int     nbr;
+//     char **redirs;
+//     char **new;
+
+//     j = 0;
+//     k = 0;
+//     cmd = ft_strtrim(find_cmd(token, 1), " ");
+//     nbr1 = check_redir(oldcmd, '>');
+// 	nbr2 = check_redir(oldcmd, '<');
+//     nbr = nbr1[0] + nbr1[1] + nbr2[0] + nbr2[1];
+//     redirs = malloc(sizeof(char *) * nbr + 1);
+//     i = ft_strlen(cmd);
+//     while (oldcmd[i] != '\0')
+//     {
+//         j = i;
+//         while (oldcmd[j] && (oldcmd[j] == '>' || oldcmd[j] == '<'))
+//             j++;
+//         while (oldcmd[j] && (oldcmd[j] != '>' || oldcmd[j] != '<'))
+//             j++;
+//         redirs[k] = malloc(sizeof(char) * j - i);
+//         j = 0;
+//         while (oldcmd[i] && (oldcmd[i] == '>' || oldcmd[i] == '<'))
+//         {
+//             redirs[k][j] = oldcmd[i];
+//             j++;
+//             i++;
+//         }
+//         while (oldcmd[i] && oldcmd[i] != '>' && oldcmd[i] != '<')
+//         {
+//             redirs[k][j] = oldcmd[i];
+//             j++;
+//             i++;
+//         }
+//         redirs[k][j] = '\0';
+//         k++;
+//     }
+//     redirs[k] = NULL;
+//     new = join_cmd_and_redir(cmd, redirs);
+//     return (new);
+// }
+
+// char **split_redir(char *cmd)
+// {
+//     char **token;
+//     char **new;
+
+//     token = tokenize(cmd);
+//     if (!ft_strncmp(token[0], ">", 1) || !ft_strncmp(token[0], "<", 1))
+//         new = split_with_starting_redir(token, cmd);
+//     else
+//         new = split_with_starting_cmd(token, cmd);
+//     tabfree(token);
+//     return (new);
+// }

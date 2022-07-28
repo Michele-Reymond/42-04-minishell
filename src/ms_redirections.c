@@ -6,7 +6,7 @@
 /*   By: mreymond <mreymond@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/06 15:58:02 by mreymond          #+#    #+#             */
-/*   Updated: 2022/07/26 10:26:26 by mreymond         ###   ########.fr       */
+/*   Updated: 2022/07/28 16:55:45 by mreymond         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -75,6 +75,28 @@ char **rebuilt_cmds(t_redir *r, int len)
     return (cmds);
 }
 
+char *which_redir_is_it(t_tprint tp, int i)
+{
+    char *redir;
+
+    redir = NULL;
+    if ((tp.print[i + 1] == 2 || tp.print[i + 1] == 5 ) 
+            && tp.tab[i][0] == '>' && ft_strlen(tp.tab[i]) == 1)
+        redir = ft_strdup(">");
+    else if ((tp.print[i + 1] == 2 || tp.print[i + 1] == 5 ) 
+            && tp.tab[i][0] == '>' && ft_strlen(tp.tab[i]) == 2)
+        redir = ft_strdup(">>");
+    else if ((tp.print[i + 1] == 2 || tp.print[i + 1] == 5 ) 
+            && tp.tab[i][0] == '<' && ft_strlen(tp.tab[i]) == 1)
+        redir = ft_strdup("<");
+    else if ((tp.print[i + 1] == 2 || tp.print[i + 1] == 5 ) 
+            && tp.tab[i][0] == '<' && ft_strlen(tp.tab[i]) == 2)
+        redir = ft_strdup("<<");
+    else if (tp.tab[i + 1] == NULL)
+        redir = ft_strdup("");
+    return (redir);
+}
+
 // for each cmd we parse the cmd with parsing master and stock infos
 void parse_for_redir_infos(char *cmd, t_redir *r, int index)
 {
@@ -87,16 +109,7 @@ void parse_for_redir_infos(char *cmd, t_redir *r, int index)
     r->redir = NULL;
     while (tp.tab[i] != NULL && r->redir == NULL)
     {
-        if ((tp.print[i + 1] == 2 || tp.print[i + 1] == 5 ) && tp.tab[i][0] == '>' && ft_strlen(tp.tab[i]) == 1)
-            r->redir = ft_strdup(">");
-        else if ((tp.print[i + 1] == 2 || tp.print[i + 1] == 5 ) && tp.tab[i][0] == '>' && ft_strlen(tp.tab[i]) == 2)
-            r->redir = ft_strdup(">>");
-        else if ((tp.print[i + 1] == 2 || tp.print[i + 1] == 5 ) && tp.tab[i][0] == '<' && ft_strlen(tp.tab[i]) == 1)
-            r->redir = ft_strdup("<");
-        else if ((tp.print[i + 1] == 2 || tp.print[i + 1] == 5 ) && tp.tab[i][0] == '<' && ft_strlen(tp.tab[i]) == 2)
-            r->redir = ft_strdup("<<");
-        else if (tp.tab[i + 1] == NULL)
-            r->redir = ft_strdup("");
+        r->redir = which_redir_is_it(tp, i);
         i++;
     }
     r->index = index;
@@ -119,30 +132,12 @@ t_redir *stock_redir_infos(char **cmds)
 {
     t_redir *r;
     int i;
-    // char **token;
-    // int pos;
 
     i = 0;
     r = malloc(sizeof(t_redir) * (tab_len(cmds) + 1));
     while (cmds[i] != NULL)
     {
         parse_for_redir_infos(cmds[i], &r[i], i);
-
-        // which_redir(&r[i], cmds[i]);
-        // r[i].index = i;
-        // if (*r[i].redir == '\0')
-        // {
-        //     r[i].dest = ft_strdup("");
-        //     r[i].cmd = ft_strdup(cmds[i]);
-        // }
-        // else 
-        // {
-        //     token = tokenize(cmds[i]);
-        //     pos = var_exist(token, r[i].redir);
-        //     r[i].dest = ft_strtrim(ft_strdup(token[pos + 1]), " "); 
-        //     r[i].cmd = stock_cmd_part(token, pos);
-        //     tabfree(token);
-        // }
         i++;
     }
     return (r);
@@ -200,6 +195,13 @@ int	check_files_out_basic(char *file)
     return (0);
 }
 
+void launch_b_child(char *cmd, t_tab *t, int fd, int std)
+{
+    dup2(fd, std);
+    launch_cmds(cmd, t);
+    exit (0);
+}
+
 void fork_and_launch_builtin(char *cmd, t_tab *t, int fd, int std)
 {
     pid_t	pid;
@@ -211,19 +213,18 @@ void fork_and_launch_builtin(char *cmd, t_tab *t, int fd, int std)
 	if (pid < 0)
 		return (perror("Fork: "));
 	if (pid == 0)
-	{
-		dup2(fd, std);
-		launch_cmds(cmd, t);
-		exit (0);
-	}
+		launch_b_child(cmd, t, fd, std);
 	else
     {
 		waitpid(pid, &status, 0);
-        if (!ft_strncmp(cmd, "cd", 2) && (cmd[2] == ' ' || cmd[2] == '\0'))
+        if (!ft_strncmp(cmd, "cd", 2) 
+                && (cmd[2] == ' ' || cmd[2] == '\0'))
 		    t = ms_b_cd(tp, t);
-        else if (!ft_strncmp(cmd, "export", 6) && (cmd[6] == ' ' || cmd[6] == '\0'))
+        else if (!ft_strncmp(cmd, "export", 6) 
+                && (cmd[6] == ' ' || cmd[6] == '\0'))
             t = ft_export(t, tp);
-        else if (!ft_strncmp(cmd, "unset", 5) && (cmd[5] == ' ' || cmd[5] == '\0'))
+        else if (!ft_strncmp(cmd, "unset", 5) 
+                && (cmd[5] == ' ' || cmd[5] == '\0'))
             t = unset_var(t, tp.tab);
     }
 }
@@ -355,14 +356,60 @@ void launch_in_basic(t_redir r, t_tab *t, char *cmd)
         other_redir_and_fork(cmd, t, infile, STDIN_FILENO);
 }
 
+void launch_child_in_set(t_redir r, int tmpfile)
+{
+    char    *input;
+
+    while ((input = readline("> ")) != NULL) 
+    {
+        if (strlen(input) > 0)
+        {
+            if (!ft_strncmp(input, r.dest, ft_strlen(r.dest)))
+                break;
+            write(tmpfile, input, ft_strlen(input));
+            write(tmpfile, "\n", 1);
+        }
+        free(input);
+    }
+    exit(0);
+}
+
+void pid_errors(pid_t pid)
+{
+    if (pid < 0)
+    {
+        perror("minishell: Fork: ");
+		exit(EXIT_FAILURE);
+    }
+}
+
+void launch_heredoc_with_stop(int tmpfile, char *stop)
+{
+    char    *input;
+
+    while ((input = readline("> ")) != NULL) 
+    {
+        if (strlen(input) > 0)
+        {
+            if (!ft_strncmp(input, stop, ft_strlen(stop)))
+                break;
+            write(tmpfile, input, ft_strlen(input));
+            write(tmpfile, "\n", 1);
+        }
+        free(input);
+    }
+    close(tmpfile);
+    exit(0);
+}
+
 // <<
 void launch_heredoc(char *stop)
 {
     int     tmpfile;
-    char    *input;
     pid_t	pid;
     int		status;
 
+    printf("ici\n");
 	tmpfile = open(".heredoc", O_CREAT | O_RDWR | O_APPEND, 0644);
 	if (tmpfile < 0)
 	{
@@ -370,27 +417,9 @@ void launch_heredoc(char *stop)
 		exit(EXIT_FAILURE);
 	}
     pid = fork();
-	if (pid < 0)
-    {
-        perror("minishell: Fork: ");
-		exit(EXIT_FAILURE);
-    }
+	pid_errors(pid);
 	if (pid == 0)
-	{
-        while ((input = readline("> ")) != NULL) 
-        {
-            if (strlen(input) > 0)
-            {
-                if (!ft_strncmp(input, stop, ft_strlen(stop)))
-                    break;
-                write(tmpfile, input, ft_strlen(input));
-                write(tmpfile, "\n", 1);
-            }
-            free(input);
-        }
-        close(tmpfile);
-		exit(0);
-	}
+        launch_heredoc_with_stop(tmpfile, stop);
 	else
     {
 		waitpid(pid, &status, 0);
@@ -402,7 +431,6 @@ void launch_heredoc(char *stop)
 t_doors set_in_d(t_redir r, t_doors doors)
 {
     int     tmpfile;
-    char    *input;
     pid_t	pid;
     int		status;
     t_doors new;
@@ -414,25 +442,11 @@ t_doors set_in_d(t_redir r, t_doors doors)
 		exit(EXIT_FAILURE);
 	}
     pid = fork();
-	if (pid < 0)
-    {
-        perror("minishell: Fork: ");
-		exit(EXIT_FAILURE);
-    }
+	pid_errors(pid);
 	if (pid == 0)
 	{
-        while ((input = readline("> ")) != NULL) 
-        {
-            if (strlen(input) > 0)
-            {
-                if (!ft_strncmp(input, r.dest, ft_strlen(r.dest)))
-                    break;
-                write(tmpfile, input, ft_strlen(input));
-                write(tmpfile, "\n", 1);
-            }
-            free(input);
-        }
-		exit(0);
+        launch_child_in_set(r, tmpfile);
+        exit(0);
 	}
 	else {
 		waitpid(pid, &status, 0);
@@ -468,16 +482,40 @@ void launch_in_d_in_pipe(t_tab *t, char *cmd)
         other_basic(newcmd, t);
 }
 
+void launch_child_heredoc(char *cmd, t_redir r, int tmpfile, t_tab *t)
+{
+    char    *input;
+    char    *newcmd;
+    int     fd;
+
+    while ((input = readline("> ")) != NULL) 
+    {
+        if (strlen(input) > 0)
+        {
+            if (!ft_strncmp(input, r.dest, ft_strlen(r.dest)))
+                break;
+            write(tmpfile, input, ft_strlen(input));
+            write(tmpfile, "\n", 1);
+        }
+        free(input);
+    }
+    newcmd = ft_strdup(cmd);
+    fd = open(".heredoc", O_RDONLY);
+    dup2(fd, STDIN_FILENO);
+    if (launch_cmds(newcmd, t))
+        other_basic(newcmd, t);
+    close(tmpfile);
+    exit(0);
+}
+
 // <<
 void launch_in_d(t_redir r, t_tab *t, char *cmd)
 {
     int     tmpfile;
-    int     fd;
-    char    *input;
-    char    *newcmd;
     pid_t	pid;
     int		status;
 
+    printf("ici\n");
 	tmpfile = open(".heredoc", O_CREAT | O_RDWR | O_APPEND, 0644);
 	if (tmpfile < 0)
 	{
@@ -488,26 +526,7 @@ void launch_in_d(t_redir r, t_tab *t, char *cmd)
 	if (pid < 0)
 		return (perror("Fork: "));
 	if (pid == 0)
-	{
-        while ((input = readline("> ")) != NULL) 
-        {
-            if (strlen(input) > 0)
-            {
-                if (!ft_strncmp(input, r.dest, ft_strlen(r.dest)))
-                    break;
-                write(tmpfile, input, ft_strlen(input));
-                write(tmpfile, "\n", 1);
-            }
-            free(input);
-        }
-        newcmd = ft_strdup(cmd);
-        fd = open(".heredoc", O_RDONLY);
-        dup2(fd, STDIN_FILENO);
-        if (launch_cmds(newcmd, t))
-            other_basic(newcmd, t);
-        close(tmpfile);
-		exit(0);
-	}
+        launch_child_heredoc(cmd, r, tmpfile, t);
 	else {
 		waitpid(pid, &status, 0);
         close(tmpfile);
@@ -629,6 +648,15 @@ void launch_multiple_redir(t_redir *r, t_tab *t, char **cmds)
         unlink(".heredoc");
 }
 
+t_doors init_doors(void)
+{
+    t_doors doors;
+
+    doors.in = STDIN_FILENO;
+    doors.out = STDOUT_FILENO;
+    return (doors);
+}
+
 void launch_multiple_redir_in_pipes(t_redir *r, t_tab *t, char **cmds)
 {
     t_doors doors;
@@ -636,8 +664,7 @@ void launch_multiple_redir_in_pipes(t_redir *r, t_tab *t, char **cmds)
     int i;
 
     i = 0;
-    doors.in = STDIN_FILENO;
-    doors.out = STDOUT_FILENO;
+    doors = init_doors();
     while (cmds[i] != NULL)
     {
         doors = set_redir_in_pipe(r[i], doors);
@@ -657,186 +684,6 @@ void launch_multiple_redir_in_pipes(t_redir *r, t_tab *t, char **cmds)
     close(doors.out);
     if (access(".heredoc", F_OK) == 0)
         unlink(".heredoc");
-}
-
-char *find_cmd(char **token, int start)
-{
-    char *cmd;
-    char *tmp;
-
-    tmp = ft_strdup(token[start - 1]);
-    cmd = ft_strjoin(tmp, " ");
-    free(tmp);
-    while (token[start] != NULL && ft_strncmp(token[start], ">", 1) && ft_strncmp(token[start], "<", 1))
-    {
-        tmp = ft_strjoin(cmd, token[start]);
-        free(cmd);
-        cmd = ft_strjoin(tmp, " ");
-        free(tmp);
-        start++;
-    }
-    return (cmd);
-}
-
-char **join_cmd_and_redir(char *cmd, char **redirs)
-{
-    char **new;
-    char *tmp;
-    int i;
-    int j;
-
-    i = 0;
-    j = 0;
-    tmp = ft_strjoin(cmd, " ");
-    new = malloc(sizeof(char *) * tab_len(redirs) + 1);
-    while (redirs[i] != NULL)
-    {
-        if (redirs[i][0] == '<')
-        {
-            new[j] = ft_strjoin(tmp, redirs[i]);
-            j++;
-        }
-        i++;
-    }
-    i = 0;
-    while (redirs[i] != NULL)
-    {
-        if (redirs[i][0] == '>')
-        {
-            new[j] = ft_strjoin(tmp, redirs[i]);
-            j++;
-        }
-        i++;
-    }
-    new[j] = NULL;
-    free(tmp);
-    return (new);
-}
-
-char **split_with_starting_redir(char **token, char *oldcmd)
-{
-    char *cmd;
-    char *pos;
-    int i;
-    int j;
-    int k;
-    int		*nbr1;
-	int		*nbr2;
-    int     nbr;
-    char **redirs;
-    char **new;
-
-    i = 0;
-    j = 0;
-    k = 0;
-    cmd = ft_strtrim(find_cmd(token, 3), " ");
-    pos = ft_strnstr(oldcmd, cmd, ft_strlen(oldcmd));
-    nbr1 = check_redir(oldcmd, '>');
-	nbr2 = check_redir(oldcmd, '<');
-    nbr = nbr1[0] + nbr1[1] + nbr2[0] + nbr2[1];
-    redirs = malloc(sizeof(char *) * nbr + 1);
-    while (oldcmd[i] && &oldcmd[i] != pos)
-        i++;
-    redirs[k] = malloc(sizeof(char) * i);
-    i = 0;
-    while (oldcmd[i] && &oldcmd[i] != pos)
-    {
-        redirs[k][i] = oldcmd[i];
-        i++;
-    }
-    redirs[k][i] = '\0';
-    i += ft_strlen(cmd);
-    k++;
-    while (oldcmd[i] != '\0' && nbr > 1)
-    {
-        j = i;
-        while (oldcmd[j] && (oldcmd[j] == '>' || oldcmd[j] == '<'))
-            j++;
-        while (oldcmd[j] && (oldcmd[j] != '>' || oldcmd[j] != '<'))
-            j++;
-        redirs[k] = malloc(sizeof(char) * j - i);
-        j = 0;
-        while (oldcmd[i] && (oldcmd[i] == '>' || oldcmd[i] == '<'))
-        {
-            redirs[k][j] = oldcmd[i];
-            j++;
-            i++;
-        }
-        while (oldcmd[i] && oldcmd[i] != '>' && oldcmd[i] != '<')
-        {
-            redirs[k][j] = oldcmd[i];
-            j++;
-            i++;
-        }
-        redirs[k][j] = '\0';
-        k++;
-    }
-    redirs[k] = NULL;
-    new = join_cmd_and_redir(cmd, redirs);
-    return (new);
-}
-
-char **split_with_starting_cmd(char **token, char *oldcmd)
-{
-    char *cmd;
-    int i;
-    int j;
-    int k;
-    int		*nbr1;
-	int		*nbr2;
-    int     nbr;
-    char **redirs;
-    char **new;
-
-    j = 0;
-    k = 0;
-    cmd = ft_strtrim(find_cmd(token, 1), " ");
-    nbr1 = check_redir(oldcmd, '>');
-	nbr2 = check_redir(oldcmd, '<');
-    nbr = nbr1[0] + nbr1[1] + nbr2[0] + nbr2[1];
-    redirs = malloc(sizeof(char *) * nbr + 1);
-    i = ft_strlen(cmd);
-    while (oldcmd[i] != '\0')
-    {
-        j = i;
-        while (oldcmd[j] && (oldcmd[j] == '>' || oldcmd[j] == '<'))
-            j++;
-        while (oldcmd[j] && (oldcmd[j] != '>' || oldcmd[j] != '<'))
-            j++;
-        redirs[k] = malloc(sizeof(char) * j - i);
-        j = 0;
-        while (oldcmd[i] && (oldcmd[i] == '>' || oldcmd[i] == '<'))
-        {
-            redirs[k][j] = oldcmd[i];
-            j++;
-            i++;
-        }
-        while (oldcmd[i] && oldcmd[i] != '>' && oldcmd[i] != '<')
-        {
-            redirs[k][j] = oldcmd[i];
-            j++;
-            i++;
-        }
-        redirs[k][j] = '\0';
-        k++;
-    }
-    redirs[k] = NULL;
-    new = join_cmd_and_redir(cmd, redirs);
-    return (new);
-}
-
-char **split_redir(char *cmd)
-{
-    char **token;
-    char **new;
-
-    token = tokenize(cmd);
-    if (!ft_strncmp(token[0], ">", 1) || !ft_strncmp(token[0], "<", 1))
-        new = split_with_starting_redir(token, cmd);
-    else
-        new = split_with_starting_cmd(token, cmd);
-    tabfree(token);
-    return (new);
 }
 
 char **tabjoin(char **tab1, char **tab2)
@@ -868,13 +715,11 @@ char **tabjoin(char **tab1, char **tab2)
 void read_heredoc(char *cmd)
 {
     char **newcmds;
-    char **tmp;
     t_redir *r;
     int i;
 
     i = 0;
-    tmp = add_to_tab(new_tab(), cmd);
-    newcmds = one_redir_pro_cmd(tmp);
+    newcmds = a_redir_pro_cmd(cmd);
     r = stock_redir_infos(newcmds);
     while (newcmds[i] != NULL)
     {
@@ -936,10 +781,37 @@ int how_many_splits_r(char *str)
 	return (nbr);
 }
 
+char *copy_redir_in(char c, int *i)
+{
+    char *new;
+
+    if (c == '<')
+    {
+        new = ft_strdup("<<");
+        (*i)++;
+    }
+    else
+        new = ft_strdup("<");
+    return (new);
+}
+
+char *copy_redir_out(char c, int *i)
+{
+    char *new;
+
+    if (c == '>')
+    {
+        new = ft_strdup(">>");
+        (*i)++;
+    }
+    else
+        new = ft_strdup(">");
+    return (new);
+}
+
 char **split_out_r(char *str)
 {
 	char **new;
-	int nbr;
 	int i;
 	int j;
 	int start;
@@ -947,81 +819,86 @@ char **split_out_r(char *str)
 	i = 0;
 	j = 0;
 	start = 0;
-	nbr = how_many_splits_r(str);
-	new = malloc(sizeof(char *) * (nbr + 1));
+	new = malloc(sizeof(char *) * (how_many_splits_r(str) + 1));
 	while (str[i] != '\0')
 	{
 		start = i;
 		while (str[i] != '\0' && str[i] != '>' && str[i] != '<')
 			i++;
 		if (i > start)
-		{
-			new[j] = ft_strldup(&str[start], i - start + 1);
-			j++;
-		}
+			new[j++] = ft_strldup(&str[start], i - start + 1);
 		if (str[i] == '<')
-		{
-            if (str[i + 1] == '<')
-            {
-			    new[j] = ft_strdup("<<");
-                i++;
-            }
-            else
-                new[j] = ft_strdup("<");
-			j++;
-		}
+            new[j++] = copy_redir_in(str[i + 1], &i);
         else if (str[i] == '>')
-		{
-			if (str[i + 1] == '>')
-            {
-			    new[j] = ft_strdup(">>");
-                i++;
-            }
-            else
-                new[j] = ft_strdup(">");
-			j++;
-		}
+            new[j++] = copy_redir_out(str[i + 1], &i);
 		i++;
 	}
 	new[j] = NULL;
 	return (new);
 }
 
-char **split_redirs_tp(t_tprint tp)
+char **multiredir_split(char **old, char *to_split)
 {
-	int i;
-	char **splitted;
-	char **tmp;
-	char **last;
-	char *quoted;
+    char **splitted;
+    char **new;
 
-	i = 0;
-	last = new_tab();
-	while (tp.tab[i] != NULL)
+    splitted = split_out_r(to_split);
+    new = tabjoin(old, splitted);
+    tabfree(splitted);
+    return (new);
+}
+
+char **multiredir_add_quotes(char **old, t_tprint tp, int i)
+{
+    char *quoted;
+    char **new;
+
+    if ((tp.print[i + 1] == 1 || tp.print[i + 1] == 4) && i != 0)
+        quoted = add_quotes(tp.tab[i], '\"');
+    else if ((tp.print[i + 1] == 0 || tp.print[i + 1] == 3) && i != 0)
+        quoted = add_quotes(tp.tab[i], '\'');
+    else
+        quoted = ft_strdup(tp.tab[i]);
+    new = add_to_tab(old, quoted);
+    free(quoted);
+    return (new);
+}
+
+char **splitting_r_tp(t_tprint tp)
+{
+    char **tmp;
+    char **last;
+    int i;
+
+    i = 0;
+    last = new_tab();
+    while (tp.tab[i] != NULL)
 	{
-		if((how_many_in_str(tp.tab[i], '>') > 0 || how_many_in_str(tp.tab[i], '<') > 0) && (tp.print[i + 1] == 2 || tp.print[i + 1] == 5) && ft_strlen(tp.tab[i]) > 1)
+		if((how_many_in_str(tp.tab[i], '>') > 0 
+            || how_many_in_str(tp.tab[i], '<') > 0) && (tp.print[i + 1] == 2 
+            || tp.print[i + 1] == 5) && ft_strlen(tp.tab[i]) > 1)
 		{
-			splitted = split_out_r(tp.tab[i]);
-			tmp = tabjoin(last, splitted);
+            tmp = multiredir_split(last, tp.tab[i]);
 			tabfree(last);
-			tabfree(splitted);
 			last = tmp;
 		}
 		else
 		{
-			if ((tp.print[i + 1] == 1 || tp.print[i + 1] == 4) && i != 0)
-				quoted = add_quotes(tp.tab[i], '\"');
-			else if ((tp.print[i + 1] == 0 || tp.print[i + 1] == 3) && i != 0)
-				quoted = add_quotes(tp.tab[i], '\'');
-			else
-				quoted = ft_strdup(tp.tab[i]);
-			tmp = add_to_tab(last, quoted);
-			tabfree(last);
-			free(quoted);
-			last = tmp;
+            tmp = multiredir_add_quotes(last, tp, i);
+            tabfree(last);
+            last = tmp;
 		}
 		i++;
 	}
+    return (last);
+}
+
+char **split_redirs_tp(t_tprint tp)
+{
+	char **tmp;
+	char **last;
+	
+    last = splitting_r_tp(tp);
 	tmp = add_to_tab(last, "");
 	tabfree(last);
 	last = tmp;
@@ -1045,17 +922,15 @@ char	*ft_strjoin_sep(char const *s1, char const *s2, char sep)
 	size_t	i;
 	size_t	j;
 	size_t	k;
-	size_t	len;
 
-	if (s1 == 0 || s2 == 0)
-		return (0);
-	len = ft_len_s(s1, s2);
-	ptr = malloc (sizeof(char) * len + 2);
-	if (ptr == NULL)
-		return (NULL);
 	i = 0;
 	j = 0;
 	k = 0;
+	if (s1 == 0 || s2 == 0)
+		return (0);
+	ptr = malloc (sizeof(char) * (ft_len_s(s1, s2) + 2));
+	if (ptr == NULL)
+		return (NULL);
 	while (i < (ft_strlen(s1) + ft_strlen(s2) + 1))
 	{
 		if (i <= ft_strlen(s1))
@@ -1070,52 +945,66 @@ char	*ft_strjoin_sep(char const *s1, char const *s2, char sep)
 	return (ptr);
 }
 
-char **split_w_starting_cmd(char **tab)
+char *find_cmd_sc(char **tab, int *i)
+{
+    char *cmd;
+    char *tmp;
+
+    cmd = ft_strdup("");
+    while(tab[*i] != NULL && !(tab[*i][0] == '>' && ft_strlen(tab[*i]) == 1)
+        && !(tab[*i][0] == '>' && tab[*i][1] == '>'  
+        && ft_strlen(tab[*i]) == 2)
+        && !(tab[*i][0] == '<' && ft_strlen(tab[*i]) == 1)
+        && !(tab[*i][0] == '<' && tab[*i][1] == '<'  
+        && ft_strlen(tab[*i]) == 2))
+    {
+        if (*cmd != '\0')
+            tmp = ft_strjoin(cmd, " ");
+        else
+            tmp = ft_strdup(cmd);
+        free(cmd);
+        cmd = ft_strjoin(tmp, tab[*i]);
+        free(tmp);
+        (*i)++;
+    }
+    return (cmd);
+}
+
+char *find_redir_part_sc(int *i, char **tab)
+{
+    char *redirstr;
+    char *tmp;
+
+    redirstr = ft_strdup("");
+    while(tab[*i] != NULL && !(tab[*i][0] == '>' && ft_strlen(tab[*i]) == 1)
+        && !(tab[*i][0] == '>' && tab[*i][1] == '>'  && ft_strlen(tab[*i]) == 2)
+        && !(tab[*i][0] == '<' && ft_strlen(tab[*i]) == 1)
+        && !(tab[*i][0] == '<' && tab[*i][1] == '<'  && ft_strlen(tab[*i]) == 2))
+    {
+        if (*redirstr != '\0')
+            tmp = ft_strjoin_sep(redirstr, tab[*i], ' ');
+        else
+            tmp = ft_strdup(tab[*i]);
+        free(redirstr);
+        redirstr = tmp;
+        (*i)++;
+    }
+    return (redirstr);
+}
+
+char **recreate_cmd_sc(char *cmd, char **tab, int i)
 {
     char **new;
     char **ttmp;
-    char *str;
     char *newstr;
     char *tmp;
-    char *tmp2;
-    int i;
 
-    i = 0;
-    str = ft_strdup("");
     new = new_tab();
-    while(tab[i] != NULL && !(tab[i][0] == '>' && ft_strlen(tab[i]) == 1)
-        && !(tab[i][0] == '>' && tab[i][1] == '>'  && ft_strlen(tab[i]) == 2)
-        && !(tab[i][0] == '<' && ft_strlen(tab[i]) == 1)
-        && !(tab[i][0] == '<' && tab[i][1] == '<'  && ft_strlen(tab[i]) == 2))
-    {
-        if (*str != '\0')
-            tmp = ft_strjoin(str, " ");
-        else
-            tmp = ft_strdup(str);
-        tmp2 = ft_strjoin(tmp, tab[i]);
-        free(tmp);
-        free(str);
-        str = tmp2;
-        i++;
-    }
     while (tab[i] != NULL)
     {
-        tmp = ft_strjoin_sep(str, tab[i], ' ');
+        tmp = ft_strjoin_sep(cmd, tab[i], ' ');
         i++;
-        newstr = ft_strdup("");
-        while(tab[i] != NULL && !(tab[i][0] == '>' && ft_strlen(tab[i]) == 1)
-            && !(tab[i][0] == '>' && tab[i][1] == '>'  && ft_strlen(tab[i]) == 2)
-            && !(tab[i][0] == '<' && ft_strlen(tab[i]) == 1)
-            && !(tab[i][0] == '<' && tab[i][1] == '<'  && ft_strlen(tab[i]) == 2))
-        {
-            if (*newstr != '\0')
-                tmp2 = ft_strjoin_sep(newstr, tab[i], ' ');
-            else
-                tmp2 = ft_strdup(tab[i]);
-            free(newstr);
-            newstr = tmp2;
-            i++;
-        }
+        newstr = find_redir_part_sc(&i,tab);
         ttmp = add_to_tab(new, ft_strjoin_sep(tmp, newstr, ' '));
         tabfree(new);
         new = ttmp;
@@ -1126,6 +1015,18 @@ char **split_w_starting_cmd(char **tab)
 	tabfree(new);
 	new = ttmp;
 	new[tab_len(ttmp) - 1] = NULL;
+    return (new);
+}
+
+char **split_w_starting_cmd(char **tab)
+{
+    char **new;
+    char *cmd;
+    int i;
+
+    i = 0;
+    cmd = find_cmd_sc(tab, &i);
+    new = recreate_cmd_sc(cmd, tab, i);
     return (new);
 }
 
@@ -1146,57 +1047,82 @@ int is_redir_next(char **tab)
     return (0);
 }
 
-char **split_w_starting_redir(char **tab)
+char *join_cmd(char *cmd, char *next)
 {
-    char **next;
-    char **new = NULL;
-    char **ttmp;
-    char *newstr;
-    char *str;
     char *tmp;
-    char *tmp2;
+    char *joined;
+
+    if (*cmd != '\0')
+        tmp = ft_strjoin(cmd, " ");
+    else
+        tmp = ft_strdup(cmd);
+    joined = ft_strjoin(tmp, next);
+    free(tmp);
+    return (joined);
+}
+
+char *find_cmd(char **tab)
+{
+    char *cmd;
+    char *tmp;
+    char **next;
     int i;
 
     i = 0;
     next = tab;
-    new = new_tab();
     while (is_redir_next(next) && next != NULL)
         next++;
     if (next != NULL)
         next++;
-    str = ft_strdup("");
+    cmd = ft_strdup("");
     while (next[i] != NULL)
     {
-        if (*str != '\0')
-            tmp = ft_strjoin(str, " ");
-        else
-            tmp = ft_strdup(str);
-        tmp2 = ft_strjoin(tmp, next[i]);
-        free(tmp);
-        free(str);
-        str = tmp2;
+        tmp = join_cmd(cmd, next[i]);
+        free(cmd);
+        cmd = tmp;
         i++;
     }
+    return (cmd);
+}
+
+char *find_redir_part(int *i, char **tab)
+{
+    char *redirstr;
+    char *tmp;
+
+    redirstr = ft_strdup("");
+    while(tab[*i] != NULL && is_redir_next(&tab[*i - 1]) 
+        && !(tab[*i][0] == '>' && ft_strlen(tab[*i]) == 1)
+        && !(tab[*i][0] == '>' && tab[*i][1] == '>'  && ft_strlen(tab[*i]) == 2)
+        && !(tab[*i][0] == '<' && ft_strlen(tab[*i]) == 1)
+        && !(tab[*i][0] == '<' && tab[*i][1] == '<'  && ft_strlen(tab[*i]) == 2))
+    {
+        if (*redirstr != '\0')
+            tmp = ft_strjoin_sep(redirstr, tab[*i], ' ');
+        else
+            tmp = ft_strdup(tab[*i]);
+        free(redirstr);
+        redirstr = tmp;
+        (*i)++;
+    }
+    return (redirstr);
+}
+
+char **recreate_cmd(char *cmd, char **tab)
+{
+    char **new;
+    char **ttmp;
+    char *newstr;
+    char *tmp;
+    int i;
 
     i = 0;
+    new = new_tab();
     while (tab[i] != NULL && is_redir_next(&tab[i]))
     {
-        tmp = ft_strjoin_sep(str, tab[i], ' ');
+        tmp = ft_strjoin_sep(cmd, tab[i], ' ');
         i++;
-        newstr = ft_strdup("");
-        while(tab[i] != NULL && is_redir_next(&tab[i - 1]) && !(tab[i][0] == '>' && ft_strlen(tab[i]) == 1)
-            && !(tab[i][0] == '>' && tab[i][1] == '>'  && ft_strlen(tab[i]) == 2)
-            && !(tab[i][0] == '<' && ft_strlen(tab[i]) == 1)
-            && !(tab[i][0] == '<' && tab[i][1] == '<'  && ft_strlen(tab[i]) == 2))
-        {
-            if (*newstr != '\0')
-                tmp2 = ft_strjoin_sep(newstr, tab[i], ' ');
-            else
-                tmp2 = ft_strdup(tab[i]);
-            free(newstr);
-            newstr = tmp2;
-            i++;
-        }
+        newstr = find_redir_part(&i, tab);
         ttmp = add_to_tab(new, ft_strjoin_sep(tmp, newstr, ' '));
         tabfree(new);
         new = ttmp;
@@ -1207,6 +1133,18 @@ char **split_w_starting_redir(char **tab)
 	tabfree(new);
 	new = ttmp;
 	new[tab_len(ttmp) - 1] = NULL;
+    return (new);
+}
+
+// ex : > test1 > test2 echo coucou
+// become a tab with 2 char*: > test1 echo coucou, > test2 echo coucou
+char **split_w_starting_redir(char **tab)
+{
+    char **new;
+    char *cmd;
+
+    cmd = find_cmd(tab);
+    new = recreate_cmd(cmd, tab);
     return (new);
 }
 
@@ -1225,36 +1163,6 @@ char **a_redir_pro_cmd(char *cmd)
     return (new);
 }
 
-char **one_redir_pro_cmd(char **oldcmds)
-{
-    char    **new;
-    char    **tmp1;
-    char    **tmp2;
-    int     i;
-
-    i = 0;
-    new = new_tab();
-    while (oldcmds[i] != NULL)
-    {
-        if (nbr_of_redir(oldcmds[i]) == 0)
-        {
-            tmp1 = add_to_tab(new, oldcmds[i]);
-            tabfree(new);
-            new = tmp1;
-        }
-        else
-        {
-            tmp1 = split_redir(oldcmds[i]);
-            tmp2 = tabjoin(new, tmp1);
-            tabfree(new);
-            tabfree(tmp1);
-            new = tmp2;
-        }
-        i++;
-    }
-    return (new);
-}
-
 // this function is used in pipes with redir function
 void    launching_redirs(char *cmd, t_tab *t)
 {
@@ -1265,7 +1173,7 @@ void    launching_redirs(char *cmd, t_tab *t)
     if (nbr_of_redir(cmd) == 0)
     {
         if (launch_cmds(cmd, t))
-                other_basic(cmd, t);
+            other_basic(cmd, t);
     }
     else if (nbr_of_redir(cmd) == 1)
     {
