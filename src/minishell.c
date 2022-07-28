@@ -6,7 +6,7 @@
 /*   By: mreymond <mreymond@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/20 10:47:58 by mreymond          #+#    #+#             */
-/*   Updated: 2022/07/28 10:52:47 by mreymond         ###   ########.fr       */
+/*   Updated: 2022/07/28 13:19:13 by mreymond         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,6 +53,4 @@ int	main(int argc, char **argv, char **envp)
 // Unset the $PATH and check if it is not working anymore
 
 // FAUX par rapport a bash :
-// quand on fait "exit 1 2 3" c'est juste mais le exit status est 255 alors qu'il devrait être 1
-// expr $? + $? qui sort expr: not a decimal number: '$?' au lieu d'un calcul
 // tab (qu'est-ce qu'il doit se passer quand on fait tab?)
