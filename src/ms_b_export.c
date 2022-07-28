@@ -6,7 +6,7 @@
 /*   By: mreymond <mreymond@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/20 10:43:17 by mreymond          #+#    #+#             */
-/*   Updated: 2022/07/25 12:44:41 by mreymond         ###   ########.fr       */
+/*   Updated: 2022/07/28 12:14:49 by mreymond         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -89,13 +89,31 @@ int spaces_count(t_tprint tp)
 	return (nbr);
 }
 
+char *export_without_spaces(int *i, t_tprint tp)
+{
+	char *new;
+	char *joined;
+	char *tmp;
+
+	joined = ft_strdup(tp.tab[*i]);
+	(*i)++;
+	while (tp.tab[*i] != NULL && tp.print[*i] < 3)
+	{
+		tmp = ft_strjoin(joined, tp.tab[*i]);
+		free(joined);
+		joined = tmp;
+		(*i)++;
+	}
+	new = ft_strdup(joined);
+	free(joined);
+	return (new);
+}
+
 char **parsing_for_export(t_tprint tp)
 {
 	int i;
 	int j;
 	char **new;
-	char *tmp;
-	char *joined;
 	int tablen;
 
 	i = 0;
@@ -106,34 +124,77 @@ char **parsing_for_export(t_tprint tp)
 	{
 		if (tp.print[i + 1] < 3)
 		{
-			joined = ft_strdup(tp.tab[i]);
-			i++;
-			while (tp.tab[i] != NULL && tp.print[i] < 3)
-			{
-				tmp = ft_strjoin(joined, tp.tab[i]);
-				free(joined);
-				joined = tmp;
-				i++;
-			}
-			new[j] = ft_strdup(joined);
+			new[j] = export_without_spaces(&i, tp);
 			j++;
 		}
 		else
-		{
-			new[j] = ft_strdup(tp.tab[i]);
-			j++;
-			i++;
-		}
+			new[j++] = ft_strdup(tp.tab[i++]);
 	}
 	new[j] = NULL;
 	return (new);
 }
 
+t_var *create_vartab(int *i, char **token)
+{
+	t_var	*vartab;
+	int j;
+
+	j = 0;
+	vartab = malloc(sizeof(t_var) * tab_len(token) - 1);
+	while (token[*i])
+	{
+		vartab[j] = str_to_var(token[*i]);
+		if (vartab[j].key == NULL || check_identifier(vartab[j].key))
+		{
+			vartab[j].key = ft_strdup(token[*i]);
+			vartab[j].status = -1;
+		}
+		else if (var_check(vartab[j]))
+			vartab[j].status = -1;
+		else
+			vartab[j].status = 0;
+		(*i)++;
+		j++;
+	}
+	return (vartab);
+}
+
+void update_with_new_var(t_tab *t, t_var var, int *i, int *j)
+{
+	char	**tmp;
+	char	**tmp2;
+
+	tmp = update_env(t->env, var, false);
+	tmp2 = update_env(t->exp, var, true);
+	tabfree(t->env);
+	tabfree(t->exp);
+	t->env = tmp;
+	t->exp = tabsort(tmp2);
+	exit_status = 0;
+	tabfree(tmp2);
+	(*j)++;
+	(*i)--;
+}
+
+void export_errors(t_var var, int *i, int *j)
+{
+	printf(MINISHELL ERRORS_EXP "\'%s\': ", var.key);
+	printf(ERRORS_IDENTIFIER);
+	exit_status = 1;
+	(*j)++;
+	(*i)--;
+}
+
+void export_increase(int *i, int *j)
+{
+	(*j)++;
+	(*i)--;
+	exit_status = 0;
+}
+
 t_tab	*ft_export(t_tab *t, t_tprint tp)
 {
 	t_var	*vartab;
-	char	**tmp;
-	char	**tmp2;
 	char	**token;
 	int		i;
 	int		j;
@@ -145,51 +206,16 @@ t_tab	*ft_export(t_tab *t, t_tprint tp)
 		display_export(t->exp);
 	else
 	{
-		vartab = malloc(sizeof(t_var) * tab_len(token) - 1);
-		while (token[i])
-		{
-			vartab[j] = str_to_var(token[i]);
-			if (vartab[j].key == NULL || check_identifier(vartab[j].key))
-			{
-				vartab[j].key = ft_strdup(token[i]);
-				vartab[j].status = -1;
-			}
-			else if (var_check(vartab[j]))
-				vartab[j].status = -1;
-			else
-				vartab[j].status = 0;
-			i++;
-			j++;
-		}
-		j = 0;
+		vartab = create_vartab(&i, token);
 		while (i > 1)
 		{
-			if (vartab[j].status == 0 && !(vartab[j].key[0] == '_' && ft_strlen(vartab[j].key) == 1))
-			{
-				tmp = update_env(t->env, vartab[j], false);
-				tmp2 = update_env(t->exp, vartab[j], true);
-				tabfree(t->env);
-				tabfree(t->exp);
-				t->env = tmp;
-				t->exp = tabsort(tmp2);
-				exit_status = 0;
-				j++;
-				i--;
-			}
+			if (vartab[j].status == 0 && !(vartab[j].key[0] == '_' 
+					&& ft_strlen(vartab[j].key) == 1))
+				update_with_new_var(t, vartab[j], &i, &j);
 			else if (!(vartab[j].key[0] == '_' && ft_strlen(vartab[j].key) == 1))
-			{
-				printf(MINISHELL ERRORS_EXP "\'%s\': ", vartab[j].key);
-				printf(ERRORS_IDENTIFIER);
-				exit_status = 1;
-				j++;
-				i--;
-			}
+				export_errors(vartab[j], &i, &j);
 			else
-			{
-				j++;
-				i--;
-				exit_status = 0;
-			}
+				export_increase(&i, &j);
 		}
 	}
 	return (t);
