@@ -44,17 +44,7 @@ char	**tabsort(char **tab)
 		while (j < len)
 		{
 			if (ft_strncmp(new[i],new[j], ft_strlen(new[j])) > 0)
-			{
 				sorting_tab(i, j, new, tmp);
-				// tmp[i] = malloc(sizeof(char) * ft_strlen(new[i]) + 1);
-				// tmp[i] = ft_strdup(new[i]);
-				// free(new[i]);
-				// new[i] = malloc(sizeof(char) * ft_strlen(new[j]));
-				// new[i] = ft_strdup(new[j]);
-				// free(new[j]);
-				// new[j] = malloc(sizeof(char) * ft_strlen(tmp[i]));
-				// new[j] = ft_strdup(tmp[i]);
-			}
 			j++;
 		}
 		i++;

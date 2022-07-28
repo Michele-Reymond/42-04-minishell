@@ -358,7 +358,6 @@ void	exec_cmd(char **paths, char *first_cmd, char **envp, char **flags)
 	}
 	if (ret < 0)
 	{
-
 		printf("minishell: %s: ", &first_cmd[1]);
 		printf(ERROR_CMD_NOT_FOUND);
 		exit(errno);
@@ -413,12 +412,6 @@ void	status_of_child(int status)
 	}
 	if (WIFSIGNALED(status))
 	{
-		// printf("%d\n", WIFSIGNALED(status));
-		// printf("%d\n", WTERMSIG(status));
-		// printf("%d\n", SIGINT + 128);
-		// exit_status = WTERMSIG(status);
-		// if (exit_status != 131)
-		// 	exit_status += 128;
 		exit_status = SIGINT;
 		if (exit_status != 131)
 			exit_status += 128;
