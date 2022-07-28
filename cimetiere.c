@@ -673,3 +673,327 @@
 // 	}
 // 	return (nbr);
 // }
+
+// t_tprint add_splitted(t_tprint old, t_tprint tp, int i)
+// {
+// 	t_tprint new;
+// 	char **tmp;
+// 	char **splitted;
+// 	int *intmp;
+
+// 	splitted = ft_split_one_space(tp.tab[i]);
+// 	tmp = tabjoin(old.tab, splitted);
+// 	intmp = fill_inttab(old.print, 1, tab_len(splitted));
+// 	tabfree(old.tab);
+// 	free(old.print);
+// 	free(splitted);
+// 	new.print = intmp;
+// 	new.tab = tmp;
+// 	return (new);
+// }
+
+// t_tprint echo_parse_quotes(t_tprint tp)
+// {
+// 	int i;
+// 	t_tprint new;
+// 	char **tmp;
+// 	int *intmp;
+
+// 	i = 0;
+// 	new.tab = new_tab();
+// 	new.print = new_inttab();
+// 	while (tp.tab[i] != NULL)
+// 	{
+// 		if (tp.print[i + 1] == 1 || tp.print[i + 1] == 4)
+// 			new = add_splitted(new, tp, i);
+// 		else
+// 		{
+// 			tmp = add_to_tab(new.tab, tp.tab[i]);
+// 			intmp = add_to_inttab(new.print, tp.print[i + 1]);
+// 			free(new.print);
+// 			new.print = intmp;
+// 			tabfree(new.tab);
+// 			new.tab = tmp;
+// 		}
+// 		i++;
+// 	}
+// 	return (new);
+// }
+
+// void	echo_print(char **args, char **var, int *print)
+// {
+// 	int i;
+// 	int k;
+// 	int j;
+
+// 	i = 0;
+// 	k = 0;
+// 	j = 0;
+// 	while (args[i] != NULL)
+// 	{
+// 		if (print[i + 1] == 0 || print[i + 1] == 3 || how_many_in_str(args[i], '$') == 0)
+// 			printf("%s", args[i]);
+// 		else
+// 		{
+// 			k = 0;
+// 			while (args[i][k] != '\0')
+// 			{
+// 				while (args[i][k] != '\0' && args[i][k] != '$')
+// 				{
+// 					printf("%c", args[i][k]);
+// 					k++;
+// 				}
+// 				if (args[i][k] == '$')
+// 				{
+// 					if (var[j][0] != '\0')
+// 					{
+// 						printf("%s", var[j]);
+// 						if (how_many_in_str(&args[i][k + 1], '$') == 0 && args[i + 1] != NULL)
+// 							printf(" ");
+// 					}
+// 					j++;
+// 					k++;
+// 					while (args[i][k] != '\0' && args[i][k] != ' ' && args[i][k] != '	' && args[i][k] != '$')
+// 					{
+// 						if (args[i][k] == '\'')
+// 							printf("\'");
+// 						k++;
+// 					}
+// 				}
+// 			}
+// 		}
+// 		if (args[i + 1] != NULL && print[i + 1] > 2)
+// 			printf(" ");
+// 		i++;
+// 	}
+// }
+
+// char	**copywords_sep(char const *s, char c, int words)
+// {
+// 	int	len;
+// 	int	i;
+// 	int	y;
+// 	int ok;
+// 	char	**strtab;
+
+// 	len = 0;
+// 	i = 0;
+// 	y = 0;
+// 	ok = 0;
+// 	strtab = (char **)malloc(sizeof(char *) * words + 1);
+// 	if (!strtab)
+// 		return (NULL);
+// 	while (s[i] != '\0' && y < words)
+// 	{
+// 		len = 0;
+// 		ok = 0;
+// 		while (s[i] == c && s[i] != '\0')
+// 		{
+// 			i++;
+// 			len++;
+// 			ok = 1;
+// 		}
+// 		while (s[i] != c && s[i] != '\0')
+// 		{
+// 			i++;
+// 			len++;
+// 		}
+// 		if (ok == 0)
+// 			strtab[y] = ft_strldup(&s[i - len], len + 1);
+// 		else
+// 		{
+// 			strtab[y] = ft_strldup(&s[i - len], len + 2);
+// 			i++;
+// 		}
+// 		y++;
+// 	}
+// 	strtab[y] = NULL;
+// 	return (strtab);
+// }
+
+// char	**ft_split_with_sep(char const *s, char c)
+// {
+// 	char	**strtab;
+// 	int		words;
+
+// 	if (s == NULL)
+// 		return (NULL);
+// 	words = countwords_sep(s, c);
+// 	strtab = copywords_sep(s, c, words);
+// 	return (strtab);
+// }
+
+// int	countwords(char const *s)
+// {
+// 	int		i;
+// 	int		words;
+// 	size_t	sep;
+
+// 	i = 0;
+// 	words = 0;
+// 	sep = 0;
+// 	if (s[i] && (s[i] != ' ' || s[i] != '	'))
+// 		words++;
+// 	while (s[i] != '\0')
+// 	{
+// 		if ((s[i] == ' ' && s[i + 1] != ' ') || (s[i] == '	' && s[i + 1] != '	'))
+// 			words++;
+// 		if (s[i] == ' ' || s[i] == '	')
+// 			sep++;
+// 		i++;
+// 	}
+// 	if (s[i - 1] == ' ' || s[i - 1] == '	')
+// 		words--;
+// 	if (words <= 0)
+// 		words = 1;
+// 	if (sep == ft_strlen(s))
+// 		words = 0;
+// 	return (words);
+// }
+
+// int count_len(int *i, char const *s)
+// {
+// 	int len;
+
+// 	len = 0;
+// 	while ((s[*i] == ' ' || s[*i] == '	') && s[*i] != '\0')
+// 	{
+// 		len++;
+// 		(*i)++;
+// 	}
+// 	while (s[*i] != '\0' && s[*i] != ' ' && s[*i] != '	')
+// 	{
+// 		(*i)++;
+// 		len++;
+// 	}
+// 	return (len);
+// }
+
+// char	**copywords(char const *s, int words)
+// {
+// 	char	**strtab;
+// 	int	len;
+// 	int	i;
+// 	int	y;
+
+// 	len = 0;
+// 	i = 0;
+// 	y = 0;
+// 	strtab = (char **)malloc(sizeof(char *) * (words + 1));
+// 	if (!strtab)
+// 		return (NULL);
+// 	while (s[i] != '\0' && y < words)
+// 	{
+// 		len = count_len(&i, s);
+// 		// len = 0;
+// 		// while ((s[i] == ' ' || s[i] == '	') && s[i] != '\0')
+// 		// {
+// 		// 	len++;
+// 		// 	i++;
+// 		// }
+// 		// while (s[i] != '\0' && s[i] != ' ' && s[i] != '	')
+// 		// {
+// 		// 		i++;
+// 		// 		len++;
+// 		// }
+// 		strtab[y] = (char *)malloc(sizeof(char) * (len + 1));
+// 		if (!strtab[y])
+// 			return (0);
+// 		ft_strlcpy(strtab[y], &s[i - len], len + 1);
+// 		if ((s[i] == ' ' || s[i] == '	') && s[i] != '\0')
+// 			i++;
+// 		y++;
+// 	}
+// 	strtab[y] = NULL;
+// 	return (strtab);
+// }
+
+// char	**ft_split_one_space(char const *s)
+// {
+// 	char	**strtab;
+// 	int		words;
+
+// 	if (s == NULL)
+// 		return (NULL);
+// 	words = countwords(s);
+// 	strtab = copywords(s, words);
+// 	return (strtab);
+// }
+
+// test d'un split qui stock les separateurs
+// int	countwords_sep(char const *s, char c)
+// {
+// 	int		i;
+// 	int		words;
+// 	size_t	sep;
+
+// 	i = 0;
+// 	words = 0;
+// 	sep = 0;
+// 	if (s[i] && s[i] != c)
+// 		words++;
+// 	while (s[i] != '\0')
+// 	{
+// 		if (s[i] == c && s[i + 1] != c)
+// 			words++;
+// 		if (s[i] == c)
+// 			sep++;
+// 		i++;
+// 	}
+// 	if (s[i - 1] == c)
+// 		words--;
+// 	if (words <= 0)
+// 		words = 1;
+// 	if (sep == ft_strlen(s))
+// 		words = 0;
+// 	return (words);
+// }
+
+// char *replace_exit_status(char **token)
+// {
+//     char *new;
+//     char **tmp;
+
+//     tmp = exit_status_convert(token);
+//     new = tab_to_str(tmp);
+//     tabfree(tmp);
+//     return (new);
+// }
+
+// char **exit_status_convert(char **token)
+// {
+// 	char **new;
+// 	char *tmp;
+// 	char *tmp2;
+// 	char *symbol;
+// 	int i;
+// 	int len;
+
+// 	i = 0;
+// 	new = malloc(sizeof(char *) * tab_len(token) + 2);
+// 	while (token[i] != NULL)
+// 	{
+// 		symbol = ft_strnstr(token[i], "$?", ft_strlen(token[i]) + 1);
+// 		if (symbol != NULL)
+// 		{
+// 			len = ft_strlen(token[i]) - ft_strlen(symbol);
+// 			tmp = malloc(sizeof(char) * len + 2);
+// 			ft_strlcat(tmp, token[i], len);
+// 			tmp2 = ft_strjoin(tmp, ft_itoa(exit_status));
+// 			if (symbol + 2)
+// 			{
+// 				symbol += 2;
+// 				new[i] = ft_strjoin(tmp2, symbol);
+// 			}
+// 			else
+// 				new[i] = ft_strdup(tmp2);
+// 			free(tmp);
+// 			free(tmp2);
+// 		}
+// 		else
+// 			new[i] = ft_strdup(token[i]);
+// 		i++;
+// 	}
+// 	new[i] = NULL;
+// 	return (new);
+// }
