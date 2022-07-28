@@ -6,7 +6,7 @@
 /*   By: mreymond <mreymond@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/20 10:47:58 by mreymond          #+#    #+#             */
-/*   Updated: 2022/07/27 12:19:39 by mreymond         ###   ########.fr       */
+/*   Updated: 2022/07/28 10:52:47 by mreymond         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,7 +39,6 @@ int	main(int argc, char **argv, char **envp)
 }
 
 // TO DO (Michèle)!!
-// 1. echo $test "youpiiii"$test qui ajoute un espace avant youpiii
 // 3. verifier toutes les sorties. valeur de exit_status
 
 // quotes:
