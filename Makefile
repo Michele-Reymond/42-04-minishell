@@ -5,7 +5,7 @@
 
 NAME = minishell
 CC = gcc
-FLAGS = -Wall -Wextra -Werror -fsanitize=address -g
+FLAGS = -Wall -Wextra -Werror -g
 INC = -I inc -I src/libft/inc -I$(HOME)/.brew/opt/readline/include
 LFT = -L src/libft -lft -lreadline -L$(HOME)/.brew/opt/readline/lib
 

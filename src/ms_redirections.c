@@ -6,7 +6,7 @@
 /*   By: mreymond <mreymond@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/06 15:58:02 by mreymond          #+#    #+#             */
-/*   Updated: 2022/07/28 16:55:45 by mreymond         ###   ########.fr       */
+/*   Updated: 2022/08/10 13:21:19 by mreymond         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -343,16 +343,16 @@ void launch_in_basic(t_redir r, t_tab *t, char *cmd)
     int		infile;
 
     if (check_files_in_basic(r.dest))
-        return;
+        return ;
 	infile = open(r.dest, O_RDONLY);
 	if (infile < 0)
 	{
 		perror("minishell: ");
 		exit(EXIT_FAILURE);
 	}
-   if (is_a_builtin(cmd))
+    if (is_a_builtin(cmd))
         fork_and_launch_builtin(cmd, t, infile, STDIN_FILENO);
-    else
+    else    
         other_redir_and_fork(cmd, t, infile, STDIN_FILENO);
 }
 

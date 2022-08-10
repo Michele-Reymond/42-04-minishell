@@ -6,7 +6,7 @@
 /*   By: mreymond <mreymond@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/20 11:38:04 by mreymond          #+#    #+#             */
-/*   Updated: 2022/07/28 13:17:51 by mreymond         ###   ########.fr       */
+/*   Updated: 2022/08/10 16:16:59 by mreymond         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,7 +72,7 @@ char	**tokenize(char *buff)
 	}
 	tmp = ft_split(buff, ' ');
 	token = check_varstr(tmp);
-	free(tmp);
+	tabfree(tmp);
 	return (token);
 }
 

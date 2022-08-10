@@ -6,7 +6,7 @@
 /*   By: mreymond <mreymond@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/27 13:06:22 by mreymond          #+#    #+#             */
-/*   Updated: 2022/08/10 12:33:42 by mreymond         ###   ########.fr       */
+/*   Updated: 2022/08/10 16:21:35 by mreymond         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -135,12 +135,12 @@ int count_dollar(t_tprint tp)
 
 void free_redirs(int *nbr1, int *nbr2)
 {
-	if (nbr1)
+	if (nbr1 != NULL)
 	{
 		free(nbr1);
-		nbr2 = NULL;
+		nbr1 = NULL;
 	}
-	if (nbr2)
+	if (nbr2 != NULL)
 	{
 		free(nbr2);
 		nbr2 = NULL;
@@ -153,12 +153,12 @@ int redir_errors(int *nbr1, int *nbr2, t_parse *p)
 	{
 		p->redir_out = nbr1[0];
 		p->redir_out_d = nbr1[1];
-		if (nbr1)
+		if (nbr1 != NULL)
 		{
 			free(nbr1);
 			nbr1 = NULL;
 		}
-		if (nbr2)
+		if (nbr2 != NULL)
 		{
 			free(nbr2);
 			nbr2 = NULL;
@@ -214,6 +214,7 @@ t_parse	stock_parsing_infos(t_tprint tp)
 	p.double_q = count_doubles(tp);
 	p.single_q = count_singles(tp);
 	p.dollar = count_dollar(tp);
+	p.cmds = NULL;
 	count_redir(tp, &p);
 	return (p);
 }
@@ -237,35 +238,35 @@ int	pre_parsing_errors(char *cmd, t_parse p)
 }
 
 // créer un tableau de commandes clean
-char	**clean_cmds(char *cmd, t_parse p)
-{
-	char	**cmds;
-	(void) p;
+// char	**clean_cmds(char *cmd, t_parse p)
+// {
+// 	char	**cmds;
+// 	(void) p;
 	
-	cmds = clean_spaces(cmd);
-	// autres clean a faire?
-	return (cmds);
-}
+// 	cmds = clean_spaces(cmd);
+// 	// autres clean a faire?
+// 	return (cmds);
+// }
 
 // créer un tableau de commandes sans les espaces
-char	**clean_spaces(char *cmd)
-{
-	char	**cmds;
-	char	**tmp;
-	int		i;
+// char	**clean_spaces(char *cmd)
+// {
+// 	char	**cmds;
+// 	char	**tmp;
+// 	int		i;
 
-	i = 0;
-	tmp = ft_split(cmd, '|');
-	cmds = malloc(sizeof(char *) * tab_len(tmp) + 1);
-	while (tmp[i] != NULL)
-	{
-		cmds[i] = ft_strtrim(tmp[i], " ");
-		i++;
-	}
-	cmds[i] = NULL;
-	tabfree(tmp);
-	return (cmds);
-}
+// 	i = 0;
+// 	tmp = ft_split(cmd, '|');
+// 	cmds = malloc(sizeof(char *) * tab_len(tmp) + 1);
+// 	while (tmp[i] != NULL)
+// 	{
+// 		cmds[i] = ft_strtrim(tmp[i], " ");
+// 		i++;
+// 	}
+// 	cmds[i] = NULL;
+// 	tabfree(tmp);
+// 	return (cmds);
+// }
 
 char *add_quotes(char *old, char quote)
 {
@@ -575,7 +576,7 @@ char **split_pipes(t_tprint tp, int pipes)
 	if (check_doubles_pipes(splitted))
 		return (NULL);
 	new = split_pipes_phase_2(splitted, pipes);
-	tabfree(splitted.tab);
+	free_tp(splitted);
 	return (new);
 }
 
@@ -626,16 +627,17 @@ int	monitor(char *cmd, t_tab *t)
 	t_tprint	tp;
 	
 	tp = parsing_master(cmd);
+	ft_free(cmd);
 	if (check_closed_quotes(tp))
 		return (free_tp_status_error(tp));
 	p = stock_parsing_infos(tp);
 	if (!(p.redir_in >= 0 && p.redir_out >= 0))
 		return (free_tp_status_error(tp));
-	t->p = p;
+	ft_free(t->readline);
 	p.cmds = split_pipes(tp, p.pipes);
 	if (p.cmds == NULL)
 		return (free_tp_status_error(tp));
-	free_tp(tp);
+	t->p = p;
 	if (tab_len(p.cmds) == 1 && p.redir == 0)
 	{
 		if (launch_cmds(p.cmds[0], t))

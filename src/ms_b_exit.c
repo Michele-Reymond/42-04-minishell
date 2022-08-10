@@ -6,7 +6,7 @@
 /*   By: mreymond <mreymond@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/20 13:24:57 by mreymond          #+#    #+#             */
-/*   Updated: 2022/08/10 12:09:32 by mreymond         ###   ########.fr       */
+/*   Updated: 2022/08/10 16:14:36 by mreymond         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -172,7 +172,8 @@ void ft_exit(char *cmd, t_tab *t)
     printf(EXIT);
     if (len == 1)
 	{
-		free_tabs(t, cmds, cmd);
+		free_t_tab(t);
+		tabfree(cmds);
         exit(exit_status);
 	}
     else if (len > 2)

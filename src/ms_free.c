@@ -6,7 +6,7 @@
 /*   By: mreymond <mreymond@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/10 10:28:30 by mreymond          #+#    #+#             */
-/*   Updated: 2022/08/10 12:23:25 by mreymond         ###   ########.fr       */
+/*   Updated: 2022/08/10 16:22:47 by mreymond         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,10 @@ void free_tabs(t_tab *t, char **tab, char *str)
     if (t->exp != NULL)
 	    tabfree(t->exp);
     if (t->readline != NULL)
+	{
 	    free(t->readline);
+        t->readline = NULL;
+    }
     if (t->p.cmds != NULL)
 	    tabfree(t->p.cmds);
     if (tab != NULL)
@@ -34,6 +37,11 @@ void free_t_tab(t_tab *t)
 	    tabfree(t->env);
     if (t->exp != NULL)
 	    tabfree(t->exp);
+    if (t->readline != NULL)
+    {
+	    free(t->readline);
+        t->readline = NULL;
+    }
     if (t->p.cmds != NULL)
 	    tabfree(t->p.cmds);
 }
@@ -48,6 +56,8 @@ void free_tabs_and_tp(t_tab *t, t_tprint tp, char *str)
 	    free(t->readline);
     if (t->p.cmds != NULL)
 	    tabfree(t->p.cmds);
+    if (t->readline != NULL)
+	    free(t->readline);
     if (tp.tab != NULL)
 	    tabfree(tp.tab);
     if (tp.print)
@@ -71,7 +81,10 @@ void free_tp(t_tprint tp)
     if (tp.tab != NULL)
 	    tabfree(tp.tab);
     if (tp.print)
+    {
         free(tp.print);
+        tp.print = NULL;
+    }
 }
 
 void free_elem(t_echo elem)
@@ -82,4 +95,13 @@ void free_elem(t_echo elem)
 	    tabfree(elem.vars);
     if (elem.spaces != NULL)
 	    free(elem.spaces);
+}
+
+void ft_free(char *str)
+{
+    if (str != NULL)
+    {
+	    free(str);
+        str = NULL;
+    }
 }

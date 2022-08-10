@@ -6,7 +6,7 @@
 /*   By: mreymond <mreymond@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/20 10:47:58 by mreymond          #+#    #+#             */
-/*   Updated: 2022/08/10 11:12:42 by mreymond         ###   ########.fr       */
+/*   Updated: 2022/08/10 16:05:51 by mreymond         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,6 +23,7 @@ int	main(int argc, char **argv, char **envp)
 	check_args(argc);
 	t.env = tabdup(envp);
 	t.exp = make_export(t.env);
+	t.p.cmds = NULL;
 	// signal_handler();
 	while ((tmp = readline("🌸 >> ")) != NULL)
 	{
@@ -33,8 +34,8 @@ int	main(int argc, char **argv, char **envp)
 			add_history(tmp);
 			monitor(cmd, &t);
 		}
-  	  	free(cmd);
-		free(tmp);
+  	  	// free(cmd);
+		// free(tmp);
 	}
 	exit(exit_status);
 }
