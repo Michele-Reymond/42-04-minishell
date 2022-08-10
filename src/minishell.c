@@ -6,7 +6,7 @@
 /*   By: mreymond <mreymond@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/20 10:47:58 by mreymond          #+#    #+#             */
-/*   Updated: 2022/07/28 13:19:13 by mreymond         ###   ########.fr       */
+/*   Updated: 2022/08/10 11:12:42 by mreymond         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,6 +27,7 @@ int	main(int argc, char **argv, char **envp)
 	while ((tmp = readline("🌸 >> ")) != NULL)
 	{
 		cmd = exit_status_convert(tmp);
+		t.readline = tmp;
 		if (strlen(cmd) > 0)
 		{
 			add_history(tmp);
@@ -51,6 +52,3 @@ int	main(int argc, char **argv, char **envp)
 // BUGS : 
 // Test only spaces or tabs. (comment faire avec TAB?)
 // Unset the $PATH and check if it is not working anymore
-
-// FAUX par rapport a bash :
-// tab (qu'est-ce qu'il doit se passer quand on fait tab?)

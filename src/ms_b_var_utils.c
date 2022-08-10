@@ -6,7 +6,7 @@
 /*   By: mreymond <mreymond@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/27 11:49:03 by mreymond          #+#    #+#             */
-/*   Updated: 2022/06/03 15:12:20 by mreymond         ###   ########.fr       */
+/*   Updated: 2022/08/09 10:19:19 by mreymond         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,6 +36,7 @@ char	*var_to_str_with_quotes(t_var var)
 	{
 		tmp2 = ft_strjoin(var.value, "\"");
 		tmp = ft_strjoin("=\"", tmp2);
+		free(tmp2);
 	}
 	else
 		tmp = ft_strdup("");

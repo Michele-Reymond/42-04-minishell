@@ -6,7 +6,7 @@
 /*   By: mreymond <mreymond@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/27 13:06:22 by mreymond          #+#    #+#             */
-/*   Updated: 2022/07/28 13:13:21 by mreymond         ###   ########.fr       */
+/*   Updated: 2022/08/10 12:33:42 by mreymond         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -579,42 +579,17 @@ char **split_pipes(t_tprint tp, int pipes)
 	return (new);
 }
 
-// char	**clean_quotes(char **cmds, t_parse p)
-// {
-// 	char	**new;
-// 	char	**token;
-// 	char	**tmp;
-// 	int		i;
-// 	int		j;
-
-// 	j = 0;
-// 	if (p.double_q == 0 && p.single_q == 0)
-// 		return (cmds);
-// 	new = malloc(sizeof(char *) * tab_len(cmds) + 1);
-// 	while (cmds[j] != NULL)
-// 	{
-// 		i = 0;
-// 		tmp = tokenize(cmds[j]);
-// 		token = malloc(sizeof(char *) * tab_len(tmp) + 1);
-// 		while (tmp[i] != NULL)
-// 		{
-// 			token[i] = ft_strtrim(tmp[i], "\"");
-// 			i++;
-// 		}
-// 		token[i] = NULL;
-// 		new[j] = tab_to_str(token);
-// 		j++;
-// 	}
-// 	return (cmds);
-// }
-
 char	**clean_quotes_token(char **token, t_parse p)
 {
 	char	**new;
 	int		i;
+
 	i = 0;
 	if (p.double_q == 0 && p.single_q == 0)
-		return (token);
+	{
+		new = tabdup(token);
+		return (new);
+	}
 	new = malloc(sizeof(char *) * tab_len(token) + 1);
 	while (token[i] != NULL)
 	{
@@ -652,14 +627,15 @@ int	monitor(char *cmd, t_tab *t)
 	
 	tp = parsing_master(cmd);
 	if (check_closed_quotes(tp))
-		return (1);
+		return (free_tp_status_error(tp));
 	p = stock_parsing_infos(tp);
 	if (!(p.redir_in >= 0 && p.redir_out >= 0))
-		return (1);
+		return (free_tp_status_error(tp));
 	t->p = p;
 	p.cmds = split_pipes(tp, p.pipes);
 	if (p.cmds == NULL)
-		return (1);
+		return (free_tp_status_error(tp));
+	free_tp(tp);
 	if (tab_len(p.cmds) == 1 && p.redir == 0)
 	{
 		if (launch_cmds(p.cmds[0], t))
@@ -693,6 +669,7 @@ int	launch_cmds(char *cmd, t_tab *t)
 		display_env(t->env);
 	else
 		return (1);
+	free_tp(tp);
 	return (0);
 }
 

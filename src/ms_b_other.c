@@ -6,7 +6,7 @@
 /*   By: mreymond <mreymond@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/26 12:37:07 by vroch             #+#    #+#             */
-/*   Updated: 2022/07/01 09:53:58 by mreymond         ###   ########.fr       */
+/*   Updated: 2022/08/10 12:08:11 by mreymond         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -344,7 +344,7 @@ void	exec_cmd(char **paths, char *first_cmd, char **envp, char **flags)
 	int		ret;
 
 	i = 0;
-	while (paths[i])
+	while (paths[i] != NULL)
 	{
 		cmd = ft_strjoin(paths[i], first_cmd);
 		ret = execve(cmd, flags, envp);
@@ -360,6 +360,8 @@ void	exec_cmd(char **paths, char *first_cmd, char **envp, char **flags)
 	{
 		printf("minishell: %s: ", &first_cmd[1]);
 		printf(ERROR_CMD_NOT_FOUND);
+		free(first_cmd);
+		tabfree(paths);
 		exit(errno);
 	}
 	free(first_cmd);

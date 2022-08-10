@@ -5,7 +5,7 @@
 
 NAME = minishell
 CC = gcc
-FLAGS = -g3 -Wall -Wextra -Werror
+FLAGS = -g3 -Wall -Wextra -Werror 
 INC = -I inc -I src/libft/inc -I$(HOME)/.brew/opt/readline/include
 LFT = -L src/libft -lft -lreadline -L$(HOME)/.brew/opt/readline/lib
 
@@ -26,6 +26,7 @@ SRC_NAME = 	minishell.c \
 			ms_pipes.c \
 			ms_redirections.c \
 			ms_r_utils.c \
+			ms_free.c \
 			ms_errors.c
 
 

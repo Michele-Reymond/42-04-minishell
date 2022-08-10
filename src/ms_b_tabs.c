@@ -6,7 +6,7 @@
 /*   By: mreymond <mreymond@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/27 11:26:36 by mreymond          #+#    #+#             */
-/*   Updated: 2022/07/28 12:17:54 by mreymond         ###   ########.fr       */
+/*   Updated: 2022/08/10 10:23:09 by mreymond         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,8 +36,11 @@ void	tabfree(char **tab)
 		}
 		i++;
 	}
-	free(tab);
-	tab = NULL;
+	if (tab != NULL)
+	{
+		free(tab);
+		tab = NULL;
+	}
 }
 
 char	**tabdup(char **tab)
@@ -47,6 +50,8 @@ char	**tabdup(char **tab)
 
 	i = 0;
 	new = malloc(sizeof(char *) * (tab_len(tab) + 1));
+	if (new == NULL)
+		return (NULL);
 	while (tab[i] != NULL)
 	{
 		new[i] = ft_strdup(tab[i]);

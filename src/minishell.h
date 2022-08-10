@@ -6,7 +6,7 @@
 /*   By: mreymond <mreymond@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/20 10:48:46 by mreymond          #+#    #+#             */
-/*   Updated: 2022/07/28 14:37:41 by mreymond         ###   ########.fr       */
+/*   Updated: 2022/08/10 12:24:09 by mreymond         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -114,9 +114,9 @@ typedef struct s_tab
 {
 	char	**env;
 	char	**exp;
-	char	**var;
-	char	**token;
-	int 	e_status;
+	// char	**var;
+	// char	**token;
+	char	*readline;
 	t_parse	p;
 }	t_tab;
 
@@ -155,6 +155,14 @@ int			*inttabdup(int *inttab);
 
 //			errors
 void		check_args(int argc);
+
+//free
+void		free_tabs(t_tab *t, char **tab, char *str);
+void		free_tabs_and_tp(t_tab *t, t_tprint tp, char *str);
+void		free_t_tab(t_tab *t);
+void		free_tp(t_tprint tp);
+int			free_tp_status_error(t_tprint tp);
+void		free_elem(t_echo elem);
 
 //			Builtins - cd
 //t_tab		*ms_b_cd(char *buf,t_tab *t);

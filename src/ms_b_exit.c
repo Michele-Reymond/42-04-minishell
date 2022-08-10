@@ -6,7 +6,7 @@
 /*   By: mreymond <mreymond@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/20 13:24:57 by mreymond          #+#    #+#             */
-/*   Updated: 2022/07/28 11:38:28 by mreymond         ###   ########.fr       */
+/*   Updated: 2022/08/10 12:09:32 by mreymond         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -131,7 +131,7 @@ int args_if_alpha(char *str)
     return (0);
 }
 
-void exit_and_set_status(char **cmds)
+void exit_and_set_status(t_tab *t, char **cmds, char *cmd)
 {
 	long long   e_code;
 
@@ -154,6 +154,7 @@ void exit_and_set_status(char **cmds)
 		exit_status = 1;
 		printf(MINISHELL ERRORS_EXIT "%s: " ERRORS_NUM, cmds[1]);
 	}
+	free_tabs(t, cmds, cmd);
 	exit(exit_status);
 }
 
@@ -166,10 +167,14 @@ void ft_exit(char *cmd, t_tab *t)
 
     tmp = tokenize(cmd);
     cmds = clean_quotes_token(tmp, t->p);
+	tabfree(tmp);
     len = tab_len(cmds);
     printf(EXIT);
     if (len == 1)
+	{
+		free_tabs(t, cmds, cmd);
         exit(exit_status);
+	}
     else if (len > 2)
     {
         printf(MINISHELL ERRORS_EXIT ERRORS_EXIT_ARGS);
@@ -177,5 +182,5 @@ void ft_exit(char *cmd, t_tab *t)
         return ;
     }
     else if (len == 2)
-		exit_and_set_status(cmds);
+		exit_and_set_status(t, cmds, cmd);
 }

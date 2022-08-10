@@ -6,7 +6,7 @@
 /*   By: mreymond <mreymond@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/20 10:43:17 by mreymond          #+#    #+#             */
-/*   Updated: 2022/07/28 10:54:04 by mreymond         ###   ########.fr       */
+/*   Updated: 2022/08/10 12:29:01 by mreymond         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -565,6 +565,8 @@ t_tprint parsing_master(char *cmd)
 	tp.print = malloc(sizeof(int) * tab_len(tmp.tab) + 1);
 	tp.print[0] = tab_len(tmp.tab);
 	create_tprint(tmp, tp);
+	tabfree(tmp.tab);
+	free(tmp.print);
 	return (tp);
 }
 
@@ -585,5 +587,6 @@ void	echo(t_tprint tp, t_tab t)
 		echo_print(elem.args, elem.vars, elem.spaces);
 		printf("\n");
 	}
+	free_elem(elem);
 	exit_status = 0;
 }
