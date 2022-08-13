@@ -6,7 +6,7 @@
 /*   By: mreymond <mreymond@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/20 10:43:17 by mreymond          #+#    #+#             */
-/*   Updated: 2022/08/13 09:57:24 by mreymond         ###   ########.fr       */
+/*   Updated: 2022/08/13 11:32:47 by mreymond         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -327,7 +327,7 @@ int count_outside_quotes(int *i, int nbr, char *cmd)
 {
 	while (cmd[*i] != '\0' && cmd[*i] != '\'' && cmd[*i] != '\"')
 	{
-		if (cmd[*i - 1] == ' ' || cmd[*i - 1] == '	')
+		if (*i > 0 && (cmd[*i - 1] == ' ' || cmd[*i - 1] == '	'))
 			nbr++;
 		(*i)++;
 	}

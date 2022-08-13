@@ -6,7 +6,7 @@
 /*   By: mreymond <mreymond@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/25 11:07:17 by vroch             #+#    #+#             */
-/*   Updated: 2022/06/03 17:35:13 by mreymond         ###   ########.fr       */
+/*   Updated: 2022/08/13 11:10:12 by mreymond         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,8 +17,8 @@ size_t	ft_len(char const *s1, char const *s2)
 	size_t	len;
 
 	len = (ft_strlen(s1) + ft_strlen(s2));
-	if ((ft_strlen(s1) == 0) || (ft_strlen(s2) == 0))
-		len = len - 1;
+	// if ((ft_strlen(s1) == 0) || (ft_strlen(s2) == 0))
+	// 	len = len - 1;
 	return (len);
 }
 
@@ -33,7 +33,7 @@ char	*ft_strjoin(char const *s1, char const *s2)
 	if (s1 == 0 || s2 == 0)
 		return (0);
 	len = ft_len(s1, s2);
-	ptr = malloc (sizeof(char) * len + 1);
+	ptr = malloc (sizeof(char) * (len + 1));
 	if (ptr == NULL)
 		return (NULL);
 	i = 0;

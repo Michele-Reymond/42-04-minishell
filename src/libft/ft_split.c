@@ -6,122 +6,82 @@
 /*   By: mreymond <mreymond@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/25 12:57:55 by vroch             #+#    #+#             */
-/*   Updated: 2022/06/22 15:47:40 by mreymond         ###   ########.fr       */
+/*   Updated: 2022/08/13 11:34:14 by mreymond         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft.h"
 
-static int	ft_cpt_nbd(char const *s, char c)
-{
-	int	i;
-	int	j;
-	int	nbd;
-
-	i = 0;
-	j = 0;
-	nbd = 0;
-	if (c == '\0' && s[0] != '\0')
-		return (2);
-	if (s[0] == '\0')
-		return (1);
-	while (s[i] != '\0' && i < (int)ft_strlen(s))
-	{
-		if (s[i] == c)
-			j = 0;
-		else
-		{
-			j = 1;
-			while (s[i] != '\0' && s[i] != c)
-				i++;
-			nbd = nbd + j;
-		}
-		i++;
-	}
-	return (nbd + 1);
-}
-
-static int	*ft_pt_lmax(char const *s, char c, int nbd)
-{
-	int	i;
-	int	l;
-	int	*lmax;
-	int	lc;
-
-	i = 0;
-	l = 0;
-	lc = 0;
-	lmax = malloc(nbd * sizeof(int *));
-	while (s[i] != '\0')
-	{
-		if (s[i] == c)
-		{
-			if (lc != 0)
-				lmax[l++] = lc;
-			if (lc != 0)
-				lc = 0;
-		}
-		else
-			lc++;
-		i++;
-	}
-	if (s[i - 1] != c)
-		lmax[l] = lc;
-	return (lmax);
-}
-
-static void	ft_rempl(char **ptr, char const *s, char c, int *lmax)
+static int	countwords(char const *s, char c)
 {
 	int		i;
-	int		j;
-	int		k;
+	int		words;
+	size_t	sep;
 
 	i = 0;
-	j = 0;
-	k = 0;
+	words = 0;
+	sep = 0;
+	if (s[i] && s[i] != c)
+		words++;
 	while (s[i] != '\0')
 	{
-		if (s[i] != c)
-		{
-			ptr[j][k] = s[i];
-			k++;
-			if (k >= lmax[j])
-			{
-				ptr[j][k] = '\0';
-				j++;
-				k = 0;
-			}
-		}
+		if (s[i] == c && s[i + 1] != c)
+			words++;
+		if (s[i] == c)
+			sep++;
 		i++;
 	}
-	ptr[j] = NULL;
+	if (s[i - 1] == c)
+		words--;
+	if (words <= 0)
+		words = 1;
+	if (sep == ft_strlen(s))
+		words = 0;
+	return (words);
+}
+
+static int	copywords(char **strtab, char const *s, char c, int words)
+{
+	int	len;
+	int	i;
+	int	y;
+
+	len = 0;
+	i = 0;
+	y = 0;
+	while (s[i] != '\0' && y < words)
+	{
+		while (s[i] == c && s[i] != '\0')
+			i++;
+		len = 0;
+		while (s[i] != c && s[i] != '\0')
+		{
+			i++;
+			len++;
+		}
+		strtab[y] = (char *)malloc(sizeof(char) * (len + 1));
+		if (!strtab[y])
+			return (0);
+		ft_strlcpy(strtab[y], &s[i - len], len + 1);
+		y++;
+	}
+	return (y);
 }
 
 char	**ft_split(char const *s, char c)
 {
-	char	**ptr;
-	int		i;
-	int		nbd;
-	int		*lmax;
+	char	**strtab;
+	int		y;
+	int		words;
 
-	if (s == 0)
-		return (0);
-	nbd = ft_cpt_nbd(s, c);
-	ptr = malloc(nbd * sizeof(char *));
-	if (ptr == NULL)
+	y = 0;
+	if (s == NULL)
 		return (NULL);
-	lmax = ft_pt_lmax(s, c, nbd);
-	i = 0;
-	while (i < nbd - 1)
-	{
-		ptr[i] = malloc((lmax[i] + 1) * sizeof(char));
-		if (ptr[i] == NULL)
-			return (NULL);
-		ptr[i] = ft_bzero (ptr[i], lmax[i] + 1);
-		i++;
-	}
-	ft_rempl(ptr, s, c, lmax);
-	ptr[i] = (NULL);
-	free(lmax);
-	return (ptr);
+	words = countwords(s, c);
+	strtab = (char **)malloc(sizeof(char *) * (words + 1));
+	if (!strtab)
+		return (NULL);
+	y = copywords(strtab, s, c, words);
+	strtab[y] = 0;
+	return (strtab);
 }
