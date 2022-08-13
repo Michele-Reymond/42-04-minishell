@@ -6,7 +6,7 @@
 /*   By: mreymond <mreymond@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/27 13:06:22 by mreymond          #+#    #+#             */
-/*   Updated: 2022/08/13 09:57:29 by mreymond         ###   ########.fr       */
+/*   Updated: 2022/08/13 22:17:18 by mreymond         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -633,11 +633,11 @@ int	monitor(char *cmd, t_tab *t)
 	p = stock_parsing_infos(tp);
 	if (!(p.redir_in >= 0 && p.redir_out >= 0))
 		return (free_tp_status_error(tp));
-	ft_free(t->readline);
 	p.cmds = split_pipes(tp, p.pipes);
 	if (p.cmds == NULL)
 		return (free_tp_status_error(tp));
 	t->p = p;
+	free_tp(tp);
 	if (tab_len(p.cmds) == 1 && p.redir == 0)
 	{
 		if (launch_cmds(p.cmds[0], t))
@@ -656,7 +656,10 @@ int	launch_cmds(char *cmd, t_tab *t)
 
 	tp = parsing_master(cmd);
 	if (!ft_strncmp(cmd, "exit", 4) && (cmd[4] == ' ' || cmd[4] == '\0'))
+	{
+		free_tp(tp);
 		ft_exit(cmd, t);
+	}
 	else if (!ft_strncmp(cmd, "cd", 2) && (cmd[2] == ' ' || cmd[2] == '\0'))
 		t = ms_b_cd(tp, t);
 	else if (!ft_strncmp(cmd, "pwd", 3) && (cmd[3] == ' ' || cmd[3] == '\0'))

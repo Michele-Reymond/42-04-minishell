@@ -6,7 +6,7 @@
 /*   By: mreymond <mreymond@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/27 11:26:36 by mreymond          #+#    #+#             */
-/*   Updated: 2022/08/10 10:23:09 by mreymond         ###   ########.fr       */
+/*   Updated: 2022/08/13 22:35:51 by mreymond         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,9 +25,11 @@ int	tab_len(char **tab)
 void	tabfree(char **tab)
 {
 	int	i;
+	int len;
 
 	i = 0;
-	while (tab[i] != NULL)
+	len = tab_len(tab);
+	while (i < len)
 	{
 		if (tab[i] != NULL)
 		{
@@ -36,7 +38,7 @@ void	tabfree(char **tab)
 		}
 		i++;
 	}
-	if (tab != NULL)
+	if (tab)
 	{
 		free(tab);
 		tab = NULL;

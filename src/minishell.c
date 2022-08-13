@@ -6,7 +6,7 @@
 /*   By: mreymond <mreymond@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/20 10:47:58 by mreymond          #+#    #+#             */
-/*   Updated: 2022/08/10 16:05:51 by mreymond         ###   ########.fr       */
+/*   Updated: 2022/08/13 21:58:39 by mreymond         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,14 +28,12 @@ int	main(int argc, char **argv, char **envp)
 	while ((tmp = readline("🌸 >> ")) != NULL)
 	{
 		cmd = exit_status_convert(tmp);
-		t.readline = tmp;
 		if (strlen(cmd) > 0)
 		{
 			add_history(tmp);
+			free(tmp);
 			monitor(cmd, &t);
 		}
-  	  	// free(cmd);
-		// free(tmp);
 	}
 	exit(exit_status);
 }

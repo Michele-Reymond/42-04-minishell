@@ -6,7 +6,7 @@
 /*   By: mreymond <mreymond@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/20 10:48:46 by mreymond          #+#    #+#             */
-/*   Updated: 2022/08/13 10:01:00 by mreymond         ###   ########.fr       */
+/*   Updated: 2022/08/13 21:59:22 by mreymond         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -122,7 +122,6 @@ typedef struct s_tab
 {
 	char	**env;
 	char	**exp;
-	char	*readline;
 	t_parse	p;
 }	t_tab;
 
