@@ -6,7 +6,7 @@
 /*   By: mreymond <mreymond@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/20 10:43:17 by mreymond          #+#    #+#             */
-/*   Updated: 2022/08/10 12:29:01 by mreymond         ###   ########.fr       */
+/*   Updated: 2022/08/13 09:57:24 by mreymond         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,7 @@ char	*ft_strldup(const char *src, size_t dstsize)
 	if (dstsize == 0)
 		return (NULL);
 	ptr = (char *)src;
-	dst = malloc(sizeof(char) * dstsize + 1);
+	dst = malloc(sizeof(char) * (dstsize + 1));
 	if (dst == NULL)
 		return (NULL);
 	while (ptr[i] != '\0' && i < (dstsize - 1))
@@ -145,7 +145,7 @@ char	**echo_vars(char **tab, t_tab t, int nbr, int *print)
 
 	i = 0;
 	j = 0;
-	vars = malloc(sizeof(char *) * nbr + 1);
+	vars = malloc(sizeof(char *) * (nbr + 1));
 	while (tab[i] != NULL)
 	{
 		if (print[i + 1] != 0 && print[i + 1] != 3)
@@ -475,7 +475,7 @@ t_tprint split_cmds(char *cmd, int tablen)
 		new.print = NULL;
 		return (new);
 	}
-	new.print = malloc(sizeof(int) * tablen + 1);
+	new.print = malloc(sizeof(int) * (tablen + 1));
 	new.print[0] = tablen;
 	create_splitted_cmds(cmd, new);
 	return (new);
@@ -561,8 +561,8 @@ t_tprint parsing_master(char *cmd)
 	t_tprint tp;
 
 	tmp = split_both_quotes(cmd);
-	tp.tab = malloc(sizeof(char *) * tab_len(tmp.tab) + 1);
-	tp.print = malloc(sizeof(int) * tab_len(tmp.tab) + 1);
+	tp.tab = malloc(sizeof(char *) * (tab_len(tmp.tab) + 1));
+	tp.print = malloc(sizeof(int) * (tab_len(tmp.tab) + 1));
 	tp.print[0] = tab_len(tmp.tab);
 	create_tprint(tmp, tp);
 	tabfree(tmp.tab);

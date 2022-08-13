@@ -6,7 +6,7 @@
 /*   By: mreymond <mreymond@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/20 10:43:17 by mreymond          #+#    #+#             */
-/*   Updated: 2022/07/28 12:14:49 by mreymond         ###   ########.fr       */
+/*   Updated: 2022/08/13 09:57:30 by mreymond         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -119,7 +119,7 @@ char **parsing_for_export(t_tprint tp)
 	i = 0;
 	j = 0;
 	tablen = spaces_count(tp);
-	new = malloc(sizeof(char *) * tablen + 1);
+	new = malloc(sizeof(char *) * (tablen + 1));
 	while (tp.tab[i] != NULL)
 	{
 		if (tp.print[i + 1] < 3)
@@ -140,7 +140,7 @@ t_var *create_vartab(int *i, char **token)
 	int j;
 
 	j = 0;
-	vartab = malloc(sizeof(t_var) * tab_len(token) - 1);
+	vartab = malloc(sizeof(t_var) * (tab_len(token) - 1));
 	while (token[*i])
 	{
 		vartab[j] = str_to_var(token[*i]);

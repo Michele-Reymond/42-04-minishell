@@ -57,7 +57,7 @@ char	**make_export(char **env)
 	t_var	*vartab;
 
 	i = 0;
-	export = malloc(sizeof(char *) * tab_len(env) + 1);
+	export = malloc(sizeof(char *) * (tab_len(env) + 1));
 	if (export == NULL)
 		return (NULL);
 	vartab = malloc(sizeof(t_var) * tab_len(env));

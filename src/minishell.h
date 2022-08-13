@@ -6,7 +6,7 @@
 /*   By: mreymond <mreymond@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/20 10:48:46 by mreymond          #+#    #+#             */
-/*   Updated: 2022/08/10 16:22:41 by mreymond         ###   ########.fr       */
+/*   Updated: 2022/08/13 10:01:00 by mreymond         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,6 +45,7 @@
 int	exit_status;
 
 // ________ Structures _________
+// parsing de echo
 typedef struct s_echo {
 	unsigned int	nbr_args;
 	char			flag;
@@ -53,11 +54,14 @@ typedef struct s_echo {
 	char			**vars;
 }	t_echo;
 
+// tableau de str et indice pour 
+// déterminer les quotes et espaces
 typedef struct s_tprint {
 	char	**tab;
 	int		*print;
 }	t_tprint;
 
+// variables
 typedef struct s_var
 {
 	char	*key;
@@ -65,6 +69,7 @@ typedef struct s_var
 	int		status;
 }	t_var;
 
+// porte d'entrée et de sortie
 typedef struct s_doors
 {
 	int in;
@@ -87,6 +92,7 @@ typedef struct s_ms_b_cd
 	int		pos_param;
 }	t_ms_b_cd;
 
+// parsing infos
 typedef struct s_parse
 {
 	int		pipes;
@@ -102,6 +108,7 @@ typedef struct s_parse
 	char	**cmds;
 }	t_parse;
 
+// redirections infos
 typedef struct s_redir
 {
 	int		index;
@@ -110,6 +117,7 @@ typedef struct s_redir
 	char	*cmd;
 }	t_redir;
 
+// tableaux utils dans tous minishell
 typedef struct s_tab
 {
 	char	**env;

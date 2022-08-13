@@ -6,7 +6,7 @@
 /*   By: mreymond <mreymond@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/06 15:58:02 by mreymond          #+#    #+#             */
-/*   Updated: 2022/08/10 13:21:19 by mreymond         ###   ########.fr       */
+/*   Updated: 2022/08/13 09:57:22 by mreymond         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,7 +65,7 @@ char **rebuilt_cmds(t_redir *r, int len)
     int i;
 
     i = 0;
-    cmds = malloc(sizeof(char *) * len + 1);
+    cmds = malloc(sizeof(char *) * (len + 1));
     while (i < len)
     {
         cmds[i] = ft_strdup(r[i].cmd);

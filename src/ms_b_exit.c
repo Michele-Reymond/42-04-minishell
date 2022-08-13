@@ -6,7 +6,7 @@
 /*   By: mreymond <mreymond@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/20 13:24:57 by mreymond          #+#    #+#             */
-/*   Updated: 2022/08/10 16:14:36 by mreymond         ###   ########.fr       */
+/*   Updated: 2022/08/13 09:57:33 by mreymond         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,7 @@ char *status_conversion(char *cmd, char *symbol)
 	char *new;
 
 	len = ft_strlen(cmd) - ft_strlen(symbol);
-	tmp = malloc(sizeof(char) * len + 2);
+	tmp = malloc(sizeof(char) * (len + 2));
 	ft_strlcat(tmp, cmd, len + 1);
 	tmp2 = ft_strjoin(tmp, ft_itoa(exit_status));
 	if (symbol + 2)

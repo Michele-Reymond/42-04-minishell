@@ -6,7 +6,7 @@
 /*   By: mreymond <mreymond@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/27 13:06:22 by mreymond          #+#    #+#             */
-/*   Updated: 2022/08/10 16:21:35 by mreymond         ###   ########.fr       */
+/*   Updated: 2022/08/13 09:57:29 by mreymond         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -274,7 +274,7 @@ char *add_quotes(char *old, char quote)
 	int i;
 
 	i = 0;
-	new = malloc(sizeof(char) * ft_strlen(old) + 3);
+	new = malloc(sizeof(char) * (ft_strlen(old) + 3));
 	new[0] = quote;
 	while (old[i] != '\0')
 	{
@@ -591,7 +591,7 @@ char	**clean_quotes_token(char **token, t_parse p)
 		new = tabdup(token);
 		return (new);
 	}
-	new = malloc(sizeof(char *) * tab_len(token) + 1);
+	new = malloc(sizeof(char *) * (tab_len(token) + 1));
 	while (token[i] != NULL)
 	{
 		if (*token[i] == '\0')
