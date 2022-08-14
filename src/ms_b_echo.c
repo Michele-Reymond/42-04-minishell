@@ -131,6 +131,7 @@ char *copy_variables(char *tmp, char **vars, int j, t_tab t)
 		vars[j] = export_to_var(t.exp[pos]);
 	tmp++;
 	tmp = ft_strchr(tmp, '$');
+	free(key);
 	return (tmp);
 }
 
@@ -159,6 +160,7 @@ char	**echo_vars(char **tab, t_tab t, int nbr, int *print)
 		}
 		i++;
 	}
+	free(tmp);
 	vars[j] = NULL;
 	return (vars);
 }
@@ -189,7 +191,7 @@ int *copy_spaces_tab(int *print)
 	j = 2;
 	new = malloc(sizeof(int) * print[0]);
 	new[0] = print[0] - 1;
-	while (i <= print[0])
+	while (i < print[0])
 	{
 		new[i] = print[j];
 		i++;
@@ -214,7 +216,8 @@ t_echo	echo_parsing(char **tab, t_tab t, int *print)
 		elem.flag = '0';
 	elem.args = tabdup(&tab[i]);
 	elem.spaces = copy_spaces_tab(print);
-	while (elem.args[i])
+	i = 0;
+	while (elem.args[i] != NULL)
 		i++;
 	elem.nbr_args = i;
 	nbr_vars = how_many_dollars(tab, print);
@@ -574,6 +577,7 @@ void	echo(t_tprint tp, t_tab t)
 {
 	t_echo elem;
 	
+	elem.flag = '\0';
 	if (tab_len(tp.tab) < 2)
 		elem.nbr_args = 0;
 	else
@@ -587,6 +591,7 @@ void	echo(t_tprint tp, t_tab t)
 		echo_print(elem.args, elem.vars, elem.spaces);
 		printf("\n");
 	}
-	free_elem(elem);
+	if (!(tab_len(tp.tab) < 2))
+		free_elem(elem);
 	exit_status = 0;
 }

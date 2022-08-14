@@ -21,6 +21,7 @@ char *status_conversion(char *cmd, char *symbol)
 
 	len = ft_strlen(cmd) - ft_strlen(symbol);
 	tmp = malloc(sizeof(char) * (len + 2));
+	ft_bzero(tmp, len + 2);
 	ft_strlcat(tmp, cmd, len + 1);
 	tmp2 = ft_strjoin(tmp, ft_itoa(exit_status));
 	if (symbol + 2)
