@@ -225,10 +225,11 @@ t_tab	*ft_export(t_tab *t, t_tprint tp)
 
 t_tab	*unset(t_tab *t, t_tprint tp)
 {
-	char	**pased;
+	char	**parsed;
 	t_tab	*new_t;
 
-	pased = parsing_for_export(tp);
-	new_t = unset_var(t, pased);
+	parsed = parsing_for_export(tp);
+	new_t = unset_var(t, parsed);
+	tabfree(parsed);
 	return (new_t);
 }
