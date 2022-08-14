@@ -59,7 +59,7 @@ int	*check_redir(char *cmd, char redir)
 			tmp += 2;
 		}
 		else if (tmp && *tmp == redir)
-			if (*(tmp + 1) != redir && *(tmp - 1) != redir)
+			if ( *(tmp + 1) != redir && (tmp == cmd || *(tmp - 1) != redir))
 			{
 				nbr[0]++;
 				tmp++;
@@ -675,7 +675,8 @@ int	launch_cmds(char *cmd, t_tab *t)
 		return (1);
 	}
 	free_tp(tp);
-	tabfree(t->p.cmds);
+	if (t->p.cmds != NULL)
+		tabfree(t->p.cmds);
 	return (0);
 }
 

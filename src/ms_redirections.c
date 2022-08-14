@@ -199,6 +199,7 @@ void launch_b_child(char *cmd, t_tab *t, int fd, int std)
 {
 	dup2(fd, std);
 	launch_cmds(cmd, t);
+	close(fd);
 	exit (0);
 }
 
@@ -213,9 +214,13 @@ void fork_and_launch_builtin(char *cmd, t_tab *t, int fd, int std)
 	if (pid < 0)
 		return (perror("Fork: "));
 	if (pid == 0)
+	{
+		free_tp(tp);
 		launch_b_child(cmd, t, fd, std);
+	}
 	else
 	{
+		close(fd);
 		waitpid(pid, &status, 0);
 		if (!ft_strncmp(cmd, "cd", 2) 
 				&& (cmd[2] == ' ' || cmd[2] == '\0'))
@@ -226,6 +231,8 @@ void fork_and_launch_builtin(char *cmd, t_tab *t, int fd, int std)
 		else if (!ft_strncmp(cmd, "unset", 5) 
 				&& (cmd[5] == ' ' || cmd[5] == '\0'))
 			t = unset_var(t, tp.tab);
+		free_tp(tp);
+		tabfree(t->p.cmds);
 	}
 }
 
@@ -254,6 +261,7 @@ void launch_out(t_redir r, t_tab *t, char *cmd)
 
 	check_files_out(r.dest);
 	outfile = open(r.dest, O_TRUNC | O_WRONLY);
+	free_t_redirs(r);
 	if (outfile < 0)
 	{
 		perror("minishell: ");

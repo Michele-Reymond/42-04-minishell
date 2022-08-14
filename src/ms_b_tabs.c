@@ -36,7 +36,7 @@ void	tabfree(char **tab)
 		}
 		i++;
 	}
-	if (tab)
+	if (tab != NULL)
 	{
 		free(tab);
 		tab = NULL;

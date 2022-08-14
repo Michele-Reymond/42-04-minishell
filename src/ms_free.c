@@ -115,3 +115,22 @@ void free_vartab(t_var *vartab, int len)
         vartab = NULL;
     }
 }
+
+void free_t_redirs(t_redir r)
+{
+    if (r.dest != NULL)
+    {
+	    free(r.dest);
+        r.dest = NULL;
+    }
+    if (r.redir != NULL)
+	{
+	    free(r.redir);
+        r.redir = NULL;
+    }
+    if (r.cmd != NULL)
+	{
+	    free(r.cmd);
+        r.cmd = NULL;
+    }
+}
