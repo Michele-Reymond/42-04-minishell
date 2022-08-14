@@ -12,7 +12,7 @@
 
 #include "minishell.h"
 
-void free_tabs(t_tab *t, char **tab, char *str)
+void free_tabs(t_tab *t, char **tab)
 {
     if (t->env != NULL)
 	    tabfree(t->env);
@@ -22,8 +22,6 @@ void free_tabs(t_tab *t, char **tab, char *str)
 	    tabfree(t->p.cmds);
     if (tab != NULL)
 	    tabfree(tab);
-    if (str != NULL)
-	    free(str);
 }
 
 void free_t_tab(t_tab *t)

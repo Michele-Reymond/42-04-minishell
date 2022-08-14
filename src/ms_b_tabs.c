@@ -25,11 +25,9 @@ int	tab_len(char **tab)
 void	tabfree(char **tab)
 {
 	int	i;
-	int len;
 
 	i = 0;
-	len = tab_len(tab);
-	while (i < len)
+	while (tab[i] != NULL)
 	{
 		if (tab[i] != NULL)
 		{

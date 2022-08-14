@@ -656,10 +656,7 @@ int	launch_cmds(char *cmd, t_tab *t)
 
 	tp = parsing_master(cmd);
 	if (!ft_strncmp(cmd, "exit", 4) && (cmd[4] == ' ' || cmd[4] == '\0'))
-	{
-		free_tp(tp);
 		ft_exit(cmd, t);
-	}
 	else if (!ft_strncmp(cmd, "cd", 2) && (cmd[2] == ' ' || cmd[2] == '\0'))
 		t = ms_b_cd(tp, t);
 	else if (!ft_strncmp(cmd, "pwd", 3) && (cmd[3] == ' ' || cmd[3] == '\0'))
@@ -675,6 +672,7 @@ int	launch_cmds(char *cmd, t_tab *t)
 	else
 		return (1);
 	free_tp(tp);
+	tabfree(t->p.cmds);
 	return (0);
 }
 

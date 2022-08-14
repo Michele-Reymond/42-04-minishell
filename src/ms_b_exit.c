@@ -131,7 +131,7 @@ int args_if_alpha(char *str)
     return (0);
 }
 
-void exit_and_set_status(t_tab *t, char **cmds, char *cmd)
+void exit_and_set_status(t_tab *t, char **cmds)
 {
 	long long   e_code;
 
@@ -154,7 +154,7 @@ void exit_and_set_status(t_tab *t, char **cmds, char *cmd)
 		exit_status = 1;
 		printf(MINISHELL ERRORS_EXIT "%s: " ERRORS_NUM, cmds[1]);
 	}
-	free_tabs(t, cmds, cmd);
+	free_tabs(t, cmds);
 	exit(exit_status);
 }
 
@@ -179,9 +179,10 @@ void ft_exit(char *cmd, t_tab *t)
     else if (len > 2)
     {
         printf(MINISHELL ERRORS_EXIT ERRORS_EXIT_ARGS);
+		tabfree(cmds);
         exit_status = 1;
         return ;
     }
     else if (len == 2)
-		exit_and_set_status(t, cmds, cmd);
+		exit_and_set_status(t, cmds);
 }

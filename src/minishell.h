@@ -163,7 +163,7 @@ void		check_args(int argc);
 
 //free
 void		ft_free(char *str);
-void		free_tabs(t_tab *t, char **tab, char *str);
+void		free_tabs(t_tab *t, char **tab);
 void		free_tabs_and_tp(t_tab *t, t_tprint tp, char *str);
 void		free_t_tab(t_tab *t);
 void		free_tp(t_tprint tp);
@@ -201,7 +201,6 @@ void		display_env(char **tab);
 //			Builtins - exit
 void		ft_exit(char *cmds, t_tab *t);
 char		*replace_exit_status(char **token);
-// char		**exit_status_convert(char **token);
 char		*exit_status_convert(char *cmd);
 
 //			Pipes
