@@ -348,7 +348,7 @@ void	exec_cmd(char **paths, char *first_cmd, char **envp, char **flags)
 	{
 		cmd = ft_strjoin(paths[i], first_cmd);
 		ret = execve(cmd, flags, envp);
-		free(cmd);
+		ft_free(cmd);
 		i++;
 	}
 	if (ret < 0)
@@ -360,11 +360,11 @@ void	exec_cmd(char **paths, char *first_cmd, char **envp, char **flags)
 	{
 		printf("minishell: %s: ", &first_cmd[1]);
 		printf(ERROR_CMD_NOT_FOUND);
-		free(first_cmd);
+		ft_free(first_cmd);
 		tabfree(paths);
 		exit(errno);
 	}
-	free(first_cmd);
+	ft_free(first_cmd);
 }
 
 // char	**split_flags(char *cmds)
@@ -389,8 +389,8 @@ void	launch_child_process(char *buff, char **paths, char **envp)
 	tp = parsing_master(buff);
 	first_cmd = ft_strjoin("/", tp.tab[0]);
 	exec_cmd(paths, first_cmd, envp, tp.tab);
-	tabfree(tp.tab);
-	free(tp.print);
+	free_tp(tp);
+	ft_free(first_cmd);
 }
 
 // lancer cette comande dans les pipes
@@ -430,16 +430,23 @@ void other_with_fork(char *buf, t_tab *t)
 	paths = ft_split(getenv("PATH"), ':');
 	pid = fork();
 	if (pid < 0)
+	{
+		tabfree(t->p.cmds);
+		tabfree(paths);
 		return (perror("Fork: "));
+	}
 	if (pid == 0)
 	{
+		(void)buf;
 		launch_child_process(buf, paths, t->env);
+		tabfree(t->p.cmds);
 		tabfree(paths);
 		exit (0);
 	}
 	else {
 		waitpid(pid, &status, 0);
 		status_of_child(status);
+		tabfree(t->p.cmds);
 		tabfree(paths);
 	}
 }

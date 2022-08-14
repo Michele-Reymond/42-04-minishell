@@ -179,6 +179,7 @@ void launch_with_pipes(t_parse p, t_tab *t)
     create_pipes(fd, p.pipes);
     launching_pipes_in_child(p, t, pid, fd);
     launching_pipes_in_parent(p, pid, fd);
+    tabfree(t->p.cmds);
 }
 
 void check_files_needs(char *cmd)

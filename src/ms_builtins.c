@@ -670,7 +670,10 @@ int	launch_cmds(char *cmd, t_tab *t)
 	else if (!ft_strncmp(cmd, "env", 3) && (cmd[3] == ' ' || cmd[3] == '\0'))
 		display_env(t->env);
 	else
+	{
+		free_tp(tp);
 		return (1);
+	}
 	free_tp(tp);
 	tabfree(t->p.cmds);
 	return (0);
