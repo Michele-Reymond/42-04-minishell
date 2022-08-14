@@ -89,3 +89,29 @@ void ft_free(char *str)
         str = NULL;
     }
 }
+
+void free_vartab(t_var *vartab, int len)
+{
+    int i;
+
+    i = 0;
+    while (i < len)
+    {
+        if (vartab[i].key != NULL)
+        {
+            free(vartab[i].key);
+            vartab[i].key = NULL;
+        }
+        if (vartab[i].value != NULL)
+        {
+            free(vartab[i].value);
+            vartab[i].value = NULL;
+        }
+        i++;
+    }
+    if (vartab != NULL)
+    {
+        free(vartab);
+        vartab = NULL;
+    }
+}

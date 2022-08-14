@@ -169,6 +169,7 @@ void		free_t_tab(t_tab *t);
 void		free_tp(t_tprint tp);
 int			free_tp_status_error(t_tprint tp);
 void		free_elem(t_echo elem);
+void		free_vartab(t_var *vartab, int len);
 
 //			Builtins - cd
 //t_tab		*ms_b_cd(char *buf,t_tab *t);

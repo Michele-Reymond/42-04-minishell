@@ -218,6 +218,8 @@ t_tab	*ft_export(t_tab *t, t_tprint tp)
 				export_increase(&i, &j);
 		}
 	}
+	free_vartab(vartab, tab_len(token) - 1);
+	tabfree(token);
 	return (t);
 }
 
