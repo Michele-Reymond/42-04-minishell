@@ -497,6 +497,7 @@ void launch_in_d_in_pipe(t_tab *t, char *cmd)
 	newcmd = ft_strjoin(cmd, " .heredoc");
 	if (launch_cmds(newcmd, t))
 		other_basic(newcmd, t);
+	free(newcmd);
 }
 
 void launch_child_heredoc(char *cmd, t_redir r, int tmpfile, t_tab *t)
@@ -717,6 +718,8 @@ void launch_multiple_redir_in_pipes(t_redir *r, t_tab *t, char **cmds)
 		launch_builtins_with_doors(r[0].cmd, t, doors);
 	else
 		other_doors_and_fork(r[0].cmd, t, doors);
+	free_all_t_redirs(r, tab_len(cmds));
+	tabfree(cmds);
 	close(doors.in);
 	close(doors.out);
 	if (access(".heredoc", F_OK) == 0)
@@ -770,19 +773,26 @@ void read_heredoc(char *cmd)
 int is_heredoc(char *cmd)
 {
 	int		*nbr;
+	int		ret;
 
 	nbr = check_redir(cmd, '<');
-	return (nbr[1]);
+	ret = nbr[1];
+	free(nbr);
+	return (ret);
 }
 
 int nbr_of_redir(char *cmd)
 {
 	int		*nbr1;
 	int		*nbr2;
+	int		total;
 
 	nbr1 = check_redir(cmd, '>');
 	nbr2 = check_redir(cmd, '<');
-	return (nbr1[0] + nbr1[1] + nbr2[0] + nbr2[1]);
+	total = nbr1[0] + nbr1[1] + nbr2[0] + nbr2[1];
+	free(nbr1);
+	free(nbr2);
+	return (total);
 }
 
 char **add_to_tab(char **oldtab, char *str_to_add)
@@ -1214,7 +1224,9 @@ char **a_redir_pro_cmd(char *cmd)
 void    launching_redirs(char *cmd, t_tab *t)
 {
 	t_redir *r;
+	t_redir redir;
 	char    **newcmds;
+	char	**tmp;
 	int     len;
 
 	if (nbr_of_redir(cmd) == 0)
@@ -1224,18 +1236,22 @@ void    launching_redirs(char *cmd, t_tab *t)
 	}
 	else if (nbr_of_redir(cmd) == 1)
 	{
-		newcmds = add_to_tab(new_tab(), cmd);
+		tmp = new_tab();
+		newcmds = add_to_tab(tmp, cmd);
+		tabfree(tmp);
 		r = stock_redir_infos(newcmds);
 		len = tab_len(newcmds);
 		tabfree(newcmds);
 		newcmds = rebuilt_cmds(r, len);
-		launch_redir_in_pipe(r[0], t, newcmds[0]);
+		redir = dup_redir(r[0]);
+		free_all_t_redirs(r, len);
+		launch_redir_in_pipe(redir, t, newcmds[0]);
+		tabfree(newcmds);
 	}
 	else if (nbr_of_redir(cmd) > 1)
 	{
 		newcmds = a_redir_pro_cmd(cmd);
 		r = stock_redir_infos(newcmds);
-		len = tab_len(newcmds);
 		launch_multiple_redir_in_pipes(r, t, newcmds);
 	}
 }
@@ -1281,5 +1297,3 @@ void    launch_with_redir(t_parse p, t_tab *t)
 	else
 		launch_pipes_with_redir(p, t);
 }
-
-// cat Makefile | wc -l > test.txt

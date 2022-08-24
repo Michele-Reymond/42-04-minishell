@@ -185,11 +185,14 @@ void launch_with_pipes(t_parse p, t_tab *t)
 void check_files_needs(char *cmd)
 {
     t_redir *r;
+    char **tmp;
     char **newcmds;
    
     if (is_heredoc(cmd))
         read_heredoc(cmd);
-    newcmds = add_to_tab(new_tab(), cmd);
+    tmp = new_tab();
+    newcmds = add_to_tab(tmp, cmd);
+    tabfree(tmp);
     r = stock_redir_infos(newcmds);
     if (r[0].redir[0] == '<' && ft_strlen(r[0].redir) == 1)
     {
@@ -199,6 +202,8 @@ void check_files_needs(char *cmd)
         else if (access(r[0].dest, R_OK) != 0)
             printf("minishell: %s : %s \n", r[0].dest,  strerror(errno));
     }
+    free_all_t_redirs(r, tab_len(newcmds));
+    tabfree(newcmds);
 }
 
 void launching_redirs_in_child(t_parse p, t_tab *t, pid_t *pid, int **fd)
@@ -271,4 +276,5 @@ void launch_pipes_with_redir(t_parse p, t_tab *t)
     create_pipes(fd, p.pipes);
     launching_redirs_in_child(p, t, pid, fd);
     launching_redirs_in_parent(p, pid, fd);
+    tabfree(t->p.cmds);
 }

@@ -206,6 +206,9 @@ void		ft_exit(char *cmds, t_tab *t);
 char		*replace_exit_status(char **token);
 char		*exit_status_convert(char *cmd);
 
+//			bin
+void		launch_child_process(char *buff, char **paths, char **envp);
+
 //			Pipes
 void		launch_with_pipes(t_parse p, t_tab *t);
 
@@ -226,6 +229,7 @@ void		launch_out(t_redir r, t_tab *t, char *cmd);
 int			is_heredoc(char *cmd);
 void		read_heredoc(char *cmd);
 char 		**a_redir_pro_cmd(char *cmd);
+t_redir		dup_redir(t_redir r);
 
 //			Bin
 int			ms_b_other(char *buf);
