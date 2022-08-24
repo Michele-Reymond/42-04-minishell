@@ -101,17 +101,15 @@ char *which_redir_is_it(t_tprint tp, int i)
 void parse_for_redir_infos(char *cmd, t_redir *r, int index)
 {
 	t_tprint tp;
+	char *tmp;
 	int pos;
 	int i;
 	
-	i = 0;
+	i = -1;
 	tp = parsing_master(cmd);
 	r->redir = NULL;
-	while (tp.tab[i] != NULL && r->redir == NULL)
-	{
+	while (tp.tab[++i] != NULL && r->redir == NULL)
 		r->redir = which_redir_is_it(tp, i);
-		i++;
-	}
 	r->index = index;
 	if (*(r->redir) == '\0')
 	{
@@ -121,10 +119,12 @@ void parse_for_redir_infos(char *cmd, t_redir *r, int index)
 	else 
 	{
 		pos = var_exist(tp.tab, r->redir);
-		r->dest = ft_strtrim(ft_strdup(tp.tab[pos + 1]), " "); 
+		tmp = ft_strdup(tp.tab[pos + 1]);
+		r->dest = ft_strtrim(tmp, " ");
+		free(tmp);
 		r->cmd = stock_cmd_part(tp.tab, pos);
-		tabfree(tp.tab);
 	}
+	free_tp(tp);
 }
 
 // create a truct with redirections infos
@@ -199,6 +199,10 @@ void launch_b_child(char *cmd, t_tab *t, int fd, int std)
 {
 	dup2(fd, std);
 	launch_cmds(cmd, t);
+	if (t->env != NULL)
+	    tabfree(t->env);
+    if (t->exp != NULL)
+	    tabfree(t->exp);
 	close(fd);
 	exit (0);
 }
@@ -244,6 +248,7 @@ t_doors set_out(t_redir r, t_doors doors)
 
 	check_files_out(r.dest);
 	outfile = open(r.dest, O_TRUNC | O_WRONLY);
+	free_t_redirs(r);
 	if (outfile < 0)
 	{
 		perror("minishell: ");
@@ -281,6 +286,7 @@ t_doors set_out_d(t_redir r, t_doors doors)
 
 	check_files_out(r.dest);
 	outfile = open(r.dest, O_WRONLY | O_APPEND);
+	free_t_redirs(r);
 	if (outfile < 0)
 	{
 		perror("minishell: ");
@@ -298,6 +304,7 @@ void launch_out_d(t_redir r, t_tab *t, char *cmd)
 
 	check_files_out(r.dest);
 	outfile = open(r.dest, O_WRONLY | O_APPEND);
+	free_t_redirs(r);
 	if (outfile < 0)
 	{
 		perror("minishell: ");
@@ -317,6 +324,7 @@ t_doors set_in(t_redir r, t_doors doors)
 
 	check_files_in(r.dest);
 	infile = open(r.dest, O_RDONLY);
+	free_t_redirs(r);
 	if (infile < 0)
 	{
 		perror("minishell: ");
@@ -334,6 +342,7 @@ void launch_in(t_redir r, t_tab *t, char *cmd)
 
 	check_files_in(r.dest);
 	infile = open(r.dest, O_RDONLY);
+	free_t_redirs(r);
 	if (infile < 0)
 	{
 		perror("minishell: ");
@@ -353,6 +362,7 @@ void launch_in_basic(t_redir r, t_tab *t, char *cmd)
 	if (check_files_in_basic(r.dest))
 		return ;
 	infile = open(r.dest, O_RDONLY);
+	free_t_redirs(r);
 	if (infile < 0)
 	{
 		perror("minishell: ");
@@ -417,7 +427,6 @@ void launch_heredoc(char *stop)
 	pid_t	pid;
 	int		status;
 
-	printf("ici\n");
 	tmpfile = open(".heredoc", O_CREAT | O_RDWR | O_APPEND, 0644);
 	if (tmpfile < 0)
 	{
@@ -507,11 +516,14 @@ void launch_child_heredoc(char *cmd, t_redir r, int tmpfile, t_tab *t)
 		}
 		free(input);
 	}
+	free_t_redirs(r);
 	newcmd = ft_strdup(cmd);
 	fd = open(".heredoc", O_RDONLY);
 	dup2(fd, STDIN_FILENO);
 	if (launch_cmds(newcmd, t))
 		other_basic(newcmd, t);
+	free(newcmd);
+	tabfree(t->p.cmds);
 	close(tmpfile);
 	exit(0);
 }
@@ -523,21 +535,28 @@ void launch_in_d(t_redir r, t_tab *t, char *cmd)
 	pid_t	pid;
 	int		status;
 
-	printf("ici\n");
 	tmpfile = open(".heredoc", O_CREAT | O_RDWR | O_APPEND, 0644);
 	if (tmpfile < 0)
 	{
+		tabfree(t->p.cmds);
 		perror("minishell: ");
 		exit(EXIT_FAILURE);
 	}
 	pid = fork();
 	if (pid < 0)
+	{
+		close(tmpfile);
+		tabfree(t->p.cmds);
 		return (perror("Fork: "));
+	}
 	if (pid == 0)
 		launch_child_heredoc(cmd, r, tmpfile, t);
-	else {
+	else 
+	{
 		waitpid(pid, &status, 0);
 		close(tmpfile);
+		tabfree(t->p.cmds);
+		free_t_redirs(r); 
 		unlink(".heredoc");
 	}
 }
@@ -612,12 +631,15 @@ void fork_and_launch_builtin_doors(char *cmd, t_tab *t, t_doors doors)
 		return (perror("Fork: "));
 	if (pid == 0)
 	{
+		free_tp(tp);
 		launch_builtins_with_doors(cmd, t, doors);
+		free(cmd);
 		close(doors.in);
 		close(doors.out);
 		exit (0);
 	}
-	else {
+	else 
+	{
 		waitpid(pid, &status, 0);
 		if (!ft_strncmp(cmd, "cd", 2) && (cmd[2] == ' ' || cmd[2] == '\0'))
 			t = ms_b_cd(tp, t);
@@ -625,6 +647,9 @@ void fork_and_launch_builtin_doors(char *cmd, t_tab *t, t_doors doors)
 			t = ft_export(t, tp);
 		else if (!ft_strncmp(cmd, "unset", 5) && (cmd[5] == ' ' || cmd[5] == '\0'))
 			t = unset_var(t, tp.tab);
+		free(cmd);
+		free_tp(tp);
+		tabfree(t->p.cmds);
 	}
 }
 
@@ -632,26 +657,30 @@ void launch_multiple_redir(t_redir *r, t_tab *t, char **cmds)
 {
 	t_doors doors;
 	char *newcmd;
+	char *cmd;
 	int i;
 
 	i = 0;
 	doors.in = STDIN_FILENO;
 	doors.out = STDOUT_FILENO;
+	cmd = ft_strdup(r[0].cmd);
 	while (cmds[i] != NULL)
 	{
 		doors = set_redirection(r[i], doors);
 		i++;
 	}
+	free(r);
+	tabfree(cmds);
 	if (access(".heredoc", F_OK) == 0)
 	{
-		newcmd = ft_strjoin(r[0].cmd, " .heredoc");
-		free(r[0].cmd);
-		r[0].cmd = newcmd;
+		newcmd = ft_strjoin(cmd, " .heredoc");
+		free(cmd);
+		cmd = newcmd;
 	}
-	if (is_a_builtin(r[0].cmd))
-		fork_and_launch_builtin_doors(r[0].cmd, t, doors);
+	if (is_a_builtin(cmd))
+		fork_and_launch_builtin_doors(cmd, t, doors);
 	else
-		other_doors_and_fork(r[0].cmd, t, doors);
+		other_doors_and_fork(cmd, t, doors);
 	if (access(".heredoc", F_OK) == 0)
 		unlink(".heredoc");
 }
@@ -1006,6 +1035,7 @@ char **recreate_cmd_sc(char *cmd, char **tab, int i)
 	char **ttmp;
 	char *newstr;
 	char *tmp;
+	char *joined;
 
 	new = new_tab();
 	while (tab[i] != NULL)
@@ -1013,11 +1043,13 @@ char **recreate_cmd_sc(char *cmd, char **tab, int i)
 		tmp = ft_strjoin_sep(cmd, tab[i], ' ');
 		i++;
 		newstr = find_redir_part_sc(&i,tab);
-		ttmp = add_to_tab(new, ft_strjoin_sep(tmp, newstr, ' '));
+		joined = ft_strjoin_sep(tmp, newstr, ' ');
+		ttmp = add_to_tab(new, joined);
+		ft_free(joined);
 		tabfree(new);
 		new = ttmp;
-		free(tmp);
-		free(newstr);
+		ft_free(tmp);
+		ft_free(newstr);
 	}
 	ttmp = add_to_tab(new, "");
 	tabfree(new);
@@ -1035,6 +1067,7 @@ char **split_w_starting_cmd(char **tab)
 	i = 0;
 	cmd = find_cmd_sc(tab, &i);
 	new = recreate_cmd_sc(cmd, tab, i);
+	free(cmd);
 	return (new);
 }
 
@@ -1116,22 +1149,23 @@ char *find_redir_part(int *i, char **tab)
 	return (redirstr);
 }
 
-char **recreate_cmd(char *cmd, char **tab)
+char **recreate_cmd(char *cmd, char **tab, int i)
 {
 	char **new;
 	char **ttmp;
 	char *newstr;
 	char *tmp;
-	int i;
+	char *joined;
 
-	i = 0;
 	new = new_tab();
 	while (tab[i] != NULL && is_redir_next(&tab[i]))
 	{
 		tmp = ft_strjoin_sep(cmd, tab[i], ' ');
 		i++;
 		newstr = find_redir_part(&i, tab);
-		ttmp = add_to_tab(new, ft_strjoin_sep(tmp, newstr, ' '));
+		joined = ft_strjoin_sep(tmp, newstr, ' ');
+		ttmp = add_to_tab(new, joined);
+		free(joined);
 		tabfree(new);
 		new = ttmp;
 		free(tmp);
@@ -1150,9 +1184,12 @@ char **split_w_starting_redir(char **tab)
 {
 	char **new;
 	char *cmd;
+	int i;
 
+	i = 0;
 	cmd = find_cmd(tab);
-	new = recreate_cmd(cmd, tab);
+	new = recreate_cmd(cmd, tab, i);
+	free(cmd);
 	return (new);
 }
 
@@ -1168,6 +1205,8 @@ char **a_redir_pro_cmd(char *cmd)
 		new = split_w_starting_redir(splitted);
 	else
 		new = split_w_starting_cmd(splitted);
+	free_tp(tp);
+	tabfree(splitted);
 	return (new);
 }
 
@@ -1201,11 +1240,23 @@ void    launching_redirs(char *cmd, t_tab *t)
 	}
 }
 
+t_redir dup_redir(t_redir r)
+{
+	t_redir new;
+
+	new.index = r.index;
+	new.dest = ft_strdup(r.dest);
+	new.redir = ft_strdup(r.redir);
+	new.cmd = ft_strdup(r.cmd);
+	return (new);
+}
+
 // launch cmds with redirections symbol
 // this function is used in monitor
 void    launch_with_redir(t_parse p, t_tab *t)
 {
 	t_redir *r;
+	t_redir redir;
 	char    **newcmds;
 	int     len;
 
@@ -1215,7 +1266,10 @@ void    launch_with_redir(t_parse p, t_tab *t)
 		len = tab_len(p.cmds);
 		tabfree(p.cmds);
 		p.cmds = rebuilt_cmds(r, len);
-		launch_redir(r[0], t, p.cmds[0]);
+		t->p.cmds = p.cmds;
+		redir = dup_redir(r[0]);
+		free_all_t_redirs(r, len);
+		launch_redir(redir, t, p.cmds[0]);
 	}
 	else if (p.pipes == 0 && p.redir > 1)
 	{
@@ -1227,3 +1281,5 @@ void    launch_with_redir(t_parse p, t_tab *t)
 	else
 		launch_pipes_with_redir(p, t);
 }
+
+// cat Makefile | wc -l > test.txt

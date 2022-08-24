@@ -134,3 +134,30 @@ void free_t_redirs(t_redir r)
         r.cmd = NULL;
     }
 }
+
+void free_all_t_redirs(t_redir *r, int len)
+{
+    int i;
+
+    i = 0;
+    while (i < len)
+    {
+        if (r[i].dest != NULL)
+        {
+            free(r[i].dest);
+            r[i].dest = NULL;
+        }
+        if (r[i].redir != NULL)
+        {
+            free(r[i].redir);
+            r[i].redir = NULL;
+        }
+        if (r[i].cmd != NULL)
+        {
+            free(r[i].cmd);
+            r[i].cmd = NULL;
+        }
+        i++;
+    }
+    free(r);
+}

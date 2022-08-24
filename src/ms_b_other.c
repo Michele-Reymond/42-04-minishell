@@ -437,7 +437,6 @@ void other_with_fork(char *buf, t_tab *t)
 	}
 	if (pid == 0)
 	{
-		(void)buf;
 		launch_child_process(buf, paths, t->env);
 		tabfree(t->p.cmds);
 		tabfree(paths);
@@ -461,17 +460,24 @@ void other_redir_and_fork(char *buf, t_tab *t, int fd, int std)
 	paths = ft_split(getenv("PATH"), ':');
 	pid = fork();
 	if (pid < 0)
+	{
+		tabfree(t->p.cmds);
+		tabfree(paths);
 		return (perror("Fork: "));
+	}
 	if (pid == 0)
 	{
 		dup2(fd, std);
 		launch_child_process(buf, paths, t->env);
 		tabfree(paths);
+		tabfree(t->p.cmds);
 		exit (0);
 	}
-	else {
+	else 
+	{
 		waitpid(pid, &status, 0);
 		status_of_child(status);
+		tabfree(t->p.cmds);
 		tabfree(paths);
 	}
 }
@@ -486,17 +492,23 @@ void other_doors_and_fork(char *buf, t_tab *t, t_doors doors)
 	paths = ft_split(getenv("PATH"), ':');
 	pid = fork();
 	if (pid < 0)
+	{
+		tabfree(t->p.cmds);
+		tabfree(paths);
 		return (perror("Fork: "));
+	}
 	if (pid == 0)
 	{
 		dup2(doors.in, STDIN_FILENO);
 		dup2(doors.out, STDOUT_FILENO);
 		launch_child_process(buf, paths, t->env);
+		tabfree(t->p.cmds);
 		tabfree(paths);
 	}
 	else {
 		waitpid(pid, &status, 0);
 		status_of_child(status);
+		tabfree(t->p.cmds);
 		tabfree(paths);
 	}
 }

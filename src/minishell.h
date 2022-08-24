@@ -171,6 +171,7 @@ int			free_tp_status_error(t_tprint tp);
 void		free_elem(t_echo elem);
 void		free_vartab(t_var *vartab, int len);
 void		free_t_redirs(t_redir r);
+void		free_all_t_redirs(t_redir *r, int len);
 
 //			Builtins - cd
 //t_tab		*ms_b_cd(char *buf,t_tab *t);
