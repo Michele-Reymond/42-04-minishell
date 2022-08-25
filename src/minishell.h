@@ -6,7 +6,7 @@
 /*   By: mreymond <mreymond@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/20 10:48:46 by mreymond          #+#    #+#             */
-/*   Updated: 2022/08/25 15:18:49 by mreymond         ###   ########.fr       */
+/*   Updated: 2022/08/25 16:17:30 by mreymond         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -148,15 +148,10 @@ char		**clean_quotes(char **cmds, t_parse p);
 char		**clean_quotes_token(char **token, t_parse p);
 t_tprint	parsing_master(char *cmd);
 void		display_tab_and_int(int *inttab, char **tab);
-void		display_inttab(int *inttab);
 char		*ft_strldup(const char *src, size_t dstsize);
 int			check_identifier(char *str);
 char		*add_quotes(char *old, char quote);
 char		*join_strings(t_tprint tp, int pos, int start);
-int			*new_inttab(void);
-int			*add_to_inttab(int *printing, int add);
-int			*fill_inttab(int *inttab, int add, int nbr);
-int			*inttabdup(int *inttab);
 
 //			errors
 void		check_args(int argc);
@@ -164,13 +159,13 @@ void		check_args(int argc);
 //free
 void		ft_free(char *str);
 void		free_tabs(t_tab *t, char **tab);
-void		free_tabs_and_tp(t_tab *t, t_tprint tp, char *str);
 void		free_t_tab(t_tab *t);
 void		free_tp(t_tprint tp);
 int			free_tp_status_error(t_tprint tp);
 void		free_elem(t_echo elem);
 void		free_vartab(t_var *vartab, int len);
 void		free_t_redirs(t_redir r);
+void		free_redirs(int *nbr1, int *nbr2);
 void		free_all_t_redirs(t_redir *r, int len);
 
 //			Builtins - cd

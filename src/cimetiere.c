@@ -1334,3 +1334,104 @@
 //     tabfree(token);
 //     return (new);
 // }
+
+// // la premiere valeur du tableau d'int est le nombre d'int qu'il contient sauf le premier
+// int *add_to_inttab(int *printing, int add)
+// {
+// 	int *new;
+// 	int i;
+
+// 	i = 1;
+// 	new = malloc(sizeof(int) * (printing[0] + 1));
+// 	new[0] = printing[0] + 1;
+// 	while (i <= printing[0])
+// 	{
+// 		new[i] = printing[i];
+// 		i++;
+// 	}
+// 	new[i] = add;
+// 	return (new);
+// }
+
+// // la premiere valeur du tableau d'int est le nombre d'int qu'il contient sauf le premier
+// int *new_inttab(void)
+// {
+// 	int *new;
+
+// 	new = malloc(sizeof(int) * 1);
+// 	new[0] = 0;
+// 	return (new);
+// }
+
+// // la premiere valeur du tableau d'int est le nombre d'int qu'il contient sauf le premier
+// int *fill_inttab(int *inttab, int add, int nbr)
+// {
+// 	int *new;
+// 	int i;
+// 	int j;
+
+// 	i = 1;
+// 	j = 0;
+// 	new = malloc(sizeof(int) * (inttab[0] + nbr));
+// 	new[0] = inttab[0] + nbr;
+// 	while (i <= inttab[0])
+// 	{
+// 		new[i] = inttab[i];
+// 		i++;
+// 	}
+// 	while (j < nbr)
+// 	{
+// 		new[i] = add;
+// 		j++;
+// 		i++;
+// 	}
+// 	return (new);
+// }
+
+// int *inttabdup(int *inttab)
+// {
+// 	int i;
+// 	int *new;
+
+// 	i = 0;
+// 	new = malloc(sizeof(int) * (inttab[0] + 1));
+// 	while (i <= inttab[0])
+// 	{
+// 		new[i] = inttab[i];
+// 		i++;
+// 	}
+// 	return (new);
+// }
+
+// void display_inttab(int *inttab)
+// {
+// 	int i;
+
+// 	i = 1;
+// 	while (i <= inttab[0])
+// 	{
+// 		printf("%d\n", inttab[i]);
+// 		i++;
+// 	}
+// }
+
+// int redir_errors(int *nbr1, int *nbr2, t_parse *p)
+// {
+// 	if (nbr1[0] == -1 || nbr1[1] == -1)
+// 	{
+// 		p->redir_out = nbr1[0];
+// 		p->redir_out_d = nbr1[1];
+// 		if (nbr1 != NULL)
+// 		{
+// 			free(nbr1);
+// 			nbr1 = NULL;
+// 		}
+// 		if (nbr2 != NULL)
+// 		{
+// 			free(nbr2);
+// 			nbr2 = NULL;
+// 		}
+// 		return (1);
+// 	}
+// 	return (0);
+// }

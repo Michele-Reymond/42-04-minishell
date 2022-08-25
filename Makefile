@@ -12,6 +12,8 @@ LFT = -L src/libft -lft -lreadline -L$(HOME)/.brew/opt/readline/lib
 SRC_NAME = 	minishell.c \
 			ms_builtins.c \
 			ms_b_echo.c \
+			ms_b_echo_print.c \
+			ms_b_echo_utils.c \
 			ms_b_tabs.c \
 			ms_b_tabsort.c \
 			ms_b_variables.c \
@@ -21,12 +23,25 @@ SRC_NAME = 	minishell.c \
 			ms_b_pwd.c \
 			ms_b_other.c \
 			ms_b_exit.c \
+			ms_b_exit_utils.c \
 			ms_signals.c \
 			ms_parsing.c \
+			ms_p_master.c \
+			ms_p_count.c \
+			ms_p_monitor_quotes.c \
+			ms_p_pipes.c \
+			ms_p_pipes_utils.c \
+			ms_p_pipes_quotes.c \
+			ms_p_stock.c \
+			ms_p_howmany.c \
+			ms_p_quotes.c \
+			ms_p_utils.c \
 			ms_pipes.c \
 			ms_redirections.c \
 			ms_r_utils.c \
 			ms_free.c \
+			ms_free_utils.c \
+			ms_utils.c \
 			ms_errors.c
 
 
