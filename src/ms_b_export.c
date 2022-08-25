@@ -6,7 +6,7 @@
 /*   By: mreymond <mreymond@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/20 10:43:17 by mreymond          #+#    #+#             */
-/*   Updated: 2022/08/13 09:57:30 by mreymond         ###   ########.fr       */
+/*   Updated: 2022/08/25 14:00:59 by mreymond         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -201,6 +201,7 @@ t_tab	*ft_export(t_tab *t, t_tprint tp)
 
 	i = 1;
 	j = 0;
+	vartab = NULL;
 	token = parsing_for_export(tp);
 	if (tab_len(token) == 1)
 		display_export(t->exp);
