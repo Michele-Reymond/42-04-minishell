@@ -6,7 +6,7 @@
 /*   By: mreymond <mreymond@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/20 10:48:46 by mreymond          #+#    #+#             */
-/*   Updated: 2022/08/13 21:59:22 by mreymond         ###   ########.fr       */
+/*   Updated: 2022/08/25 15:18:49 by mreymond         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -133,7 +133,7 @@ int			launch_cmds(char *cmd, t_tab *t);
 int			is_a_builtin(char *cmd);
 int			launch_builtins_with_redir(char *cmd, t_tab *t, int fd, int std);
 int			launch_builtins_with_doors(char *cmd, t_tab *t, t_doors doors);
-void		rl_replace_line (const char *text, int clear_undo);
+void		rl_replace_line(const char *text, int clear_undo);
 void		rl_redisplay (void);
 char		**tokenize(char *buff);
 

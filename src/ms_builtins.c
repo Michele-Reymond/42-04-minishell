@@ -6,7 +6,7 @@
 /*   By: mreymond <mreymond@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/27 13:06:22 by mreymond          #+#    #+#             */
-/*   Updated: 2022/08/13 22:17:18 by mreymond         ###   ########.fr       */
+/*   Updated: 2022/08/25 15:27:40 by mreymond         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -510,7 +510,7 @@ t_tprint split_pipes_phase_1(t_tprint tp)
 	tmp = add_to_tab(last.tab, "");
 	tabfree(last.tab);
 	last.tab = tmp;
-	last.tab[tab_len(tmp) - 1] = NULL;
+	last.tab[tab_len(tmp)] = NULL;
 	return (last);
 }
 
