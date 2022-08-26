@@ -6,7 +6,7 @@
 /*   By: mreymond <mreymond@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/09 10:50:43 by mreymond          #+#    #+#             */
-/*   Updated: 2022/08/26 15:41:21 by mreymond         ###   ########.fr       */
+/*   Updated: 2022/08/26 16:32:33 by mreymond         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,8 @@ void	launch_child_in_set(t_redir r, int tmpfile)
 {
 	char	*input;
 
-	while ((input = readline("> ")) != NULL)
+	input = readline("> ");
+	while (input != NULL)
 	{
 		if (strlen(input) > 0)
 		{
@@ -26,6 +27,7 @@ void	launch_child_in_set(t_redir r, int tmpfile)
 			write(tmpfile, "\n", 1);
 		}
 		free(input);
+		input = readline("> ");
 	}
 	exit(0);
 }

@@ -6,7 +6,7 @@
 /*   By: mreymond <mreymond@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/09 10:50:43 by mreymond          #+#    #+#             */
-/*   Updated: 2022/08/26 15:36:16 by mreymond         ###   ########.fr       */
+/*   Updated: 2022/08/26 16:33:17 by mreymond         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,9 +25,9 @@ void	launch_heredoc_with_stop(int tmpfile, char *stop)
 				break ;
 			write(tmpfile, input, ft_strlen(input));
 			write(tmpfile, "\n", 1);
-			input = readline("> ");
 		}
 		free(input);
+		input = readline("> ");
 	}
 	close(tmpfile);
 	exit(0);

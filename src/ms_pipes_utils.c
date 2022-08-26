@@ -6,7 +6,7 @@
 /*   By: mreymond <mreymond@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/06 11:15:36 by mreymond          #+#    #+#             */
-/*   Updated: 2022/08/26 15:28:08 by mreymond         ###   ########.fr       */
+/*   Updated: 2022/08/26 16:41:48 by mreymond         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,9 +40,9 @@ void	check_files_needs(char *cmd)
 	if (r[0].redir[0] == '<' && ft_strlen(r[0].redir) == 1)
 	{
 		if (access(r[0].dest, F_OK) != 0)
-			printf("minishell: %s : %s \n", r[0].dest,  strerror(errno));
+			printf("minishell: %s : %s \n", r[0].dest, strerror(errno));
 		else if (access(r[0].dest, R_OK) != 0)
-			printf("minishell: %s : %s \n", r[0].dest,  strerror(errno));
+			printf("minishell: %s : %s \n", r[0].dest, strerror(errno));
 	}
 	free_all_t_redirs(r, tab_len(newcmds));
 	tabfree(newcmds);

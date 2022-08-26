@@ -6,7 +6,7 @@
 /*   By: mreymond <mreymond@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/20 11:38:04 by mreymond          #+#    #+#             */
-/*   Updated: 2022/08/26 15:18:51 by mreymond         ###   ########.fr       */
+/*   Updated: 2022/08/26 16:39:59 by mreymond         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,7 +60,7 @@ char	*adding_quotes(t_tprint tp, int i)
 	return (quoted);
 }
 
-char	 *join_strings(t_tprint tp, int pos, int start)
+char	*join_strings(t_tprint tp, int pos, int start)
 {
 	int		i;
 	char	*tmp2;

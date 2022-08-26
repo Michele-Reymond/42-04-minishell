@@ -6,7 +6,7 @@
 /*   By: mreymond <mreymond@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/27 11:28:42 by mreymond          #+#    #+#             */
-/*   Updated: 2022/08/26 15:10:30 by mreymond         ###   ########.fr       */
+/*   Updated: 2022/08/26 16:37:14 by mreymond         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -106,7 +106,6 @@ char	**update_var(char **old, t_var var, int pos, bool quotes)
 	{
 		// VR. mise en commentaire
 		//printf("%s\n",old[i]);
-
 		if (!ft_strncmp(old[i], var.key, ft_strlen(var.key)))
 		{
 			if (quotes)

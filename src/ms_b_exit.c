@@ -6,13 +6,13 @@
 /*   By: mreymond <mreymond@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/20 13:24:57 by mreymond          #+#    #+#             */
-/*   Updated: 2022/08/26 14:43:18 by mreymond         ###   ########.fr       */
+/*   Updated: 2022/08/26 16:42:11 by mreymond         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-char *status_conversion(char *cmd, char *symbol)
+char	*status_conversion(char *cmd, char *symbol)
 {
 	int		len;
 	char	*tmp;

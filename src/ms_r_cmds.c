@@ -6,7 +6,7 @@
 /*   By: mreymond <mreymond@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/09 10:50:43 by mreymond          #+#    #+#             */
-/*   Updated: 2022/08/26 15:32:08 by mreymond         ###   ########.fr       */
+/*   Updated: 2022/08/26 16:36:26 by mreymond         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,9 +49,9 @@ char	**splitting_r_tp(t_tprint tp)
 	last = new_tab();
 	while (tp.tab[i] != NULL)
 	{
-		if((how_many_in_str(tp.tab[i], '>') > 0
-			|| how_many_in_str(tp.tab[i], '<') > 0) && (tp.print[i + 1] == 2 
-			|| tp.print[i + 1] == 5) && ft_strlen(tp.tab[i]) > 1)
+		if ((how_many_in_str(tp.tab[i], '>') > 0
+				|| how_many_in_str(tp.tab[i], '<') > 0) && (tp.print[i + 1] == 2
+				|| tp.print[i + 1] == 5) && ft_strlen(tp.tab[i]) > 1)
 		{
 			tmp = multiredir_split(last, tp.tab[i]);
 			tabfree(last);
@@ -68,11 +68,11 @@ char	**splitting_r_tp(t_tprint tp)
 	return (last);
 }
 
-char **a_redir_pro_cmd(char *cmd)
+char	**a_redir_pro_cmd(char *cmd)
 {
-	t_tprint tp;
-	char **splitted;
-	char **new;
+	t_tprint	tp;
+	char		**splitted;
+	char		**new;
 
 	tp = parsing_master(cmd);
 	splitted = splitting_r_tp(tp);

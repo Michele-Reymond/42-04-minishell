@@ -6,7 +6,7 @@
 /*   By: mreymond <mreymond@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/09 10:50:43 by mreymond          #+#    #+#             */
-/*   Updated: 2022/08/26 15:32:35 by mreymond         ###   ########.fr       */
+/*   Updated: 2022/08/26 16:38:56 by mreymond         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,7 +30,7 @@ void	read_heredoc(char *cmd)
 	launch_heredoc(r[i].dest);
 }
 
-int is_heredoc(char *cmd)
+int	is_heredoc(char *cmd)
 {
 	int		*nbr;
 	int		ret;

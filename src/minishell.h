@@ -6,7 +6,7 @@
 /*   By: mreymond <mreymond@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/20 10:48:46 by mreymond          #+#    #+#             */
-/*   Updated: 2022/08/26 14:44:14 by mreymond         ###   ########.fr       */
+/*   Updated: 2022/08/26 16:29:34 by mreymond         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,6 +40,7 @@
 # define ERRORS_EXIT_ARGS "too many arguments\n"
 # define ERRORS_NUM "numeric argument required\n"
 # define ERRORS_IDENTIFIER "not a valid identifier\n"
+// # define NULL 0
 
 // ______ Global variable_______
 int	g_exit_status;

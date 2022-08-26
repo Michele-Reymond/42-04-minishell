@@ -6,7 +6,7 @@
 /*   By: mreymond <mreymond@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/09 10:50:43 by mreymond          #+#    #+#             */
-/*   Updated: 2022/08/26 15:37:23 by mreymond         ###   ########.fr       */
+/*   Updated: 2022/08/26 16:37:50 by mreymond         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,7 @@ void	launch_b_child(char *cmd, t_tab *t, int fd, int std)
 	launch_cmds(cmd, t);
 	if (t->env != NULL)
 		tabfree(t->env);
-    if (t->exp != NULL)
+	if (t->exp != NULL)
 		tabfree(t->exp);
 	close(fd);
 	exit (0);

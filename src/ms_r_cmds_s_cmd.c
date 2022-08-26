@@ -6,7 +6,7 @@
 /*   By: mreymond <mreymond@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/09 10:50:43 by mreymond          #+#    #+#             */
-/*   Updated: 2022/08/26 15:30:06 by mreymond         ###   ########.fr       */
+/*   Updated: 2022/08/26 16:39:21 by mreymond         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,7 @@ char	*find_cmd_sc(char **tab, int *i)
 	char	*tmp;
 
 	cmd = ft_strdup("");
-	while(tab[*i] != NULL && !(tab[*i][0] == '>' && ft_strlen(tab[*i]) == 1)
+	while (tab[*i] != NULL && !(tab[*i][0] == '>' && ft_strlen(tab[*i]) == 1)
 		&& !(tab[*i][0] == '>' && tab[*i][1] == '>'
 		&& ft_strlen(tab[*i]) == 2)
 		&& !(tab[*i][0] == '<' && ft_strlen(tab[*i]) == 1)
@@ -43,7 +43,7 @@ char	*find_redir_part_sc(int *i, char **tab)
 	char	*tmp;
 
 	redirstr = ft_strdup("");
-	while(tab[*i] != NULL && !(tab[*i][0] == '>' && ft_strlen(tab[*i]) == 1)
+	while (tab[*i] != NULL && !(tab[*i][0] == '>' && ft_strlen(tab[*i]) == 1)
 		&& !(tab[*i][0] == '>' && tab[*i][1] == '>' && ft_strlen(tab[*i]) == 2)
 		&& !(tab[*i][0] == '<' && ft_strlen(tab[*i]) == 1)
 		&& !(tab[*i][0] == '<' && tab[*i][1] == '<' && ft_strlen(tab[*i]) == 2))
