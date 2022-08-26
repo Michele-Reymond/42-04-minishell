@@ -6,15 +6,15 @@
 /*   By: mreymond <mreymond@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/09 10:50:43 by mreymond          #+#    #+#             */
-/*   Updated: 2022/06/09 11:08:17 by mreymond         ###   ########.fr       */
+/*   Updated: 2022/08/26 15:41:49 by mreymond         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-t_redir dup_redir(t_redir r)
+t_redir	dup_redir(t_redir r)
 {
-	t_redir new;
+	t_redir	new;
 
 	new.index = r.index;
 	new.dest = ft_strdup(r.dest);
@@ -23,12 +23,12 @@ t_redir dup_redir(t_redir r)
 	return (new);
 }
 
-char *find_cmd(char **tab)
+char	*find_cmd(char **tab)
 {
-	char *cmd;
-	char *tmp;
-	char **next;
-	int i;
+	char	*cmd;
+	char	*tmp;
+	char	**next;
+	int		i;
 
 	i = 0;
 	next = tab;
@@ -47,10 +47,10 @@ char *find_cmd(char **tab)
 	return (cmd);
 }
 
-char *join_cmd(char *cmd, char *next)
+char	*join_cmd(char *cmd, char *next)
 {
-	char *tmp;
-	char *joined;
+	char	*tmp;
+	char	*joined;
 
 	if (*cmd != '\0')
 		tmp = ft_strjoin(cmd, " ");

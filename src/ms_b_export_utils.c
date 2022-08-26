@@ -1,31 +1,31 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ms_b_export.c                                      :+:      :+:    :+:   */
+/*   ms_b_export_utils.c                                :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: mreymond <mreymond@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/20 10:43:17 by mreymond          #+#    #+#             */
-/*   Updated: 2022/08/25 14:00:59 by mreymond         ###   ########.fr       */
+/*   Updated: 2022/08/26 14:45:51 by mreymond         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-void export_errors(t_var var, int *i, int *j)
+void	export_errors(t_var var, int *i, int *j)
 {
 	printf(MINISHELL ERRORS_EXP "\'%s\': ", var.key);
 	printf(ERRORS_IDENTIFIER);
-	exit_status = 1;
+	g_exit_status = 1;
 	(*j)++;
 	(*i)--;
 }
 
-void export_increase(int *i, int *j)
+void	export_increase(int *i, int *j)
 {
 	(*j)++;
 	(*i)--;
-	exit_status = 0;
+	g_exit_status = 0;
 }
 
 char	**update_env(char **old, t_var var, bool quotes)
@@ -44,7 +44,7 @@ char	**update_env(char **old, t_var var, bool quotes)
 }
 
 // compter les commandes pour export
-int spaces_count(t_tprint tp)
+int	spaces_count(t_tprint tp)
 {
 	int		i;
 	int		nbr;

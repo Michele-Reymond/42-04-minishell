@@ -6,7 +6,7 @@
 /*   By: mreymond <mreymond@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/27 13:06:22 by mreymond          #+#    #+#             */
-/*   Updated: 2022/08/25 17:09:15 by mreymond         ###   ########.fr       */
+/*   Updated: 2022/08/26 15:15:10 by mreymond         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,7 @@ int	monitor(char *cmd, t_tab *t)
 {
 	t_parse		p;
 	t_tprint	tp;
-	
+
 	tp = parsing_master(cmd);
 	ft_free(cmd);
 	if (check_closed_quotes(tp))
@@ -43,7 +43,7 @@ int	monitor(char *cmd, t_tab *t)
 
 int	launch_cmds(char *cmd, t_tab *t)
 {
-	t_tprint tp;
+	t_tprint	tp;
 
 	tp = parsing_master(cmd);
 	if (!ft_strncmp(cmd, "exit", 4) && (cmd[4] == ' ' || cmd[4] == '\0'))
@@ -66,8 +66,7 @@ int	launch_cmds(char *cmd, t_tab *t)
 		return (1);
 	}
 	free_tp(tp);
-	if (t->p.cmds != NULL)
-		tabfree(t->p.cmds);
+	tabfree(t->p.cmds);
 	return (0);
 }
 
@@ -91,7 +90,7 @@ int	is_a_builtin(char *cmd)
 
 int	launch_builtins_with_redir(char *cmd, t_tab *t, int fd, int std)
 {
-	int ret;
+	int	ret;
 
 	dup2(fd, std);
 	ret = launch_cmds(cmd, t);
@@ -100,7 +99,7 @@ int	launch_builtins_with_redir(char *cmd, t_tab *t, int fd, int std)
 
 int	launch_builtins_with_doors(char *cmd, t_tab *t, t_doors doors)
 {
-	int ret;
+	int	ret;
 
 	dup2(doors.in, STDIN_FILENO);
 	dup2(doors.out, STDOUT_FILENO);

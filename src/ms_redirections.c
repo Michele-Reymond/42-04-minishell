@@ -6,17 +6,17 @@
 /*   By: mreymond <mreymond@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/06 15:58:02 by mreymond          #+#    #+#             */
-/*   Updated: 2022/08/13 10:10:43 by mreymond         ###   ########.fr       */
+/*   Updated: 2022/08/26 15:43:19 by mreymond         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-void fork_and_launch_builtin_doors(char *cmd, t_tab *t, t_doors doors)
+void	fork_and_launch_builtin_doors(char *cmd, t_tab *t, t_doors doors)
 {
-	pid_t	pid;
-	int		status;
-	t_tprint tp;
+	pid_t		pid;
+	int			status;
+	t_tprint	tp;
 
 	tp = parsing_master(cmd);
 	pid = fork();
@@ -31,14 +31,16 @@ void fork_and_launch_builtin_doors(char *cmd, t_tab *t, t_doors doors)
 		close(doors.out);
 		exit (0);
 	}
-	else 
+	else
 	{
 		waitpid(pid, &status, 0);
 		if (!ft_strncmp(cmd, "cd", 2) && (cmd[2] == ' ' || cmd[2] == '\0'))
 			t = ms_b_cd(tp, t);
-		else if (!ft_strncmp(cmd, "export", 6) && (cmd[6] == ' ' || cmd[6] == '\0'))
+		else if (!ft_strncmp(cmd, "export", 6)
+			&& (cmd[6] == ' ' || cmd[6] == '\0'))
 			t = ft_export(t, tp);
-		else if (!ft_strncmp(cmd, "unset", 5) && (cmd[5] == ' ' || cmd[5] == '\0'))
+		else if (!ft_strncmp(cmd, "unset", 5)
+			&& (cmd[5] == ' ' || cmd[5] == '\0'))
 			t = unset_var(t, tp.tab);
 		free(cmd);
 		free_tp(tp);
@@ -46,12 +48,12 @@ void fork_and_launch_builtin_doors(char *cmd, t_tab *t, t_doors doors)
 	}
 }
 
-void launch_multiple_redir(t_redir *r, t_tab *t, char **cmds)
+void	launch_multiple_redir(t_redir *r, t_tab *t, char **cmds)
 {
-	t_doors doors;
-	char *newcmd;
-	char *cmd;
-	int i;
+	t_doors		doors;
+	char		*newcmd;
+	char		*cmd;
+	int			i;
 
 	i = 0;
 	doors.in = STDIN_FILENO;
@@ -78,11 +80,11 @@ void launch_multiple_redir(t_redir *r, t_tab *t, char **cmds)
 		unlink(".heredoc");
 }
 
-void launch_multiple_redir_in_pipes(t_redir *r, t_tab *t, char **cmds)
+void	launch_multiple_redir_in_pipes(t_redir *r, t_tab *t, char **cmds)
 {
-	t_doors doors;
-	char *newcmd;
-	int i;
+	t_doors	doors;
+	char	*newcmd;
+	int		i;
 
 	i = 0;
 	doors = init_doors();
@@ -110,13 +112,13 @@ void launch_multiple_redir_in_pipes(t_redir *r, t_tab *t, char **cmds)
 }
 
 // this function is used in pipes with redir function
-void    launching_redirs(char *cmd, t_tab *t)
+void	launching_redirs(char *cmd, t_tab *t)
 {
-	t_redir *r;
-	t_redir redir;
-	char    **newcmds;
+	t_redir	*r;
+	t_redir	redir;
+	char	**newcmds;
 	char	**tmp;
-	int     len;
+	int		len;
 
 	if (nbr_of_redir(cmd) == 0)
 	{
@@ -147,12 +149,12 @@ void    launching_redirs(char *cmd, t_tab *t)
 
 // launch cmds with redirections symbol
 // this function is used in monitor
-void    launch_with_redir(t_parse p, t_tab *t)
+void	launch_with_redir(t_parse p, t_tab *t)
 {
-	t_redir *r;
-	t_redir redir;
-	char    **newcmds;
-	int     len;
+	t_redir	*r;
+	t_redir	redir;
+	char	**newcmds;
+	int		len;
 
 	if (tab_len(p.cmds) == 1 && p.redir <= 1)
 	{

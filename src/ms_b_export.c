@@ -6,7 +6,7 @@
 /*   By: mreymond <mreymond@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/20 10:43:17 by mreymond          #+#    #+#             */
-/*   Updated: 2022/08/25 14:00:59 by mreymond         ###   ########.fr       */
+/*   Updated: 2022/08/26 14:54:24 by mreymond         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,11 +28,11 @@ void	display_export(char **env)
 	}
 }
 
-char *export_without_spaces(int *i, t_tprint tp)
+char	*export_without_spaces(int *i, t_tprint tp)
 {
-	char *new;
-	char *joined;
-	char *tmp;
+	char	*new;
+	char	*joined;
+	char	*tmp;
 
 	joined = ft_strdup(tp.tab[*i]);
 	(*i)++;
@@ -48,12 +48,12 @@ char *export_without_spaces(int *i, t_tprint tp)
 	return (new);
 }
 
-char **parsing_for_export(t_tprint tp)
+char	**parsing_for_export(t_tprint tp)
 {
-	int i;
-	int j;
-	char **new;
-	int tablen;
+	int		i;
+	int		j;
+	char	**new;
+	int		tablen;
 
 	i = 0;
 	j = 0;
@@ -73,7 +73,17 @@ char **parsing_for_export(t_tprint tp)
 	return (new);
 }
 
-
+void	export_mechanic(int *i, int *j, t_var *vartab, t_tab *t)
+{
+	if (vartab[*j].status == 0 && !(vartab[*j].key[0] == '_'
+			&& ft_strlen(vartab[*j].key) == 1))
+		update_with_new_var(t, vartab[*j], i, j);
+	else if (!(vartab[*j].key[0] == '_'
+			&& ft_strlen(vartab[*j].key) == 1))
+		export_errors(vartab[*j], i, j);
+	else
+		export_increase(i, j);
+}
 
 t_tab	*ft_export(t_tab *t, t_tprint tp)
 {
@@ -92,15 +102,7 @@ t_tab	*ft_export(t_tab *t, t_tprint tp)
 	{
 		vartab = create_vartab(&i, token);
 		while (i > 1)
-		{
-			if (vartab[j].status == 0 && !(vartab[j].key[0] == '_' 
-					&& ft_strlen(vartab[j].key) == 1))
-				update_with_new_var(t, vartab[j], &i, &j);
-			else if (!(vartab[j].key[0] == '_' && ft_strlen(vartab[j].key) == 1))
-				export_errors(vartab[j], &i, &j);
-			else
-				export_increase(&i, &j);
-		}
+			export_mechanic(&i, &j, vartab, t);
 	}
 	free_vartab(vartab, tab_len(token) - 1);
 	tabfree(token);

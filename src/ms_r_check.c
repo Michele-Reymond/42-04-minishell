@@ -1,18 +1,18 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ms_r_utils.c                                       :+:      :+:    :+:   */
+/*   ms_r_check.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: mreymond <mreymond@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/09 10:50:43 by mreymond          #+#    #+#             */
-/*   Updated: 2022/06/09 11:08:17 by mreymond         ###   ########.fr       */
+/*   Updated: 2022/08/26 15:28:56 by mreymond         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-int nbr_of_redir(char *cmd)
+int	nbr_of_redir(char *cmd)
 {
 	int		*nbr1;
 	int		*nbr2;
@@ -26,7 +26,7 @@ int nbr_of_redir(char *cmd)
 	return (total);
 }
 
-void    which_redir(t_redir *r, char *cmd)
+void	which_redir(t_redir *r, char *cmd)
 {
 	int		*nbr1;
 	int		*nbr2;
@@ -37,7 +37,7 @@ void    which_redir(t_redir *r, char *cmd)
 		r->redir = ft_strdup("<");
 	else if (nbr2[1] > 0)
 		r->redir = ft_strdup("<<");
-	else if (nbr1[0] > 0 )
+	else if (nbr1[0] > 0)
 		r->redir = ft_strdup(">");
 	else if (nbr1[1] > 0)
 		r->redir = ft_strdup(">>");

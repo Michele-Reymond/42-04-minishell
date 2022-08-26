@@ -6,7 +6,7 @@
 /*   By: mreymond <mreymond@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/20 13:24:57 by mreymond          #+#    #+#             */
-/*   Updated: 2022/08/25 17:12:49 by mreymond         ###   ########.fr       */
+/*   Updated: 2022/08/26 14:43:18 by mreymond         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,17 +14,17 @@
 
 char *status_conversion(char *cmd, char *symbol)
 {
-	int len;
-	char *tmp;
-	char *tmp2;
-	char *new;
-	char *status;
+	int		len;
+	char	*tmp;
+	char	*tmp2;
+	char	*new;
+	char	*status;
 
 	len = ft_strlen(cmd) - ft_strlen(symbol);
 	tmp = malloc(sizeof(char) * (len + 2));
 	ft_bzero(tmp, len + 2);
 	ft_strlcat(tmp, cmd, len + 1);
-	status = ft_itoa(exit_status);
+	status = ft_itoa(g_exit_status);
 	tmp2 = ft_strjoin(tmp, status);
 	if (symbol + 2)
 	{
@@ -39,9 +39,9 @@ char *status_conversion(char *cmd, char *symbol)
 	return (new);
 }
 
-char *multi_status_conv(char *tmp, char *old, char *symbol)
+char	*multi_status_conv(char *tmp, char *old, char *symbol)
 {
-	char *new;
+	char	*new;
 
 	if (symbol != NULL)
 		new = ft_strjoin(old, tmp);
@@ -51,13 +51,12 @@ char *multi_status_conv(char *tmp, char *old, char *symbol)
 }
 
 // covertir le $? dans la commande
-char *exit_status_convert(char *cmd)
+char	*exit_status_convert(char *cmd, char *symbol)
 {
-	char *new;
-	char *tmp;
-	char *tmp2;
-	char *tmp3;
-	char *symbol;
+	char	*new;
+	char	*tmp;
+	char	*tmp2;
+	char	*tmp3;
 
 	symbol = ft_strnstr(cmd, "$?", ft_strlen(cmd) + 1);
 	if (symbol != NULL)
@@ -81,58 +80,58 @@ char *exit_status_convert(char *cmd)
 	return (new);
 }
 
-void exit_and_set_status(t_tab *t, char **cmds)
+void	exit_and_set_status(t_tab *t, char **cmds)
 {
-	long long   e_code;
+	long long	e_code;
 
 	e_code = ft_atoll(cmds[1]);
 	if (!(e_code - 1 > -9223372036854775807
-		&& e_code + 1 < 9223372036854775807))
+			&& e_code + 1 < 9223372036854775807))
 	{
 		printf(MINISHELL ERRORS_EXIT "%s: " ERRORS_NUM, cmds[1]);
-		exit_status = 255;
+		g_exit_status = 255;
 	}
 	else if (e_code + 1 == -9223372036854775807)
-		exit_status = 0;
+		g_exit_status = 0;
 	else if (cmds[1][0] == '-' && !args_if_alpha(&cmds[1][1]))
-		exit_status = 256 + (e_code % 256);
-	else if (!args_if_alpha(cmds[1]) 
-			|| (!args_if_alpha(&cmds[1][1]) && cmds[1][0] == '+'))
-		exit_status = e_code % 256;
+		g_exit_status = 256 + (e_code % 256);
+	else if (!args_if_alpha(cmds[1])
+		|| (!args_if_alpha(&cmds[1][1]) && cmds[1][0] == '+'))
+		g_exit_status = e_code % 256;
 	else
 	{
-		exit_status = 1;
+		g_exit_status = 1;
 		printf(MINISHELL ERRORS_EXIT "%s: " ERRORS_NUM, cmds[1]);
 	}
 	free_tabs(t, cmds);
-	exit(exit_status);
+	exit(g_exit_status);
 }
 
 //lancement de la commande exit et définition du status de sortie
-void ft_exit(char *cmd, t_tab *t)
+void	ft_exit(char *cmd, t_tab *t)
 {
-    char        **cmds;
-    char        **tmp;
-    int         len;
+	char	**cmds;
+	char	**tmp;
+	int		len;
 
-    tmp = tokenize(cmd);
-    cmds = clean_quotes_token(tmp, t->p);
+	tmp = tokenize(cmd);
+	cmds = clean_quotes_token(tmp, t->p);
 	tabfree(tmp);
-    len = tab_len(cmds);
-    printf(EXIT);
-    if (len == 1)
+	len = tab_len(cmds);
+	printf(EXIT);
+	if (len == 1)
 	{
 		free_t_tab(t);
 		tabfree(cmds);
-        exit(exit_status);
+		exit(g_exit_status);
 	}
-    else if (len > 2)
-    {
-        printf(MINISHELL ERRORS_EXIT ERRORS_EXIT_ARGS);
+	else if (len > 2)
+	{
+		printf(MINISHELL ERRORS_EXIT ERRORS_EXIT_ARGS);
 		tabfree(cmds);
-        exit_status = 1;
-        return ;
-    }
-    else if (len == 2)
+		g_exit_status = 1;
+		return ;
+	}
+	else if (len == 2)
 		exit_and_set_status(t, cmds);
 }

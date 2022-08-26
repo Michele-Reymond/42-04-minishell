@@ -6,13 +6,13 @@
 /*   By: mreymond <mreymond@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/20 11:38:04 by mreymond          #+#    #+#             */
-/*   Updated: 2022/08/25 16:59:39 by mreymond         ###   ########.fr       */
+/*   Updated: 2022/08/26 15:20:44 by mreymond         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-t_tprint init_splitted_pipes(t_tprint tp)
+t_tprint	init_splitted_pipes(t_tprint tp)
 {
 	int			pipes;
 	t_tprint	last;
@@ -24,7 +24,7 @@ t_tprint init_splitted_pipes(t_tprint tp)
 	return (last);
 }
 
-t_tprint split_pipes_phase_1(t_tprint tp)
+t_tprint	split_pipes_phase_1(t_tprint tp)
 {
 	int			i;
 	int			j;
@@ -36,9 +36,9 @@ t_tprint split_pipes_phase_1(t_tprint tp)
 	last = init_splitted_pipes(tp);
 	while (tp.tab[i] != NULL)
 	{
-		if (how_many_in_str(tp.tab[i], '|') > 0 
-				&& (tp.print[i + 1] == 2 || tp.print[i + 1] == 5) 
-				&& ft_strlen(tp.tab[i]) > 1)
+		if (how_many_in_str(tp.tab[i], '|') > 0
+			&& (tp.print[i + 1] == 2 || tp.print[i + 1] == 5)
+			&& ft_strlen(tp.tab[i]) > 1)
 			j = multipipes_split(tp, &last, i, j);
 		else
 			j = onepipes_split(tp, &last, i, j);
@@ -51,31 +51,31 @@ t_tprint split_pipes_phase_1(t_tprint tp)
 	return (last);
 }
 
-int check_doubles_pipes(t_tprint tp)
+int	check_doubles_pipes(t_tprint tp)
 {
-	int i;
+	int	i;
 
 	i = 0;
 	while (tp.tab[i] != NULL)
 	{
-		if (tp.tab[i][0] == '|' && tp.tab[i + 1][0] == '|' 
+		if (tp.tab[i][0] == '|' && tp.tab[i + 1][0] == '|'
 			&& (tp.print[i + 2] == 2 || tp.print[i + 1] == 5)
 			&& (tp.print[i + 2] == 2 || tp.print[i + 1] == 5))
-			{
-				printf(ERROR_UNEXPECTED_TOKEN);
-				if (tp.tab[i + 2][0] == '|')
-					printf("\'||\'\n");
-				else
-					printf("\'|\'\n");
-				exit_status = 258;
-				return (1);
-			}
+		{
+			printf(ERROR_UNEXPECTED_TOKEN);
+			if (tp.tab[i + 2][0] == '|')
+				printf("\'||\'\n");
+			else
+				printf("\'|\'\n");
+			g_exit_status = 258;
+			return (1);
+		}
 		i++;
 	}
 	return (0);
 }
 
-char **split_pipes_phase_2(t_tprint splitted, int pipes)
+char	**split_pipes_phase_2(t_tprint splitted, int pipes)
 {
 	int		i;
 	int		j;
@@ -89,8 +89,8 @@ char **split_pipes_phase_2(t_tprint splitted, int pipes)
 	while (splitted.tab[i] != NULL)
 	{
 		start = i;
-		while (splitted.tab[i] != NULL && !(splitted.tab[i][0] == '|' 
-				&& ft_strlen(splitted.tab[i]) == 1))
+		while (splitted.tab[i] != NULL && !(splitted.tab[i][0] == '|'
+			&& ft_strlen(splitted.tab[i]) == 1))
 			i++;
 		if (i > start)
 		{
@@ -104,7 +104,7 @@ char **split_pipes_phase_2(t_tprint splitted, int pipes)
 	return (new);
 }
 
-char **split_pipes(t_tprint tp, int pipes)
+char	**split_pipes(t_tprint tp, int pipes)
 {
 	t_tprint	splitted;
 	char		**new;

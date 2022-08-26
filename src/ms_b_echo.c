@@ -6,7 +6,7 @@
 /*   By: mreymond <mreymond@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/20 10:43:17 by mreymond          #+#    #+#             */
-/*   Updated: 2022/08/25 16:52:08 by mreymond         ###   ########.fr       */
+/*   Updated: 2022/08/26 14:39:21 by mreymond         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,10 +16,10 @@
 // on commance donc l'index de print à 2
 char	**echo_vars(char **tab, t_tab t, int nbr, int *print)
 {
-	int i;
-	int j;
-	char **vars;
-	char *tmp;
+	int		i;
+	int		j;
+	char	**vars;
+	char	*tmp;
 
 	i = 0;
 	j = 0;
@@ -44,9 +44,9 @@ char	**echo_vars(char **tab, t_tab t, int nbr, int *print)
 
 t_echo	echo_parsing(char **tab, t_tab t, int *print)
 {
-	t_echo elem;
-	int nbr_vars;
-	int i;
+	t_echo	elem;
+	int		nbr_vars;
+	int		i;
 
 	i = 1;
 	if (!ft_strncmp(tab[1], "-n", 2) && ft_strlen(tab[1]) == 2)
@@ -72,8 +72,8 @@ t_echo	echo_parsing(char **tab, t_tab t, int *print)
 
 void	echo(t_tprint tp, t_tab t)
 {
-	t_echo elem;
-	
+	t_echo	elem;
+
 	elem.flag = '\0';
 	if (tab_len(tp.tab) < 2)
 		elem.nbr_args = 0;
@@ -90,5 +90,5 @@ void	echo(t_tprint tp, t_tab t)
 	}
 	if (!(tab_len(tp.tab) < 2))
 		free_elem(elem);
-	exit_status = 0;
+	g_exit_status = 0;
 }

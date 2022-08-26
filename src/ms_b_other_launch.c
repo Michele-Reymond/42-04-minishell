@@ -1,33 +1,42 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ms_b_other.c                                       :+:      :+:    :+:   */
+/*   ms_b_other_launch.c                                :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: mreymond <mreymond@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/26 12:37:07 by vroch             #+#    #+#             */
-/*   Updated: 2022/08/10 12:08:11 by mreymond         ###   ########.fr       */
+/*   Updated: 2022/08/26 14:59:54 by mreymond         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
 // lancer cette comande dans les pipes
-void other_basic(char *buf, t_tab *t)
+void	other_basic(char *buf, t_tab *t)
 {
 	char	**paths;
-	
+
 	paths = ft_split(getenv("PATH"), ':');
 	launch_child_process(buf, paths, t->env);
 	tabfree(paths);
 }
 
+void	other_parent_process(pid_t	pid, char **paths, t_tab *t)
+{
+	int		status;
+
+	waitpid(pid, &status, 0);
+	status_of_child(status);
+	tabfree(t->p.cmds);
+	tabfree(paths);
+}
+
 // lancer cette comande si commande seule sans redirections
-void other_with_fork(char *buf, t_tab *t)
+void	other_with_fork(char *buf, t_tab *t)
 {
 	char	**paths;
 	pid_t	pid;
-	int		status;
 
 	paths = ft_split(getenv("PATH"), ':');
 	pid = fork();
@@ -44,20 +53,15 @@ void other_with_fork(char *buf, t_tab *t)
 		tabfree(paths);
 		exit (0);
 	}
-	else {
-		waitpid(pid, &status, 0);
-		status_of_child(status);
-		tabfree(t->p.cmds);
-		tabfree(paths);
-	}
+	else
+		other_parent_process(pid, paths, t);
 }
 
 // lancer cette comande si commande seule avec redirections
-void other_redir_and_fork(char *buf, t_tab *t, int fd, int std)
+void	other_redir_and_fork(char *buf, t_tab *t, int fd, int std)
 {
 	char	**paths;
 	pid_t	pid;
-	int		status;
 
 	paths = ft_split(getenv("PATH"), ':');
 	pid = fork();
@@ -75,21 +79,15 @@ void other_redir_and_fork(char *buf, t_tab *t, int fd, int std)
 		tabfree(t->p.cmds);
 		exit (0);
 	}
-	else 
-	{
-		waitpid(pid, &status, 0);
-		status_of_child(status);
-		tabfree(t->p.cmds);
-		tabfree(paths);
-	}
+	else
+		other_parent_process(pid, paths, t);
 }
 
 // lancer cette comande si commande seule avec redirections
-void other_doors_and_fork(char *buf, t_tab *t, t_doors doors)
+void	other_doors_and_fork(char *buf, t_tab *t, t_doors doors)
 {
 	char	**paths;
 	pid_t	pid;
-	int		status;
 
 	paths = ft_split(getenv("PATH"), ':');
 	pid = fork();
@@ -107,10 +105,6 @@ void other_doors_and_fork(char *buf, t_tab *t, t_doors doors)
 		tabfree(t->p.cmds);
 		tabfree(paths);
 	}
-	else {
-		waitpid(pid, &status, 0);
-		status_of_child(status);
-		tabfree(t->p.cmds);
-		tabfree(paths);
-	}
+	else
+		other_parent_process(pid, paths, t);
 }

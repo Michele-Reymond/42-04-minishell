@@ -1,29 +1,31 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ms_r_utils.c                                       :+:      :+:    :+:   */
+/*   ms_r_heredoc.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: mreymond <mreymond@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/09 10:50:43 by mreymond          #+#    #+#             */
-/*   Updated: 2022/06/09 11:08:17 by mreymond         ###   ########.fr       */
+/*   Updated: 2022/08/26 15:36:16 by mreymond         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-void launch_heredoc_with_stop(int tmpfile, char *stop)
+void	launch_heredoc_with_stop(int tmpfile, char *stop)
 {
-	char    *input;
+	char	*input;
 
-	while ((input = readline("> ")) != NULL) 
+	input = readline("> ");
+	while (input != NULL)
 	{
 		if (strlen(input) > 0)
 		{
 			if (!ft_strncmp(input, stop, ft_strlen(stop)))
-				break;
+				break ;
 			write(tmpfile, input, ft_strlen(input));
 			write(tmpfile, "\n", 1);
+			input = readline("> ");
 		}
 		free(input);
 	}
@@ -32,9 +34,9 @@ void launch_heredoc_with_stop(int tmpfile, char *stop)
 }
 
 // <<
-void launch_heredoc(char *stop)
+void	launch_heredoc(char *stop)
 {
-	int     tmpfile;
+	int		tmpfile;
 	pid_t	pid;
 	int		status;
 
@@ -56,9 +58,9 @@ void launch_heredoc(char *stop)
 }
 
 // <<
-void launch_in_d_in_pipe(t_tab *t, char *cmd)
+void	launch_in_d_in_pipe(t_tab *t, char *cmd)
 {
-	char    *newcmd;
+	char	*newcmd;
 
 	newcmd = ft_strjoin(cmd, " .heredoc");
 	if (launch_cmds(newcmd, t))
@@ -66,18 +68,18 @@ void launch_in_d_in_pipe(t_tab *t, char *cmd)
 	free(newcmd);
 }
 
-void launch_child_heredoc(char *cmd, t_redir r, int tmpfile, t_tab *t)
+void	launch_child_heredoc(char *cmd, t_redir r, int tmpfile, t_tab *t)
 {
-	char    *input;
-	char    *newcmd;
-	int     fd;
+	char	*input;
+	char	*newcmd;
+	int		fd;
 
-	while ((input = readline("> ")) != NULL) 
+	while ((input = readline("> ")) != NULL)
 	{
 		if (strlen(input) > 0)
 		{
 			if (!ft_strncmp(input, r.dest, ft_strlen(r.dest)))
-				break;
+				break ;
 			write(tmpfile, input, ft_strlen(input));
 			write(tmpfile, "\n", 1);
 		}
@@ -96,9 +98,9 @@ void launch_child_heredoc(char *cmd, t_redir r, int tmpfile, t_tab *t)
 }
 
 // <<
-void launch_in_d(t_redir r, t_tab *t, char *cmd)
+void	launch_in_d(t_redir r, t_tab *t, char *cmd)
 {
-	int     tmpfile;
+	int		tmpfile;
 	pid_t	pid;
 	int		status;
 
@@ -118,12 +120,12 @@ void launch_in_d(t_redir r, t_tab *t, char *cmd)
 	}
 	if (pid == 0)
 		launch_child_heredoc(cmd, r, tmpfile, t);
-	else 
+	else
 	{
 		waitpid(pid, &status, 0);
 		close(tmpfile);
 		tabfree(t->p.cmds);
-		free_t_redirs(r); 
+		free_t_redirs(r);
 		unlink(".heredoc");
 	}
 }

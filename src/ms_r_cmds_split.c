@@ -1,20 +1,20 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ms_r_utils.c                                       :+:      :+:    :+:   */
+/*   ms_r_cmds_split.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: mreymond <mreymond@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/09 10:50:43 by mreymond          #+#    #+#             */
-/*   Updated: 2022/06/09 11:08:17 by mreymond         ###   ########.fr       */
+/*   Updated: 2022/08/26 15:31:34 by mreymond         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-int how_many_splits_r(char *str)
+int	how_many_splits_r(char *str)
 {
-	int     nbr;
+	int		nbr;
 	int		*nbr1;
 	int		*nbr2;
 
@@ -26,9 +26,9 @@ int how_many_splits_r(char *str)
 	return (nbr);
 }
 
-char *copy_redir_in(char c, int *i)
+char	*copy_redir_in(char c, int *i)
 {
-	char *new;
+	char	*new;
 
 	if (c == '<')
 	{
@@ -40,9 +40,9 @@ char *copy_redir_in(char c, int *i)
 	return (new);
 }
 
-char *copy_redir_out(char c, int *i)
+char	*copy_redir_out(char c, int *i)
 {
-	char *new;
+	char	*new;
 
 	if (c == '>')
 	{
@@ -54,12 +54,12 @@ char *copy_redir_out(char c, int *i)
 	return (new);
 }
 
-char **split_out_r(char *str)
+char	**split_out_r(char *str)
 {
-	char **new;
-	int i;
-	int j;
-	int start;
+	char	**new;
+	int		i;
+	int		j;
+	int		start;
 
 	i = 0;
 	j = 0;

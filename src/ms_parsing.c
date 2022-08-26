@@ -6,13 +6,13 @@
 /*   By: mreymond <mreymond@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/20 11:38:04 by mreymond          #+#    #+#             */
-/*   Updated: 2022/08/25 16:08:16 by mreymond         ###   ########.fr       */
+/*   Updated: 2022/08/26 15:25:36 by mreymond         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-char *convert_var(int *k, int *i, int nbr_vars, char **vars)
+char	*convert_var(int *k, int *i, int nbr_vars, char **vars)
 {
 	char	*new;
 
@@ -27,30 +27,30 @@ char *convert_var(int *k, int *i, int nbr_vars, char **vars)
 	return (new);
 }
 
-char **check_varstr(char **tmp)
+char	**check_varstr(char **tmp)
 {
 	char	**new;
-	char 	**vars;
+	char	**vars;
 	int		i;
 	int		j;
 	int		k;
-	
+
 	i = 0;
-	j = 0;
-	new = malloc(sizeof(char *) * 
-		(how_many_in_tab(tmp, '$') + tab_len(tmp) + 1));
-	while (tmp[j] != NULL)
+	j = -1;
+	new = malloc(sizeof(char *)
+			* (how_many_in_tab(tmp, '$') + tab_len(tmp) + 1));
+	while (tmp[++j] != NULL)
 	{
 		k = 0;
 		if (ft_strchr(tmp[j], '$'))
 		{
 			vars = ft_split(tmp[j], '$');
 			while (vars[k] != NULL)
-				new[i] = convert_var(&k, &i, how_many_in_str(tmp[j], '$'), vars);
+				new[i] = convert_var(&k, &i,
+						how_many_in_str(tmp[j], '$'), vars);
 		}
 		else
 			new[i++] = ft_strdup(tmp[j]);
-		j++;
 	}
 	new[i] = NULL;
 	return (new);

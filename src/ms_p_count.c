@@ -6,16 +6,16 @@
 /*   By: mreymond <mreymond@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/20 11:38:04 by mreymond          #+#    #+#             */
-/*   Updated: 2022/08/25 17:02:57 by mreymond         ###   ########.fr       */
+/*   Updated: 2022/08/26 15:16:39 by mreymond         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-int count_pipes(t_tprint tp)
+int	count_pipes(t_tprint tp)
 {
-	int i;
-	int nbr;
+	int	i;
+	int	nbr;
 
 	i = 0;
 	nbr = 0;
@@ -28,10 +28,10 @@ int count_pipes(t_tprint tp)
 	return (nbr);
 }
 
-int count_doubles(t_tprint tp)
+int	count_doubles(t_tprint tp)
 {
-	int i;
-	int nbr;
+	int	i;
+	int	nbr;
 
 	i = 0;
 	nbr = 0;
@@ -44,10 +44,10 @@ int count_doubles(t_tprint tp)
 	return (nbr);
 }
 
-int count_singles(t_tprint tp)
+int	count_singles(t_tprint tp)
 {
-	int i;
-	int nbr;
+	int	i;
+	int	nbr;
 
 	i = 0;
 	nbr = 0;
@@ -60,10 +60,10 @@ int count_singles(t_tprint tp)
 	return (nbr);
 }
 
-int count_dollar(t_tprint tp)
+int	count_dollar(t_tprint tp)
 {
-	int i;
-	int nbr;
+	int	i;
+	int	nbr;
 
 	i = 0;
 	nbr = 0;
@@ -76,7 +76,7 @@ int count_dollar(t_tprint tp)
 	return (nbr);
 }
 
-void count_redir(t_tprint tp, t_parse *p)
+void	count_redir(t_tprint tp, t_parse *p)
 {
 	int		i;
 	int		*nbr1;

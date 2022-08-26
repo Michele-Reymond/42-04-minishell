@@ -1,28 +1,28 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ms_r_utils.c                                       :+:      :+:    :+:   */
+/*   ms_r_cmds_s_cmd.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: mreymond <mreymond@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/09 10:50:43 by mreymond          #+#    #+#             */
-/*   Updated: 2022/06/09 11:08:17 by mreymond         ###   ########.fr       */
+/*   Updated: 2022/08/26 15:30:06 by mreymond         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-char *find_cmd_sc(char **tab, int *i)
+char	*find_cmd_sc(char **tab, int *i)
 {
-	char *cmd;
-	char *tmp;
+	char	*cmd;
+	char	*tmp;
 
 	cmd = ft_strdup("");
 	while(tab[*i] != NULL && !(tab[*i][0] == '>' && ft_strlen(tab[*i]) == 1)
-		&& !(tab[*i][0] == '>' && tab[*i][1] == '>'  
+		&& !(tab[*i][0] == '>' && tab[*i][1] == '>'
 		&& ft_strlen(tab[*i]) == 2)
 		&& !(tab[*i][0] == '<' && ft_strlen(tab[*i]) == 1)
-		&& !(tab[*i][0] == '<' && tab[*i][1] == '<'  
+		&& !(tab[*i][0] == '<' && tab[*i][1] == '<'
 		&& ft_strlen(tab[*i]) == 2))
 	{
 		if (*cmd != '\0')
@@ -37,16 +37,16 @@ char *find_cmd_sc(char **tab, int *i)
 	return (cmd);
 }
 
-char *find_redir_part_sc(int *i, char **tab)
+char	*find_redir_part_sc(int *i, char **tab)
 {
-	char *redirstr;
-	char *tmp;
+	char	*redirstr;
+	char	*tmp;
 
 	redirstr = ft_strdup("");
 	while(tab[*i] != NULL && !(tab[*i][0] == '>' && ft_strlen(tab[*i]) == 1)
-		&& !(tab[*i][0] == '>' && tab[*i][1] == '>'  && ft_strlen(tab[*i]) == 2)
+		&& !(tab[*i][0] == '>' && tab[*i][1] == '>' && ft_strlen(tab[*i]) == 2)
 		&& !(tab[*i][0] == '<' && ft_strlen(tab[*i]) == 1)
-		&& !(tab[*i][0] == '<' && tab[*i][1] == '<'  && ft_strlen(tab[*i]) == 2))
+		&& !(tab[*i][0] == '<' && tab[*i][1] == '<' && ft_strlen(tab[*i]) == 2))
 	{
 		if (*redirstr != '\0')
 			tmp = ft_strjoin_sep(redirstr, tab[*i], ' ');
@@ -59,13 +59,13 @@ char *find_redir_part_sc(int *i, char **tab)
 	return (redirstr);
 }
 
-char **recreate_cmd_sc(char *cmd, char **tab, int i)
+char	**recreate_cmd_sc(char *cmd, char **tab, int i)
 {
-	char **new;
-	char **ttmp;
-	char *newstr;
-	char *tmp;
-	char *joined;
+	char	**new;
+	char	**ttmp;
+	char	*newstr;
+	char	*tmp;
+	char	*joined;
 
 	new = new_tab();
 	while (tab[i] != NULL)
@@ -81,18 +81,14 @@ char **recreate_cmd_sc(char *cmd, char **tab, int i)
 		ft_free(tmp);
 		ft_free(newstr);
 	}
-	// ttmp = add_to_tab(new, "");
-	// tabfree(new);
-	// new = ttmp;
-	// new[tab_len(ttmp) - 1] = NULL;
 	return (new);
 }
 
-char **split_w_starting_cmd(char **tab)
+char	**split_w_starting_cmd(char **tab)
 {
-	char **new;
-	char *cmd;
-	int i;
+	char	**new;
+	char	*cmd;
+	int		i;
 
 	i = 0;
 	cmd = find_cmd_sc(tab, &i);

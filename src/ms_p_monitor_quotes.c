@@ -6,7 +6,7 @@
 /*   By: mreymond <mreymond@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/20 11:38:04 by mreymond          #+#    #+#             */
-/*   Updated: 2022/08/25 17:08:06 by mreymond         ###   ########.fr       */
+/*   Updated: 2022/08/26 15:18:31 by mreymond         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,14 +36,14 @@ char	**clean_quotes_token(char **token, t_parse p)
 	return (new);
 }
 
-int check_closed_quotes(t_tprint tp)
+int	check_closed_quotes(t_tprint tp)
 {
-	int i;
+	int	i;
 
 	i = 1;
 	while (i <= tp.print[0])
 	{
-		if(tp.print[i] == -1)
+		if (tp.print[i] == -1)
 		{
 			printf(ERROR_QUOTES);
 			return (1);

@@ -6,16 +6,16 @@
 /*   By: mreymond <mreymond@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/20 11:38:04 by mreymond          #+#    #+#             */
-/*   Updated: 2022/08/25 17:05:27 by mreymond         ###   ########.fr       */
+/*   Updated: 2022/08/26 15:18:51 by mreymond         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-char *add_quotes(char *old, char quote)
+char	*add_quotes(char *old, char quote)
 {
-	char *new;
-	int i;
+	char	*new;
+	int		i;
 
 	i = 0;
 	new = malloc(sizeof(char) * (ft_strlen(old) + 3));
@@ -30,7 +30,7 @@ char *add_quotes(char *old, char quote)
 	return (new);
 }
 
-char *add_quotes_and_print(char quote, char *str)
+char	*add_quotes_and_print(char quote, char *str)
 {
 	char	*quoted;
 
@@ -41,7 +41,7 @@ char *add_quotes_and_print(char quote, char *str)
 	return (quoted);
 }
 
-char *adding_quotes(t_tprint tp, int i)
+char	*adding_quotes(t_tprint tp, int i)
 {
 	char	*quoted;
 
@@ -60,12 +60,12 @@ char *adding_quotes(t_tprint tp, int i)
 	return (quoted);
 }
 
-char *join_strings(t_tprint tp, int pos, int start)
+char	 *join_strings(t_tprint tp, int pos, int start)
 {
-	int i;
-	char *tmp2;
-	char *tmp3;
-	char *new;
+	int		i;
+	char	*tmp2;
+	char	*tmp3;
+	char	*new;
 
 	i = start;
 	new = ft_strdup("");

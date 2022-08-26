@@ -6,7 +6,7 @@
 /*   By: mreymond <mreymond@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/20 10:48:46 by mreymond          #+#    #+#             */
-/*   Updated: 2022/08/25 16:17:30 by mreymond         ###   ########.fr       */
+/*   Updated: 2022/08/26 14:44:14 by mreymond         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,7 +42,7 @@
 # define ERRORS_IDENTIFIER "not a valid identifier\n"
 
 // ______ Global variable_______
-int	exit_status;
+int	g_exit_status;
 
 // ________ Structures _________
 // parsing de echo
@@ -72,15 +72,15 @@ typedef struct s_var
 // porte d'entrée et de sortie
 typedef struct s_doors
 {
-	int in;
-	int out;
+	int	in;
+	int	out;
 }	t_doors;
 
 // coordonnées d'un tableaux de char
 typedef struct s_c
 {
-	int i;
-	int j;
+	int	i;
+	int	j;
 }	t_c;
 
 typedef struct s_ms_b_cd
@@ -134,7 +134,7 @@ int			is_a_builtin(char *cmd);
 int			launch_builtins_with_redir(char *cmd, t_tab *t, int fd, int std);
 int			launch_builtins_with_doors(char *cmd, t_tab *t, t_doors doors);
 void		rl_replace_line(const char *text, int clear_undo);
-void		rl_redisplay (void);
+void		rl_redisplay(void);
 char		**tokenize(char *buff);
 
 //			Parsing
@@ -185,7 +185,7 @@ void		free_all_t_redirs(t_redir *r, int len);
 
 //			Builtins - cd
 //t_tab		*ms_b_cd(char *buf,t_tab *t);
-t_tab 		*ms_b_cd(t_tprint tp, t_tab *t);
+t_tab		*ms_b_cd(t_tprint tp, t_tab *t);
 
 //			Builtins - pwd
 int			ms_b_pwd(void);
@@ -221,7 +221,7 @@ void		display_env(char **tab);
 //			Builtins - exit
 void		ft_exit(char *cmds, t_tab *t);
 char		*replace_exit_status(char **token);
-char		*exit_status_convert(char *cmd);
+char		*exit_status_convert(char *cmd, char *symbol);
 long long	ft_atoll(const char *str);
 int			args_if_alpha(char *str);
 
@@ -231,7 +231,7 @@ int			count_multi_pipes_cmds(t_tprint tp);
 int			multipipes_split(t_tprint tp, t_tprint *last, int i, int j);
 int			onepipes_split(t_tprint tp, t_tprint *last, int i, int j);
 void		create_pipes(int **fd, int nbr);
-void 		launching_pipes_in_child(t_parse p, t_tab *t, pid_t *pid, int **fd);
+void		launching_pipes_in_child(t_parse p, t_tab *t, pid_t *pid, int **fd);
 void		launching_pipes_in_parent(t_parse p, pid_t *pid, int **fd);
 void		check_files_needs(char *cmd);
 void		child_process(int **fd, int pos, int nbr);
@@ -242,10 +242,10 @@ void		parent_closing_loop(int **fd, int nbr);
 //			Redirections
 int			*check_redir(char *cmd, char redir);
 void		launch_pipes_with_redir(t_parse p, t_tab *t);
-void	    launching_redirs(char *cmd, t_tab *t);
+void		launching_redirs(char *cmd, t_tab *t);
 void		launch_with_redir(t_parse p, t_tab *t);
-void    	which_redir(t_redir *r, char *cmd);
-char    	*stock_cmd_part(char **token, int pos);
+void		which_redir(t_redir *r, char *cmd);
+char		*stock_cmd_part(char **token, int pos);
 char		**rebuilt_cmds(t_redir *r, int len);
 t_redir		*stock_redir_infos(char **cmds);
 void		launch_redir(t_redir r, t_tab *t, char *cmd);
@@ -255,7 +255,7 @@ void		launch_out_d(t_redir r, t_tab *t, char *cmd);
 void		launch_out(t_redir r, t_tab *t, char *cmd);
 int			is_heredoc(char *cmd);
 void		read_heredoc(char *cmd);
-char 		**a_redir_pro_cmd(char *cmd);
+char		**a_redir_pro_cmd(char *cmd);
 t_redir		dup_redir(t_redir r);
 int			redir_errors(int *nbr1, int *nbr2, t_parse *p);
 void		init_redirections(t_parse *p);
@@ -321,7 +321,7 @@ char		**add_to_tab(char **oldtab, char *str_to_add);
 char		**tabjoin(char **tab1, char **tab2);
 
 //			Signaux
-void    	signal_handler(void);
-void		rl_replace_line (const char *text, int clear_undo);
+void		signal_handler(void);
+void		rl_replace_line(const char *text, int clear_undo);
 
 #endif

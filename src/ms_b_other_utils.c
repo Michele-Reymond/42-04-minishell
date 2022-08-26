@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ms_b_other.c                                       :+:      :+:    :+:   */
+/*   ms_b_other_utils.c                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: mreymond <mreymond@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/26 12:37:07 by vroch             #+#    #+#             */
-/*   Updated: 2022/08/10 12:08:11 by mreymond         ###   ########.fr       */
+/*   Updated: 2022/08/26 15:01:47 by mreymond         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,13 +18,12 @@ void	exec_cmd(char **paths, char *first_cmd, char **envp, char **flags)
 	char	*cmd;
 	int		ret;
 
-	i = 0;
-	while (paths[i] != NULL)
+	i = -1;
+	while (paths[++i] != NULL)
 	{
 		cmd = ft_strjoin(paths[i], first_cmd);
 		ret = execve(cmd, flags, envp);
 		ft_free(cmd);
-		i++;
 	}
 	if (ret < 0)
 	{
@@ -44,7 +43,7 @@ void	exec_cmd(char **paths, char *first_cmd, char **envp, char **flags)
 
 void	launch_child_process(char *buff, char **paths, char **envp)
 {
-	char	*first_cmd;
+	char		*first_cmd;
 	t_tprint	tp;
 
 	tp = parsing_master(buff);
@@ -59,14 +58,14 @@ void	status_of_child(int status)
 	if (WIFEXITED(status))
 	{
 		if (WEXITSTATUS(status) == 2)
-			exit_status = 127;
+			g_exit_status = 127;
 		else
-			exit_status = WEXITSTATUS(status);
+			g_exit_status = WEXITSTATUS(status);
 	}
 	if (WIFSIGNALED(status))
 	{
-		exit_status = SIGINT;
-		if (exit_status != 131)
-			exit_status += 128;
+		g_exit_status = SIGINT;
+		if (g_exit_status != 131)
+			g_exit_status += 128;
 	}
 }

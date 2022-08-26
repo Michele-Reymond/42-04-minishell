@@ -1,43 +1,44 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ms_b_export.c                                      :+:      :+:    :+:   */
+/*   ms_b_export_vars.c                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: mreymond <mreymond@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/20 10:43:17 by mreymond          #+#    #+#             */
-/*   Updated: 2022/08/25 14:00:59 by mreymond         ###   ########.fr       */
+/*   Updated: 2022/08/26 14:46:47 by mreymond         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-int var_check(t_var var)
+int	var_check(t_var var)
 {
 	if (!(ft_isalpha(var.key[0]) || var.key[0] == '_'))
 		return (1);
 	return (0);
 }
 
-int check_identifier(char *str)
+int	check_identifier(char *str)
 {
-	int i;
+	int	i;
 
 	i = 0;
 	while (str[i] != '\0')
 	{
-		if (!(((ft_isalpha(str[i]) && i == 0) || str[i] == '_' || str[i] == '=') 
-				|| ((ft_isalnum(str[i]) && i > 0) || str[i] == '_' || str[i] == '=')))
+		if (!(((ft_isalpha(str[i]) && i == 0) || str[i] == '_' || str[i] == '=')
+				|| ((ft_isalnum(str[i]) && i > 0)
+					|| str[i] == '_' || str[i] == '=')))
 			return (1);
 		i++;
 	}
 	return (0);
 }
 
-t_var *create_vartab(int *i, char **token)
+t_var	*create_vartab(int *i, char **token)
 {
 	t_var	*vartab;
-	int j;
+	int		j;
 
 	j = 0;
 	vartab = malloc(sizeof(t_var) * (tab_len(token) - 1));
@@ -59,7 +60,7 @@ t_var *create_vartab(int *i, char **token)
 	return (vartab);
 }
 
-void update_with_new_var(t_tab *t, t_var var, int *i, int *j)
+void	update_with_new_var(t_tab *t, t_var var, int *i, int *j)
 {
 	char	**tmp;
 	char	**tmp2;
@@ -70,7 +71,7 @@ void update_with_new_var(t_tab *t, t_var var, int *i, int *j)
 	tabfree(t->exp);
 	t->env = tmp;
 	t->exp = tabsort(tmp2);
-	exit_status = 0;
+	g_exit_status = 0;
 	tabfree(tmp2);
 	(*j)++;
 	(*i)--;

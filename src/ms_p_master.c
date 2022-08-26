@@ -6,19 +6,18 @@
 /*   By: mreymond <mreymond@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/20 11:38:04 by mreymond          #+#    #+#             */
-/*   Updated: 2022/08/25 16:20:47 by mreymond         ###   ########.fr       */
+/*   Updated: 2022/08/26 15:18:10 by mreymond         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-void create_splitted_cmds(char *cmd, t_tprint new)
+void	create_splitted_cmds(char *cmd, t_tprint new)
 {
-	int i;
-	int j;
-	t_c c;
-	char stock;
-
+	int		i;
+	int		j;
+	t_c		c;
+	char	stock;
 
 	i = 0;
 	j = 0;
@@ -39,9 +38,9 @@ void create_splitted_cmds(char *cmd, t_tprint new)
 	new.tab[j] = NULL;
 }
 
-t_tprint split_cmds(char *cmd, int tablen)
+t_tprint	split_cmds(char *cmd, int tablen)
 {
-	t_tprint new;
+	t_tprint	new;
 
 	new.tab = malloc(sizeof(char *) * (tablen + 1));
 	if (new.tab == NULL)
@@ -55,12 +54,12 @@ t_tprint split_cmds(char *cmd, int tablen)
 	return (new);
 }
 
-t_tprint split_both_quotes(char *cmd)
+t_tprint	split_both_quotes(char *cmd)
 {
-	int tablen;
-	t_tprint splitted;
-	int i;
-	char stock;
+	int			tablen;
+	t_tprint	splitted;
+	int			i;
+	char		stock;
 
 	i = 0;
 	stock = '\0';
@@ -69,20 +68,21 @@ t_tprint split_both_quotes(char *cmd)
 	return (splitted);
 }
 
-void create_tprint(t_tprint tmp, t_tprint tp)
+void	create_tprint(t_tprint tmp, t_tprint tp)
 {
-	int i;
+	int	i;
 
 	i = 0;
 	while (tmp.tab[i] != NULL)
 	{
-		if (tmp.tab[i][0] == '\'' && tmp.tab[i][ft_strlen(tmp.tab[i]) - 1] == '\'')
+		if (tmp.tab[i][0] == '\''
+			&& tmp.tab[i][ft_strlen(tmp.tab[i]) - 1] == '\'')
 			trim_single_and_tprint(tmp, &tp, i);
-		else if (tmp.tab[i][0] == '\"' 
+		else if (tmp.tab[i][0] == '\"'
 				&& tmp.tab[i][ft_strlen(tmp.tab[i]) - 1] == '\"')
 			trim_doubles_and_tprint(tmp, &tp, i);
-		else if (tmp.tab[i][0] == '\"' || tmp.tab[i][0] == '\'' 
-			|| tmp.tab[i][ft_strlen(tmp.tab[i]) - 1] == '\"' 
+		else if (tmp.tab[i][0] == '\"' || tmp.tab[i][0] == '\''
+			|| tmp.tab[i][ft_strlen(tmp.tab[i]) - 1] == '\"'
 			|| tmp.tab[i][ft_strlen(tmp.tab[i]) - 1] == '\'')
 		{
 			tp.tab[i] = ft_strdup(tmp.tab[i]);
@@ -102,10 +102,10 @@ void create_tprint(t_tprint tmp, t_tprint tp)
 // 4 : pour les string avec double quotes et espace après
 // 5 : pour les tring avec aucune quotes et espace après
 // utiliser display_tab_and_int(tp.print, tp.tab); pour afficher les 2
-t_tprint parsing_master(char *cmd)
+t_tprint	parsing_master(char *cmd)
 {
-	t_tprint tmp;
-	t_tprint tp;
+	t_tprint	tmp;
+	t_tprint	tp;
 
 	tmp = split_both_quotes(cmd);
 	tp.tab = malloc(sizeof(char *) * (tab_len(tmp.tab) + 1));

@@ -1,22 +1,22 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ms_r_utils.c                                       :+:      :+:    :+:   */
+/*   ms_r_heredoc_utils.c                               :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: mreymond <mreymond@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/09 10:50:43 by mreymond          #+#    #+#             */
-/*   Updated: 2022/06/09 11:08:17 by mreymond         ###   ########.fr       */
+/*   Updated: 2022/08/26 15:32:35 by mreymond         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-void read_heredoc(char *cmd)
+void	read_heredoc(char *cmd)
 {
-	char **newcmds;
-	t_redir *r;
-	int i;
+	char	**newcmds;
+	t_redir	*r;
+	int		i;
 
 	i = 0;
 	newcmds = a_redir_pro_cmd(cmd);

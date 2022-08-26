@@ -6,7 +6,7 @@
 /*   By: mreymond <mreymond@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/20 11:38:04 by mreymond          #+#    #+#             */
-/*   Updated: 2022/08/25 16:57:09 by mreymond         ###   ########.fr       */
+/*   Updated: 2022/08/26 15:16:53 by mreymond         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,9 +43,9 @@ int	how_many_in_str(char *str, char c)
 	return (i);
 }
 
-int how_many_splits(char *str)
+int	how_many_splits(char *str)
 {
-	int nbr;
+	int	nbr;
 
 	nbr = 0;
 	nbr += how_many_in_str(str, '|');
@@ -57,7 +57,7 @@ int how_many_splits(char *str)
 	return (nbr);
 }
 
-void init_redirections(t_parse *p)
+void	init_redirections(t_parse *p)
 {
 	p->redir_out = 0;
 	p->redir_out_d = 0;
@@ -65,7 +65,7 @@ void init_redirections(t_parse *p)
 	p->redir_in_d = 0;
 }
 
-int redir_errors(int *nbr1, int *nbr2, t_parse *p)
+int	redir_errors(int *nbr1, int *nbr2, t_parse *p)
 {
 	if (nbr1[0] == -1 || nbr1[1] == -1)
 	{

@@ -6,7 +6,7 @@
 /*   By: mreymond <mreymond@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/10 10:28:30 by mreymond          #+#    #+#             */
-/*   Updated: 2022/08/25 16:05:16 by mreymond         ###   ########.fr       */
+/*   Updated: 2022/08/26 14:33:02 by mreymond         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,7 +40,7 @@ int	free_tp_status_error(t_tprint tp)
 		tabfree(tp.tab);
 	if (tp.print)
 		free(tp.print);
-	exit_status = 1;
+	g_exit_status = 1;
 	return (1);
 }
 

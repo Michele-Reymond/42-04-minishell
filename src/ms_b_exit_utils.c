@@ -6,7 +6,7 @@
 /*   By: mreymond <mreymond@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/20 13:24:57 by mreymond          #+#    #+#             */
-/*   Updated: 2022/08/25 17:46:03 by mreymond         ###   ########.fr       */
+/*   Updated: 2022/08/26 14:39:58 by mreymond         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,9 +27,9 @@ static int	ft_pass(char s)
 
 long long	ft_atoll(const char *str)
 {
-	long	i;
+	long		i;
 	long long	result;
-	long	signe;
+	long		signe;
 
 	result = 0;
 	signe = 1;
@@ -53,16 +53,16 @@ long long	ft_atoll(const char *str)
 	return (result);
 }
 
-int args_if_alpha(char *str)
+int	args_if_alpha(char *str)
 {
-    int i;
+	int	i;
 
-    i = 0;
-    while (str[i] != '\0')
-    {
-        if (!ft_isdigit(str[i]))
-            return (1);
-        i++;
-    }
-    return (0);
+	i = 0;
+	while (str[i] != '\0')
+	{
+		if (!ft_isdigit(str[i]))
+			return (1);
+		i++;
+	}
+	return (0);
 }

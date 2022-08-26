@@ -6,16 +6,16 @@
 /*   By: mreymond <mreymond@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/27 11:28:42 by mreymond          #+#    #+#             */
-/*   Updated: 2022/08/13 09:57:26 by mreymond         ###   ########.fr       */
+/*   Updated: 2022/08/26 15:10:30 by mreymond         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-int check_unset(char **token, int *len)
+int	check_unset(char **token, int *len)
 {
-	int j;
-	int ok;
+	int	j;
+	int	ok;
 
 	ok = 0;
 	j = 1;
@@ -33,10 +33,10 @@ int check_unset(char **token, int *len)
 	return (ok);
 }
 
-int check_if_exist(char **token, char *env)
+int	check_if_exist(char **token, char *env)
 {
-	int ok;
-	int j;
+	int	ok;
+	int	j;
 
 	ok = 0;
 	j = 1;
@@ -52,12 +52,12 @@ int check_if_exist(char **token, char *env)
 	return (ok);
 }
 
-char **rebuilt_env(int len, char **token, t_tab *t)
+char	**rebuilt_env(int len, char **token, t_tab *t)
 {
-	int i;
-	int ok;
-	int k;
-	char **new;
+	int		i;
+	int		ok;
+	int		k;
+	char	**new;
 
 	i = 0;
 	k = 0;
@@ -78,14 +78,14 @@ t_tab	*unset_var(t_tab *t, char **token)
 {
 	char	**new;
 	int		ok;
-	int 	len;
+	int		len;
 
 	len = tab_len(t->env) + 1;
 	ok = check_unset(token, &len);
 	if (ok == -1)
-		exit_status = 1;
+		g_exit_status = 1;
 	else
-		exit_status = 0;
+		g_exit_status = 0;
 	new = rebuilt_env(len, token, t);
 	tabfree(t->env);
 	tabfree(t->exp);
@@ -98,7 +98,7 @@ char	**update_var(char **old, t_var var, int pos, bool quotes)
 {
 	char	**new;
 	int		i;
-	
+
 	i = 0;
 	(void) pos;
 	new = malloc(sizeof(char *) * (tab_len(old) + 1));

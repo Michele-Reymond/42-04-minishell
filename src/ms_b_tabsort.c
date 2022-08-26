@@ -6,16 +6,16 @@
 /*   By: mreymond <mreymond@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/27 11:30:20 by mreymond          #+#    #+#             */
-/*   Updated: 2022/08/10 10:21:03 by mreymond         ###   ########.fr       */
+/*   Updated: 2022/08/26 15:09:42 by mreymond         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-void sorting_tab(int i, int j, char **new)
+void	sorting_tab(int i, int j, char **new)
 {
-	char *tmp;
-	
+	char	*tmp;
+
 	tmp = ft_strdup(new[i]);
 	free(new[i]);
 	new[i] = ft_strdup(new[j]);
@@ -26,10 +26,10 @@ void sorting_tab(int i, int j, char **new)
 
 char	**tabsort(char **tab)
 {
-	int len;
-	char **new;
-	int i;
-	int j;
+	int		len;
+	char	**new;
+	int		i;
+	int		j;
 
 	i = 0;
 	j = 0;
@@ -49,11 +49,10 @@ char	**tabsort(char **tab)
 	return (new);
 }
 
-char	**make_export(char **env)
+char	**copy_in_export(char **env)
 {
 	int		i;
 	char	**export;
-	char	**tmp;
 	t_var	*vartab;
 
 	i = 0;
@@ -70,12 +69,21 @@ char	**make_export(char **env)
 	{
 		vartab[i] = str_to_var(env[i]);
 		export[i] = var_to_str_with_quotes(vartab[i]);
-		free(vartab[i].key);
-		free(vartab[i].value);
+		ft_free(vartab[i].key);
+		ft_free(vartab[i].value);
 		i++;
 	}
 	free(vartab);
 	export[i] = NULL;
+	return (export);
+}
+
+char	**make_export(char **env)
+{
+	char	**export;
+	char	**tmp;
+
+	export = copy_in_export(env);
 	tmp = tabsort(export);
 	tabfree(export);
 	export = tmp;

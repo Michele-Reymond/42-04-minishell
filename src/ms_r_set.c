@@ -1,27 +1,27 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ms_r_utils.c                                       :+:      :+:    :+:   */
+/*   ms_r_set.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: mreymond <mreymond@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/09 10:50:43 by mreymond          #+#    #+#             */
-/*   Updated: 2022/06/09 11:08:17 by mreymond         ###   ########.fr       */
+/*   Updated: 2022/08/26 15:41:21 by mreymond         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-void launch_child_in_set(t_redir r, int tmpfile)
+void	launch_child_in_set(t_redir r, int tmpfile)
 {
-	char    *input;
+	char	*input;
 
-	while ((input = readline("> ")) != NULL) 
+	while ((input = readline("> ")) != NULL)
 	{
 		if (strlen(input) > 0)
 		{
 			if (!ft_strncmp(input, r.dest, ft_strlen(r.dest)))
-				break;
+				break ;
 			write(tmpfile, input, ft_strlen(input));
 			write(tmpfile, "\n", 1);
 		}
@@ -30,9 +30,9 @@ void launch_child_in_set(t_redir r, int tmpfile)
 	exit(0);
 }
 
-t_doors set_redir_in_pipe(t_redir r, t_doors doors)
+t_doors	set_redir_in_pipe(t_redir r, t_doors doors)
 {
-	t_doors new;
+	t_doors	new;
 
 	if (!ft_strncmp(r.redir, ">", 1) && r.redir[1] == '\0')
 		new = set_out(r, doors);
@@ -42,14 +42,14 @@ t_doors set_redir_in_pipe(t_redir r, t_doors doors)
 		new = set_out_d(r, doors);
 	else if (!ft_strncmp(r.redir, "<<", 2) && r.redir[2] == '\0')
 		new = set_in_d_in_pipe(doors);
-	else 
+	else
 		new = doors;
 	return (new);
 }
 
-t_doors set_redirection(t_redir r, t_doors doors)
+t_doors	set_redirection(t_redir r, t_doors doors)
 {
-	t_doors new;
+	t_doors	new;
 
 	if (!ft_strncmp(r.redir, ">", 1) && r.redir[1] == '\0')
 		new = set_out(r, doors);
@@ -59,7 +59,7 @@ t_doors set_redirection(t_redir r, t_doors doors)
 		new = set_out_d(r, doors);
 	else if (!ft_strncmp(r.redir, "<<", 2) && r.redir[2] == '\0')
 		new = set_in_d(r, doors);
-	else 
+	else
 		new = doors;
 	return (new);
 }

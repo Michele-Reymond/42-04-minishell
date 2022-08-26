@@ -6,17 +6,17 @@
 /*   By: mreymond <mreymond@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/20 10:43:17 by mreymond          #+#    #+#             */
-/*   Updated: 2022/08/25 16:51:44 by mreymond         ###   ########.fr       */
+/*   Updated: 2022/08/26 14:38:47 by mreymond         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-char *find_key(char *str)
+char	*find_key(char *str)
 {
-	int i;
-	char *key;
-	
+	int		i;
+	char	*key;
+
 	i = 0;
 	while (str[i] && str[i] != ' ' && str[i] != '	' && str[i] != '\'')
 		i++;
@@ -37,13 +37,13 @@ char	*export_to_var(char *str)
 		str += 2;
 		var = ft_strldup(str, ft_strlen(str));
 	}
-	return(var);
+	return (var);
 }
 
-char *copy_variables(char *tmp, char **vars, int j, t_tab t)
+char	*copy_variables(char *tmp, char **vars, int j, t_tab t)
 {
-	char *key;
-	int pos;
+	char	*key;
+	int		pos;
 
 	key = find_key(tmp);
 	pos = var_exist(t.exp, key);
@@ -57,10 +57,10 @@ char *copy_variables(char *tmp, char **vars, int j, t_tab t)
 	return (tmp);
 }
 
-int how_many_dollars(char **tab, int *print)
+int	how_many_dollars(char **tab, int *print)
 {
-	int i;
-	int nbr;
+	int	i;
+	int	nbr;
 
 	i = 0;
 	nbr = 0;
@@ -73,11 +73,11 @@ int how_many_dollars(char **tab, int *print)
 	return (nbr);
 }
 
-int *copy_spaces_tab(int *print)
+int	*copy_spaces_tab(int *print)
 {
-	int i;
-	int j;
-	int *new;
+	int	i;
+	int	j;
+	int	*new;
 
 	i = 1;
 	j = 2;

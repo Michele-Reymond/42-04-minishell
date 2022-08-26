@@ -6,13 +6,13 @@
 /*   By: mreymond <mreymond@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/20 11:38:04 by mreymond          #+#    #+#             */
-/*   Updated: 2022/08/25 17:09:01 by mreymond         ###   ########.fr       */
+/*   Updated: 2022/08/26 15:23:30 by mreymond         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-int *too_much_redirs(char *tmp, char redir)
+int	*too_much_redirs(char *tmp, char redir)
 {
 	int		*nbr;
 
@@ -29,7 +29,7 @@ int *too_much_redirs(char *tmp, char redir)
 	return (nbr);
 }
 
-int *init_nbr_redir(void)
+int	*init_nbr_redir(void)
 {
 	int		*nbr;
 
@@ -38,6 +38,7 @@ int *init_nbr_redir(void)
 	nbr[1] = 0;
 	return (nbr);
 }
+
 // parse the redirections caracteres > >> < <<
 // return a int tab :
 // nbr[0] : nbr of simple redir (> or <)
@@ -46,7 +47,7 @@ int	*check_redir(char *cmd, char redir)
 {
 	char	*tmp;
 	int		*nbr;
-	
+
 	nbr = init_nbr_redir();
 	tmp = ft_strchr(cmd, redir);
 	while (tmp != NULL)
@@ -59,11 +60,13 @@ int	*check_redir(char *cmd, char redir)
 			tmp += 2;
 		}
 		else if (tmp && *tmp == redir)
-			if ( *(tmp + 1) != redir && (tmp == cmd || *(tmp - 1) != redir))
+		{
+			if (*(tmp + 1) != redir && (tmp == cmd || *(tmp - 1) != redir))
 			{
 				nbr[0]++;
 				tmp++;
 			}
+		}
 		tmp = ft_strchr(tmp, redir);
 	}
 	return (nbr);
@@ -72,7 +75,7 @@ int	*check_redir(char *cmd, char redir)
 t_parse	stock_parsing_infos(t_tprint tp)
 {
 	t_parse	p;
-	
+
 	p.pipes = count_pipes(tp);
 	p.nbr_cmd = p.pipes + 1;
 	p.double_q = count_doubles(tp);

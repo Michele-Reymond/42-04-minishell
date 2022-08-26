@@ -6,28 +6,30 @@
 /*   By: mreymond <mreymond@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/20 11:38:04 by mreymond          #+#    #+#             */
-/*   Updated: 2022/08/25 16:59:26 by mreymond         ###   ########.fr       */
+/*   Updated: 2022/08/26 15:19:38 by mreymond         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-int count_multi_pipes_cmds(t_tprint tp)
+int	count_multi_pipes_cmds(t_tprint tp)
 {
-	int i;
-	int nbr;
+	int	i;
+	int	nbr;
 
 	i = 0;
 	nbr = 0;
 	while (tp.tab[i] != 0)
 	{
-		if (how_many_in_str(tp.tab[i], '|') > 0 && (tp.print[i + 1] == 2 
-			|| tp.print[i + 1] == 5) && ft_strlen(tp.tab[i]) > 1)
+		if (how_many_in_str(tp.tab[i], '|') > 0 && (tp.print[i + 1] == 2
+				|| tp.print[i + 1] == 5) && ft_strlen(tp.tab[i]) > 1)
 		{
 			nbr += how_many_in_str(tp.tab[i], '|');
-			if (tp.tab[i][ft_strlen(tp.tab[i]) - 1] != '|' && tp.tab[i][0] != '|')
+			if (tp.tab[i][ft_strlen(tp.tab[i]) - 1] != '|'
+				&& tp.tab[i][0] != '|')
 				nbr++;
-			if (tp.tab[i][ft_strlen(tp.tab[i]) - 1] == '|' && tp.tab[i][0] == '|')
+			if (tp.tab[i][ft_strlen(tp.tab[i]) - 1] == '|'
+				&& tp.tab[i][0] == '|')
 				nbr--;
 			nbr += how_many_in_str(tp.tab[i], '|');
 		}
@@ -36,10 +38,10 @@ int count_multi_pipes_cmds(t_tprint tp)
 	return (nbr);
 }
 
-char **split_out_multipipes(char *str, int nbr, int start, int i)
+char	**split_out_multipipes(char *str, int nbr, int start, int i)
 {
-	char **new;
-	int j;
+	char	**new;
+	int		j;
 
 	j = 0;
 	new = malloc(sizeof(char *) * (nbr + 1));
@@ -55,7 +57,7 @@ char **split_out_multipipes(char *str, int nbr, int start, int i)
 		}
 		if (str[i] == '|')
 		{
-			new[j] = ft_strdup("|");;
+			new[j] = ft_strdup("|");
 			j++;
 		}
 		if (str[i] != '\0')
@@ -65,10 +67,10 @@ char **split_out_multipipes(char *str, int nbr, int start, int i)
 	return (new);
 }
 
-char **split_out(char *str)
+char	**split_out(char *str)
 {
-	char **new;
-	int nbr;
+	char	**new;
+	int		nbr;
 
 	nbr = how_many_splits(str);
 	new = split_out_multipipes(str, nbr, 0, 0);

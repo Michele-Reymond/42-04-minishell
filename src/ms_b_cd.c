@@ -6,7 +6,7 @@
 /*   By: mreymond <mreymond@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/20 12:16:50 by vroch             #+#    #+#             */
-/*   Updated: 2022/07/05 13:50:19 by mreymond         ###   ########.fr       */
+/*   Updated: 2022/08/26 14:32:18 by mreymond         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -105,7 +105,7 @@ t_tab *ms_b_cd(t_tprint tp, t_tab *t)
 	{
 		printf("minishell: cd: %s: ", tp.tab[1]);
 		printf(ERROR_FILE);
-		exit_status = 1;
+		g_exit_status = 1;
 	}
 	else
 	{
