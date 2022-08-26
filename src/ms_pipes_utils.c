@@ -12,24 +12,59 @@
 
 #include "minishell.h"
 
-void launch_with_pipes(t_parse p, t_tab *t)
+void create_pipes(int **fd, int nbr)
 {
-    pid_t	*pid;
-    int		**fd;
-    int     i;
+    int i;
 
-    i = -1;
-    pid = malloc(sizeof(pid_t) * p.nbr_cmd);
-    fd = malloc(sizeof(int *) * p.pipes);
-    while (i++ < p.pipes - 1)
-        fd[i] = malloc(sizeof(int) * 2);
-    create_pipes(fd, p.pipes);
-    launching_pipes_in_child(p, t, pid, fd);
-    launching_pipes_in_parent(p, pid, fd);
-    tabfree(t->p.cmds);
+    i = 0;
+    while (i < nbr)
+    {
+        if (pipe(fd[i]) == -1)
+            return ;
+        i++;
+    }
 }
 
-void launching_redirs_in_child(t_parse p, t_tab *t, pid_t *pid, int **fd)
+void check_files_needs(char *cmd)
+{
+    t_redir *r;
+    char **tmp;
+    char **newcmds;
+   
+    if (is_heredoc(cmd))
+        read_heredoc(cmd);
+    tmp = new_tab();
+    newcmds = add_to_tab(tmp, cmd);
+    tabfree(tmp);
+    r = stock_redir_infos(newcmds);
+    if (r[0].redir[0] == '<' && ft_strlen(r[0].redir) == 1)
+    {
+        
+        if (access(r[0].dest, F_OK) != 0)
+            printf("minishell: %s : %s \n", r[0].dest,  strerror(errno));
+        else if (access(r[0].dest, R_OK) != 0)
+            printf("minishell: %s : %s \n", r[0].dest,  strerror(errno));
+    }
+    free_all_t_redirs(r, tab_len(newcmds));
+    tabfree(newcmds);
+}
+
+// lancer les processus enfants
+void child_process(int **fd, int pos, int nbr)
+{
+    closing_loop_in(fd, pos, nbr);
+    if (pos == 0)
+        dup2(fd[pos][1], STDOUT_FILENO);
+    else if (pos != 0 && !(pos == nbr))
+    {
+        dup2(fd[pos - 1][0], STDIN_FILENO);
+        dup2(fd[pos][1], STDOUT_FILENO);
+    }
+    else
+        dup2(fd[pos - 1][0], STDIN_FILENO);
+}
+
+void launching_pipes_in_child(t_parse p, t_tab *t, pid_t *pid, int **fd)
 {
     int i;
     int k;
@@ -38,14 +73,14 @@ void launching_redirs_in_child(t_parse p, t_tab *t, pid_t *pid, int **fd)
     k = -1;
     while (i < p.nbr_cmd)
     {
-        check_files_needs(p.cmds[i]);
         pid[i] = fork();
         if (pid[i] < 0)
             return ;
         if (pid[i] == 0)
         {
             child_process(fd, i, p.pipes);
-            launching_redirs(p.cmds[i], t);
+            if (launch_cmds(p.cmds[i], t))
+                other_basic(p.cmds[i], t);
             closing_loop_out(fd, i, p.pipes);
             while (k++ < p.pipes - 1)
                 free(fd[k]);
@@ -57,7 +92,7 @@ void launching_redirs_in_child(t_parse p, t_tab *t, pid_t *pid, int **fd)
     }
 }
 
-void launching_redirs_in_parent(t_parse p, pid_t *pid, int **fd)
+void launching_pipes_in_parent(t_parse p, pid_t *pid, int **fd)
 {
     int     i;
     int		status;
@@ -71,8 +106,6 @@ void launching_redirs_in_parent(t_parse p, pid_t *pid, int **fd)
             waitpid(pid[i], &status, 0);
             i++;
         }
-        if (access(".heredoc", F_OK) == 0)
-            unlink(".heredoc");
         i = 0;
         while (i < p.pipes)
         {
@@ -82,22 +115,4 @@ void launching_redirs_in_parent(t_parse p, pid_t *pid, int **fd)
         free(fd);
         free(pid);
     }
-}
-
-///pipes & redirections
-void launch_pipes_with_redir(t_parse p, t_tab *t)
-{
-    pid_t	*pid;
-    int		**fd;
-    int     i;
-
-    i = -1;
-    pid = malloc(sizeof(pid_t) * p.nbr_cmd);
-    fd = malloc(sizeof(int *) * p.pipes);
-    while (i++ < p.pipes - 1)
-        fd[i] = malloc(sizeof(int) * 2);
-    create_pipes(fd, p.pipes);
-    launching_redirs_in_child(p, t, pid, fd);
-    launching_redirs_in_parent(p, pid, fd);
-    tabfree(t->p.cmds);
 }

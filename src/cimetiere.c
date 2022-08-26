@@ -1415,23 +1415,3 @@
 // 	}
 // }
 
-// int redir_errors(int *nbr1, int *nbr2, t_parse *p)
-// {
-// 	if (nbr1[0] == -1 || nbr1[1] == -1)
-// 	{
-// 		p->redir_out = nbr1[0];
-// 		p->redir_out_d = nbr1[1];
-// 		if (nbr1 != NULL)
-// 		{
-// 			free(nbr1);
-// 			nbr1 = NULL;
-// 		}
-// 		if (nbr2 != NULL)
-// 		{
-// 			free(nbr2);
-// 			nbr2 = NULL;
-// 		}
-// 		return (1);
-// 	}
-// 	return (0);
-// }

@@ -15,13 +15,18 @@ SRC_NAME = 	minishell.c \
 			ms_b_echo_print.c \
 			ms_b_echo_utils.c \
 			ms_b_tabs.c \
+			ms_b_tabs_utils.c \
 			ms_b_tabsort.c \
 			ms_b_variables.c \
 			ms_b_var_utils.c \
 			ms_b_export.c \
+			ms_b_export_utils.c \
+			ms_b_export_vars.c \
 			ms_b_cd.c \
 			ms_b_pwd.c \
 			ms_b_other.c \
+			ms_b_other_launch.c \
+			ms_b_other_utils.c \
 			ms_b_exit.c \
 			ms_b_exit_utils.c \
 			ms_signals.c \
@@ -37,7 +42,23 @@ SRC_NAME = 	minishell.c \
 			ms_p_quotes.c \
 			ms_p_utils.c \
 			ms_pipes.c \
+			ms_pipes_loops.c \
+			ms_pipes_utils.c \
 			ms_redirections.c \
+			ms_r_check.c \
+			ms_r_cmds_s_cmd.c \
+			ms_r_cmds_s_redir.c \
+			ms_r_cmds_split.c \
+			ms_r_cmds.c \
+			ms_r_doors.c \
+			ms_r_files.c \
+			ms_r_heredoc_utils.c \
+			ms_r_heredoc.c \
+			ms_r_launch_utils.c \
+			ms_r_launch.c \
+			ms_r_parsing.c \
+			ms_r_set_utils.c \
+			ms_r_set.c \
 			ms_r_utils.c \
 			ms_free.c \
 			ms_free_utils.c \

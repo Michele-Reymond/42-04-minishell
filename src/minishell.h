@@ -137,7 +137,7 @@ void		rl_replace_line(const char *text, int clear_undo);
 void		rl_redisplay (void);
 char		**tokenize(char *buff);
 
-//			Parsing utils
+//			Parsing
 int			how_many_in_str(char *str, char c);
 int			how_many_in_tab(char **str, char c);
 int			pre_parsing_errors(char *cmd, t_parse p);
@@ -152,6 +152,21 @@ char		*ft_strldup(const char *src, size_t dstsize);
 int			check_identifier(char *str);
 char		*add_quotes(char *old, char quote);
 char		*join_strings(t_tprint tp, int pos, int start);
+int			check_closed_quotes(t_tprint tp);
+char		**split_pipes(t_tprint tp, int pipes);
+void		copy_outside_quotes(char *cmd, int *i, int *j, t_tprint new);
+int			copy_inside_quotes(char *cmd, t_c *c, char *stock, t_tprint new);
+int			count_quotes(char *cmd, char stock, int i);
+void		trim_single_and_tprint(t_tprint tmp, t_tprint *tp, int i);
+void		trim_doubles_and_tprint(t_tprint tmp, t_tprint *tp, int i);
+void		trim_and_tprint_else(t_tprint tmp, t_tprint *tp, int i);
+int			how_many_splits(char *str);
+char		*adding_quotes(t_tprint tp, int i);
+int			count_pipes(t_tprint tp);
+int			count_doubles(t_tprint tp);
+int			count_singles(t_tprint tp);
+int			count_dollar(t_tprint tp);
+void		count_redir(t_tprint tp, t_parse *p);
 
 //			errors
 void		check_args(int argc);
@@ -181,6 +196,9 @@ void		echo_print(char **args, char **var, int *print);
 char		**echo_vars(char **tab, t_tab t, int nbr, int *print);
 t_echo		echo_parsing(char **tab, t_tab t, int *print);
 char		**clean_cmd_for_echo(char *cmd, t_tab *t);
+char		*copy_variables(char *tmp, char **vars, int j, t_tab t);
+int			*copy_spaces_tab(int *print);
+int			how_many_dollars(char **tab, int *print);
 
 //			Builtins - export and unset
 t_tab		*ft_export(t_tab *t, t_tprint tp);
@@ -189,6 +207,10 @@ char		**make_export(char **env);
 char		**parsing_for_export(t_tprint tp);
 int			spaces_count(t_tprint tp);
 t_tab		*unset(t_tab *t, t_tprint tp);
+t_var		*create_vartab(int *i, char **token);
+void		update_with_new_var(t_tab *t, t_var var, int *i, int *j);
+void		export_errors(t_var var, int *i, int *j);
+void		export_increase(int *i, int *j);
 
 //			Builtins - env
 char		**sort(char **env);
@@ -200,12 +222,22 @@ void		display_env(char **tab);
 void		ft_exit(char *cmds, t_tab *t);
 char		*replace_exit_status(char **token);
 char		*exit_status_convert(char *cmd);
-
-//			bin
-void		launch_child_process(char *buff, char **paths, char **envp);
+long long	ft_atoll(const char *str);
+int			args_if_alpha(char *str);
 
 //			Pipes
 void		launch_with_pipes(t_parse p, t_tab *t);
+int			count_multi_pipes_cmds(t_tprint tp);
+int			multipipes_split(t_tprint tp, t_tprint *last, int i, int j);
+int			onepipes_split(t_tprint tp, t_tprint *last, int i, int j);
+void		create_pipes(int **fd, int nbr);
+void 		launching_pipes_in_child(t_parse p, t_tab *t, pid_t *pid, int **fd);
+void		launching_pipes_in_parent(t_parse p, pid_t *pid, int **fd);
+void		check_files_needs(char *cmd);
+void		child_process(int **fd, int pos, int nbr);
+void		closing_loop_in(int **fd, int pos, int nbr);
+void		closing_loop_out(int **fd, int pos, int nbr);
+void		parent_closing_loop(int **fd, int nbr);
 
 //			Redirections
 int			*check_redir(char *cmd, char redir);
@@ -225,6 +257,36 @@ int			is_heredoc(char *cmd);
 void		read_heredoc(char *cmd);
 char 		**a_redir_pro_cmd(char *cmd);
 t_redir		dup_redir(t_redir r);
+int			redir_errors(int *nbr1, int *nbr2, t_parse *p);
+void		init_redirections(t_parse *p);
+t_doors		set_redirection(t_redir r, t_doors doors);
+t_doors		set_redir_in_pipe(t_redir r, t_doors doors);
+void		launch_child_in_set(t_redir r, int tmpfile);
+t_doors		init_doors(void);
+int			nbr_of_redir(char *cmd);
+void		launch_redir_in_pipe(t_redir r, t_tab *t, char *cmd);
+char		*ft_strjoin_sep(char const *s1, char const *s2, char sep);
+char		*find_cmd(char **tab);
+char		*join_cmd(char *cmd, char *next);
+char		**split_out_r(char *str);
+char		**split_w_starting_redir(char **tab);
+char		**split_w_starting_cmd(char **tab);
+void		launch_heredoc(char *stop);
+void		pid_errors(pid_t pid);
+void		launch_in_d_in_pipe(t_tab *t, char *cmd);
+void		launch_in_basic(t_redir r, t_tab *t, char *cmd);
+void		check_files_out(char *file);
+void		check_files_in(char *file);
+int			check_files_in_basic(char *file);
+int			check_files_out_basic(char *file);
+void		fork_and_launch_builtin(char *cmd, t_tab *t, int fd, int std);
+void		parse_for_redir_infos(char *cmd, t_redir *r, int index);
+t_doors		set_out(t_redir r, t_doors doors);
+t_doors		set_out_d(t_redir r, t_doors doors);
+t_doors		set_in(t_redir r, t_doors doors);
+t_doors		set_in_d(t_redir r, t_doors doors);
+t_doors		set_in_d_in_pipe(t_doors doors);
+int			is_redir_next(char **tab);
 
 //			Bin
 int			ms_b_other(char *buf);
@@ -233,6 +295,8 @@ void		other_basic(char *buf, t_tab *t);
 void		other_with_fork(char *buf, t_tab *t);
 void		other_redir_and_fork(char *buf, t_tab *t, int fd, int std);
 void		other_doors_and_fork(char *buf, t_tab *t, t_doors doors);
+void		status_of_child(int status);
+void		launch_child_process(char *buff, char **paths, char **envp);
 
 //			Variables
 t_var		str_to_var(char *str);
@@ -259,7 +323,5 @@ char		**tabjoin(char **tab1, char **tab2);
 //			Signaux
 void    	signal_handler(void);
 void		rl_replace_line (const char *text, int clear_undo);
-
-//			à checker si utilisé
 
 #endif

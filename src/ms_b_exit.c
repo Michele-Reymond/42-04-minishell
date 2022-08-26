@@ -18,12 +18,14 @@ char *status_conversion(char *cmd, char *symbol)
 	char *tmp;
 	char *tmp2;
 	char *new;
+	char *status;
 
 	len = ft_strlen(cmd) - ft_strlen(symbol);
 	tmp = malloc(sizeof(char) * (len + 2));
 	ft_bzero(tmp, len + 2);
 	ft_strlcat(tmp, cmd, len + 1);
-	tmp2 = ft_strjoin(tmp, ft_itoa(exit_status));
+	status = ft_itoa(exit_status);
+	tmp2 = ft_strjoin(tmp, status);
 	if (symbol + 2)
 	{
 		symbol += 2;
@@ -31,8 +33,9 @@ char *status_conversion(char *cmd, char *symbol)
 	}
 	else
 		new = ft_strdup(tmp2);
-	free(tmp);
-	free(tmp2);
+	ft_free(tmp);
+	ft_free(tmp2);
+	ft_free(status);
 	return (new);
 }
 
@@ -71,6 +74,7 @@ char *exit_status_convert(char *cmd)
 			new = tmp2;
 			tmp3 = tmp;
 		}
+		free(tmp);
 	}
 	else
 		new = ft_strdup(cmd);
