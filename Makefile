@@ -2,15 +2,20 @@
 # export LDFLAGS="-L/Users/vroch/.brew/opt/readline/lib"
 # export CPPFLAGS="-I/Users/vroch/.brew/opt/readline/include"
 
-
 NAME = minishell
 CC = gcc
 FLAGS = -Wall -Wextra -Werror -g
-# INC = -I inc -I src/libft/inc -I$(HOME)/.brew/opt/readline/include
-# LFT = -L src/libft -lft -lreadline -L$(HOME)/.brew/opt/readline/lib
+
+#for Mac M1 or not
+ifeq ($(shell uname -m), arm64)
 INC = -I inc -I src/libft/inc -I/opt/homebrew/opt/readline/include/readline
 LFT = -L src/libft -lft
 READLINE = -L/opt/homebrew/opt/readline/lib
+else
+INC = -I inc -I src/libft/inc -I$(HOME)/.brew/opt/readline/include
+LFT = -L src/libft -lft
+READLINE = -L$(HOME)/.brew/opt/readline/lib
+endif
 
 SRC_NAME = 	minishell.c \
 			ms_builtins.c \
@@ -81,7 +86,7 @@ all: $(NAME)
 
 $(NAME): $(OBJ)
 	@make -C $(LIB_DIR) --silent 
-	@gcc -o $(NAME) $(OBJ) -L $(LIB_DIR) -lft -lreadline
+	@gcc -o $(NAME) $(OBJ) -L $(LIB_DIR) -lft -lreadline $(READLINE)
 	@echo "##### minishell compiling finished! #####"
 	@echo "   (¯\`v´¯)"
 	@echo "  (¯\`(█)´¯)  (¯\`v´¯)"
