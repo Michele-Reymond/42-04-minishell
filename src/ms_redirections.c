@@ -6,16 +6,33 @@
 /*   By: mreymond <mreymond@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/06 15:58:02 by mreymond          #+#    #+#             */
-/*   Updated: 2022/08/26 15:43:19 by mreymond         ###   ########.fr       */
+/*   Updated: 2022/08/29 13:49:39 by mreymond         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
+void	launch_parent_in_doors(pid_t pid, char *cmd, t_tprint tp, t_tab *t)
+{
+	int			status;
+
+	waitpid(pid, &status, 0);
+	if (!ft_strncmp(cmd, "cd", 2) && (cmd[2] == ' ' || cmd[2] == '\0'))
+		t = ms_b_cd(tp, t);
+	else if (!ft_strncmp(cmd, "export", 6)
+		&& (cmd[6] == ' ' || cmd[6] == '\0'))
+		t = ft_export(t, tp);
+	else if (!ft_strncmp(cmd, "unset", 5)
+		&& (cmd[5] == ' ' || cmd[5] == '\0'))
+		t = unset_var(t, tp.tab);
+	free(cmd);
+	free_tp(tp);
+	tabfree(t->p.cmds);
+}
+
 void	fork_and_launch_builtin_doors(char *cmd, t_tab *t, t_doors doors)
 {
 	pid_t		pid;
-	int			status;
 	t_tprint	tp;
 
 	tp = parsing_master(cmd);
@@ -32,20 +49,22 @@ void	fork_and_launch_builtin_doors(char *cmd, t_tab *t, t_doors doors)
 		exit (0);
 	}
 	else
+		launch_parent_in_doors(pid, cmd, tp, t);
+}
+
+t_doors	make_doors(char **cmds, t_redir *r)
+{
+	t_doors		doors;
+	int			i;
+
+	i = 0;
+	doors = init_doors();
+	while (cmds[i] != NULL)
 	{
-		waitpid(pid, &status, 0);
-		if (!ft_strncmp(cmd, "cd", 2) && (cmd[2] == ' ' || cmd[2] == '\0'))
-			t = ms_b_cd(tp, t);
-		else if (!ft_strncmp(cmd, "export", 6)
-			&& (cmd[6] == ' ' || cmd[6] == '\0'))
-			t = ft_export(t, tp);
-		else if (!ft_strncmp(cmd, "unset", 5)
-			&& (cmd[5] == ' ' || cmd[5] == '\0'))
-			t = unset_var(t, tp.tab);
-		free(cmd);
-		free_tp(tp);
-		tabfree(t->p.cmds);
+		doors = set_redirection(r[i], doors);
+		i++;
 	}
+	return (doors);
 }
 
 void	launch_multiple_redir(t_redir *r, t_tab *t, char **cmds)
@@ -53,17 +72,9 @@ void	launch_multiple_redir(t_redir *r, t_tab *t, char **cmds)
 	t_doors		doors;
 	char		*newcmd;
 	char		*cmd;
-	int			i;
 
-	i = 0;
-	doors.in = STDIN_FILENO;
-	doors.out = STDOUT_FILENO;
+	doors = make_doors(cmds, r);
 	cmd = ft_strdup(r[0].cmd);
-	while (cmds[i] != NULL)
-	{
-		doors = set_redirection(r[i], doors);
-		i++;
-	}
 	free(r);
 	tabfree(cmds);
 	if (access(".heredoc", F_OK) == 0)

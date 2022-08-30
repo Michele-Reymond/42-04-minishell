@@ -6,7 +6,7 @@
 /*   By: mreymond <mreymond@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/09 10:50:43 by mreymond          #+#    #+#             */
-/*   Updated: 2022/08/26 16:33:17 by mreymond         ###   ########.fr       */
+/*   Updated: 2022/08/29 13:34:38 by mreymond         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -74,16 +74,13 @@ void	launch_child_heredoc(char *cmd, t_redir r, int tmpfile, t_tab *t)
 	char	*newcmd;
 	int		fd;
 
-	while ((input = readline("> ")) != NULL)
+	input = readline("> ");
+	while (input != NULL)
 	{
-		if (strlen(input) > 0)
-		{
-			if (!ft_strncmp(input, r.dest, ft_strlen(r.dest)))
-				break ;
-			write(tmpfile, input, ft_strlen(input));
-			write(tmpfile, "\n", 1);
-		}
+		if (write_heredoc(input, r, tmpfile))
+			break ;
 		free(input);
+		input = readline("> ");
 	}
 	free_t_redirs(r);
 	newcmd = ft_strdup(cmd);
@@ -102,7 +99,6 @@ void	launch_in_d(t_redir r, t_tab *t, char *cmd)
 {
 	int		tmpfile;
 	pid_t	pid;
-	int		status;
 
 	tmpfile = open(".heredoc", O_CREAT | O_RDWR | O_APPEND, 0644);
 	if (tmpfile < 0)
@@ -121,11 +117,5 @@ void	launch_in_d(t_redir r, t_tab *t, char *cmd)
 	if (pid == 0)
 		launch_child_heredoc(cmd, r, tmpfile, t);
 	else
-	{
-		waitpid(pid, &status, 0);
-		close(tmpfile);
-		tabfree(t->p.cmds);
-		free_t_redirs(r);
-		unlink(".heredoc");
-	}
+		launch_parent_heredoc(r, t, pid, tmpfile);
 }

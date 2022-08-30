@@ -6,7 +6,7 @@
 /*   By: mreymond <mreymond@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/20 10:48:46 by mreymond          #+#    #+#             */
-/*   Updated: 2022/08/26 16:29:34 by mreymond         ###   ########.fr       */
+/*   Updated: 2022/08/29 13:32:56 by mreymond         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,7 +47,8 @@ int	g_exit_status;
 
 // ________ Structures _________
 // parsing de echo
-typedef struct s_echo {
+typedef struct s_echo
+{
 	unsigned int	nbr_args;
 	char			flag;
 	char			**args;
@@ -57,7 +58,8 @@ typedef struct s_echo {
 
 // tableau de str et indice pour 
 // déterminer les quotes et espaces
-typedef struct s_tprint {
+typedef struct s_tprint
+{
 	char	**tab;
 	int		*print;
 }	t_tprint;
@@ -288,6 +290,8 @@ t_doors		set_in(t_redir r, t_doors doors);
 t_doors		set_in_d(t_redir r, t_doors doors);
 t_doors		set_in_d_in_pipe(t_doors doors);
 int			is_redir_next(char **tab);
+void		launch_parent_heredoc(t_redir r, t_tab *t, pid_t pid, int tmpfile);
+int			write_heredoc(char *input, t_redir r, int tmpfile);
 
 //			Bin
 int			ms_b_other(char *buf);
