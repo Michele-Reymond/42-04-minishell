@@ -6,7 +6,7 @@
 /*   By: mreymond <mreymond@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/20 11:38:04 by mreymond          #+#    #+#             */
-/*   Updated: 2022/08/26 15:20:44 by mreymond         ###   ########.fr       */
+/*   Updated: 2022/08/30 21:07:57 by mreymond         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,14 +59,18 @@ int	check_doubles_pipes(t_tprint tp)
 	while (tp.tab[i] != NULL)
 	{
 		if (tp.tab[i][0] == '|' && tp.tab[i + 1][0] == '|'
-			&& (tp.print[i + 2] == 2 || tp.print[i + 1] == 5)
-			&& (tp.print[i + 2] == 2 || tp.print[i + 1] == 5))
+			&& (tp.print[i + 2] == 2 || tp.print[i + 2] == 5)
+			&& (tp.print[i + 2] == 2 || tp.print[i + 2] == 5))
 		{
 			printf(ERROR_UNEXPECTED_TOKEN);
-			if (tp.tab[i + 2][0] == '|')
-				printf("\'||\'\n");
-			else
-				printf("\'|\'\n");
+			printf("\'||\'\n");
+			g_exit_status = 258;
+			return (1);
+		}
+		else if (tp.tab[i][0] == '|' && tab_len(tp.tab) == 2)
+		{
+			printf(ERROR_UNEXPECTED_TOKEN);
+			printf("\'|\'\n");
 			g_exit_status = 258;
 			return (1);
 		}
