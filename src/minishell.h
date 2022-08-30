@@ -6,7 +6,7 @@
 /*   By: mreymond <mreymond@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/20 10:48:46 by mreymond          #+#    #+#             */
-/*   Updated: 2022/08/30 20:45:01 by mreymond         ###   ########.fr       */
+/*   Updated: 2022/08/30 23:25:11 by mreymond         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -129,6 +129,9 @@ typedef struct s_tab
 }	t_tab;
 
 // ________ Prototypes _________
+
+//config
+void		rl_replace_line(const char *text, int clear_undo);
 
 //			Global
 int			monitor(char *cmd, t_tab *t);

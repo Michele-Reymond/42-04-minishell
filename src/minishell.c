@@ -6,7 +6,7 @@
 /*   By: mreymond <mreymond@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/20 10:47:58 by mreymond          #+#    #+#             */
-/*   Updated: 2022/08/30 22:03:04 by mreymond         ###   ########.fr       */
+/*   Updated: 2022/08/30 22:50:53 by mreymond         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,7 @@ int	main(int argc, char **argv, char **envp)
 	t.exp = make_export(t.env);
 	t.p.cmds = NULL;
 	symbol = NULL;
-	// signal_handler();
+	signal_handler();
 	tmp = readline("🌸 >> ");
 	while (tmp != NULL)
 	{

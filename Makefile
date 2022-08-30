@@ -6,8 +6,11 @@
 NAME = minishell
 CC = gcc
 FLAGS = -Wall -Wextra -Werror -g
-INC = -I inc -I src/libft/inc -I$(HOME)/.brew/opt/readline/include
-LFT = -L src/libft -lft -lreadline -L$(HOME)/.brew/opt/readline/lib
+# INC = -I inc -I src/libft/inc -I$(HOME)/.brew/opt/readline/include
+# LFT = -L src/libft -lft -lreadline -L$(HOME)/.brew/opt/readline/lib
+INC = -I inc -I src/libft/inc -I/opt/homebrew/opt/readline/include/readline
+LFT = -L src/libft -lft
+READLINE = -L/opt/homebrew/opt/readline/lib
 
 SRC_NAME = 	minishell.c \
 			ms_builtins.c \
