@@ -6,7 +6,7 @@
 /*   By: mreymond <mreymond@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/20 12:16:50 by vroch             #+#    #+#             */
-/*   Updated: 2022/06/17 16:24:32 by mreymond         ###   ########.fr       */
+/*   Updated: 2022/08/26 14:32:18 by mreymond         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,8 +55,8 @@ static char *ms_getenv(t_tab *t, char *vgetenv)
 	int	len;
 	int	i;
 	int	j;
-	int	k;
-	char	*value;
+	// int	k;
+	char	*value = NULL;
 
 	len = ft_strlen(vgetenv);
 	i = 0;
@@ -105,7 +105,7 @@ t_tab *ms_b_cd(t_tprint tp, t_tab *t)
 	{
 		printf("minishell: cd: %s: ", tp.tab[1]);
 		printf(ERROR_FILE);
-		exit_status = 1;
+		g_exit_status = 1;
 	}
 	else
 	{

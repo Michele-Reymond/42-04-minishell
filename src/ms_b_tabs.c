@@ -6,7 +6,7 @@
 /*   By: mreymond <mreymond@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/27 11:26:36 by mreymond          #+#    #+#             */
-/*   Updated: 2022/07/01 18:17:17 by mreymond         ###   ########.fr       */
+/*   Updated: 2022/08/26 15:15:02 by mreymond         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,17 +27,23 @@ void	tabfree(char **tab)
 	int	i;
 
 	i = 0;
-	while (tab[i] != NULL)
+	if (tab != NULL)
 	{
-		if (tab[i] != NULL)
+		while (tab[i] != NULL)
 		{
-			free(tab[i]);
-			tab[i] = NULL;
+			if (tab[i] != NULL)
+			{
+				free(tab[i]);
+				tab[i] = NULL;
+			}
+			i++;
 		}
-		i++;
 	}
-	free(tab);
-	tab = NULL;
+	if (tab != NULL)
+	{
+		free(tab);
+		tab = NULL;
+	}
 }
 
 char	**tabdup(char **tab)
@@ -47,6 +53,8 @@ char	**tabdup(char **tab)
 
 	i = 0;
 	new = malloc(sizeof(char *) * (tab_len(tab) + 1));
+	if (new == NULL)
+		return (NULL);
 	while (tab[i] != NULL)
 	{
 		new[i] = ft_strdup(tab[i]);
@@ -65,44 +73,15 @@ char	**new_tab(void)
 	return (new);
 }
 
-void	display_tab(char **tab)
-{
-	int	i;
-
-	i = 0;
-	while (tab[i] != NULL)
-	{
-		printf("%s\n", tab[i]);
-		i++;
-	}
-}
-
-
-// displaying all vars exept variable without value
-void	display_env(char **tab)
-{
-	int	i;
-
-	i = 0;
-	while (tab[i] != NULL)
-	{
-		if (ft_strchr(tab[i], '=') != NULL)
-			// if specific to VR. - remove for normal usage
-			//if(!ft_strncmp(tab[i],"PWD",3) || !ft_strncmp(tab[i],"OLDPWD",6)) 		
-			printf("%s\n", tab[i]);
-		i++;
-	}
-}
-
 char	*tab_to_str(char **tab)
 {
 	char	*str;
 	char	*tmp;
 	int		i;
 
-	i = 0;
+	i = -1;
 	tmp = ft_strdup("");
-	while (tab[i] != NULL)
+	while (tab[i++] != NULL)
 	{
 		if (*tab[i] == '\0')
 		{
@@ -119,7 +98,6 @@ char	*tab_to_str(char **tab)
 			free(tmp);
 			tmp = str;
 		}
-		i++;
 	}
 	return (str);
 }

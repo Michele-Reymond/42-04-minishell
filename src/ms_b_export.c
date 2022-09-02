@@ -6,7 +6,7 @@
 /*   By: mreymond <mreymond@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/20 10:43:17 by mreymond          #+#    #+#             */
-/*   Updated: 2022/07/01 21:27:54 by mreymond         ###   ########.fr       */
+/*   Updated: 2022/08/26 14:54:24 by mreymond         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,152 +22,89 @@ void	display_export(char **env)
 	while (env[i] != NULL)
 	{
 		// if specific to VR. - remove for normal us
-		if(!ft_strncmp(env[i],"PWD",3) || !ft_strncmp(env[i],"OLDPWD",6)) 
+		// if(!ft_strncmp(env[i],"PWD",3) || !ft_strncmp(env[i],"OLDPWD",6)) 
 		printf("declare -x %s\n", env[i]);
 		i++;
 	}
 }
 
-char	**update_env(char **old, t_var var, bool quotes)
+char	*export_without_spaces(int *i, t_tprint tp)
 {
-	char	**new;
-	int		var_pos;
+	char	*new;
+	char	*joined;
+	char	*tmp;
 
-	if (var.key == NULL)
-		return (old);
-	var_pos = var_exist(old, var.key);
-	if (var_pos != 0)
-		new = update_var(old, var, var_pos, quotes);
-	else
-		new = add_var(old, var, quotes);
+	joined = ft_strdup(tp.tab[*i]);
+	(*i)++;
+	while (tp.tab[*i] != NULL && tp.print[*i] < 3)
+	{
+		tmp = ft_strjoin(joined, tp.tab[*i]);
+		free(joined);
+		joined = tmp;
+		(*i)++;
+	}
+	new = ft_strdup(joined);
+	free(joined);
 	return (new);
 }
 
-int var_check(t_var var)
+char	**parsing_for_export(t_tprint tp)
 {
-	if (!(ft_isalpha(var.key[0]) || var.key[0] == '_'))
-		return (1);
-	return (0);
-}
-
-int check_identifier(char *str)
-{
-	int i;
+	int		i;
+	int		j;
+	char	**new;
+	int		tablen;
 
 	i = 0;
-	while (str[i] != '\0')
-	{
-		if (!(((ft_isalpha(str[i]) && i == 0) || str[i] == '_' || str[i] == '=') 
-				|| ((ft_isalnum(str[i]) && i > 0) || str[i] == '_' || str[i] == '=')))
-			return (1);
-		i++;
-	}
-	return (0);
-}
-
-// compter les commandes pour export
-int equal_count(t_tprint tp)
-{
-	int i;
-	int nbr;
-
-	i = 0;
-	nbr = 0;
-	display_tab_and_int(tp.print, tp.tab);
-	exit(0);
+	j = 0;
+	tablen = spaces_count(tp);
+	new = malloc(sizeof(char *) * (tablen + 1));
 	while (tp.tab[i] != NULL)
 	{
-		while (tp.tab[i] != NULL && how_many_in_str(tp.tab[i], '=') == 0)
-			i++;
-		nbr += i;
-		if (tp.tab[i] != NULL && tp.tab[i][ft_strlen(tp.tab[i]) - 1] == '=' && tp.print[i + 1] < 3)
+		if (tp.print[i + 1] < 3)
 		{
-
-			i++;
+			new[j] = export_without_spaces(&i, tp);
+			j++;
 		}
-		nbr += i;
-	i = nbr;
-		i++;
+		else
+			new[j++] = ft_strdup(tp.tab[i++]);
 	}
-	return (0);
+	new[j] = NULL;
+	return (new);
 }
 
-char **parsing_for_export(t_tprint tp)
+void	export_mechanic(int *i, int *j, t_var *vartab, t_tab *t)
 {
-	int i;
-
-	i = 0;
-	equal_count(tp);
-	while (tp.tab[i])
-	{
-
-		i++;
-	}
-	return (tp.tab);
+	if (vartab[*j].status == 0 && !(vartab[*j].key[0] == '_'
+			&& ft_strlen(vartab[*j].key) == 1))
+		update_with_new_var(t, vartab[*j], i, j);
+	else if (!(vartab[*j].key[0] == '_'
+			&& ft_strlen(vartab[*j].key) == 1))
+		export_errors(vartab[*j], i, j);
+	else
+		export_increase(i, j);
 }
 
 t_tab	*ft_export(t_tab *t, t_tprint tp)
 {
 	t_var	*vartab;
-	char	**tmp;
-	char	**tmp2;
 	char	**token;
 	int		i;
 	int		j;
 
 	i = 1;
 	j = 0;
+	vartab = NULL;
 	token = parsing_for_export(tp);
 	if (tab_len(token) == 1)
 		display_export(t->exp);
 	else
 	{
-		vartab = malloc(sizeof(t_var) * tab_len(token) - 1);
-		while (token[i])
-		{
-			vartab[j] = str_to_var(token[i]);
-			if (vartab[j].key == NULL || check_identifier(vartab[j].key))
-			{
-				vartab[j].key = ft_strdup(token[i]);
-				vartab[j].status = -1;
-			}
-			else if (var_check(vartab[j]))
-				vartab[j].status = -1;
-			else
-				vartab[j].status = 0;
-			i++;
-			j++;
-		}
-		j = 0;
+		vartab = create_vartab(&i, token);
 		while (i > 1)
-		{
-			if (vartab[j].status == 0 && !(vartab[j].key[0] == '_' && ft_strlen(vartab[j].key) == 1))
-			{
-				tmp = update_env(t->env, vartab[j], false);
-				tmp2 = update_env(t->exp, vartab[j], true);
-				tabfree(t->env);
-				tabfree(t->exp);
-				t->env = tmp;
-				t->exp = tabsort(tmp2);
-				exit_status = 0;
-				j++;
-				i--;
-			}
-			else if (!(vartab[j].key[0] == '_' && ft_strlen(vartab[j].key) == 1))
-			{
-				printf(MINISHELL ERRORS_EXP "\'%s\': ", vartab[j].key);
-				printf(ERRORS_IDENTIFIER);
-				exit_status = 1;
-				j++;
-				i--;
-			}
-			else
-			{
-				j++;
-				i--;
-				exit_status = 0;
-			}
-		}
+			export_mechanic(&i, &j, vartab, t);
 	}
+	free_vartab(vartab, tab_len(token) - 1);
+	tabfree(token);
 	return (t);
 }

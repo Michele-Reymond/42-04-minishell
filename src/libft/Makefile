@@ -38,7 +38,7 @@ ft_putnbr_fd.c
 
 CC=gcc
 
-CFLAGS= -Wall -Wextra -Werror
+CFLAGS= -Wall -Wextra -Werror -g
 
 RM=rm -f
 

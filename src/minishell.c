@@ -6,7 +6,7 @@
 /*   By: mreymond <mreymond@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/20 10:47:58 by mreymond          #+#    #+#             */
-/*   Updated: 2022/07/01 20:54:42 by mreymond         ###   ########.fr       */
+/*   Updated: 2022/08/30 22:50:53 by mreymond         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,47 +14,35 @@
 
 int	main(int argc, char **argv, char **envp)
 {
-	
 	char		*cmd;
 	char		*tmp;
+	char		*symbol;
 	t_tab		t;
 
 	(void) argv;
 	check_args(argc);
 	t.env = tabdup(envp);
 	t.exp = make_export(t.env);
-	// signal_handler();
-	while ((tmp = readline("🌸 >> ")) != NULL)
+	t.p.cmds = NULL;
+	symbol = NULL;
+	signal_handler();
+	tmp = readline("🌸 >> ");
+	while (tmp != NULL)
 	{
-		cmd = exit_status_convert(tmp);
+		cmd = exit_status_convert(tmp, symbol);
 		if (strlen(cmd) > 0)
 		{
 			add_history(tmp);
+			free(tmp);
 			monitor(cmd, &t);
 		}
-  	  	free(cmd);
-		free(tmp);
+		tmp = readline("🌸 >> ");
 	}
-	exit(exit_status);
+	exit(g_exit_status);
 }
 
-// TO DO (Michèle)!!
-// 1. vérifier les t_tprint avec les nouvelles valeurs 3, 4 et 5
-// 2. gérer les =
-// 3. verifier toutes les sorties. valeur de exit_status
-
-// quotes:
-
-// 4. .minishell (checker other correctement)
-// 5. regler les bugs
-// 6. checker les leaks et les closes de fichiers et les protections de malloc
-// 7. cleaner cet enfer
-
-// BUGS : 
+// TO DO
+// Verifier toutes les sorties. valeur de exit_status
 // Test only spaces or tabs. (comment faire avec TAB?)
 // Unset the $PATH and check if it is not working anymore
-
-// FAUX par rapport a bash :
-// quand on fait "exit 1 2 3" c'est juste mais le exit status est 255 alors qu'il devrait être 1
-// expr $? + $? qui sort expr: not a decimal number: '$?' au lieu d'un calcul
-// tab (qu'est-ce qu'il doit se passer quand on fait tab?)
+// signaux

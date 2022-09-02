@@ -1,40 +1,35 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ms_errors.c                                        :+:      :+:    :+:   */
+/*   ms_utils.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: mreymond <mreymond@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2022/06/06 11:20:52 by mreymond          #+#    #+#             */
-/*   Updated: 2022/08/26 15:15:50 by mreymond         ###   ########.fr       */
+/*   Created: 2022/05/20 11:38:04 by mreymond          #+#    #+#             */
+/*   Updated: 2022/08/26 15:43:32 by mreymond         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-void	check_args(int argc)
+char	*ft_strldup(const char *src, size_t dstsize)
 {
-	if (argc > 1)
-	{
-		printf(ERROR_ARGC);
-		exit(EXIT_FAILURE);
-	}
-}
+	size_t	i;
+	char	*dst;
+	char	*ptr;
 
-int	pre_parsing_errors(char *cmd, t_parse p)
-{
-	(void) cmd;
-	if (!(p.redir_in >= 0 && p.redir_out >= 0))
-		return (1);
-	if (p.double_q % 2 != 0)
+	i = 0;
+	if (dstsize == 0)
+		return (NULL);
+	ptr = (char *)src;
+	dst = malloc(sizeof(char) * (dstsize + 1));
+	if (dst == NULL)
+		return (NULL);
+	while (ptr[i] != '\0' && i < (dstsize - 1))
 	{
-		printf(ERROR_QUOTES);
-		return (1);
+		dst[i] = ptr[i];
+		i++;
 	}
-	if (p.single_q % 2 != 0)
-	{
-		printf(ERROR_QUOTES);
-		return (1);
-	}
-	return (0);
+	dst[i] = '\0';
+	return (dst);
 }

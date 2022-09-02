@@ -6,7 +6,7 @@
 /*   By: mreymond <mreymond@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/20 12:16:50 by vroch             #+#    #+#             */
-/*   Updated: 2022/06/17 16:26:57 by mreymond         ###   ########.fr       */
+/*   Updated: 2022/08/26 14:33:06 by mreymond         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,7 @@ int	ms_b_pwd(void)
 
 	pwd = getcwd(NULL, 0);
 	ft_putendl_fd(pwd, 2);
-	exit_status = 0;
+	g_exit_status = 0;
 	free(pwd);
 	return (0);
 }
