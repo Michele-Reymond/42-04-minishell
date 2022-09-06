@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ms_b_other.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mreymond <mreymond@student.42.fr>          +#+  +:+       +#+        */
+/*   By: vroch <vroch@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/26 12:37:07 by vroch             #+#    #+#             */
-/*   Updated: 2022/08/10 12:08:11 by mreymond         ###   ########.fr       */
+/*   Updated: 2022/09/06 08:35:56 by vroch            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -300,6 +300,7 @@ int ms_b_other(char *buf)
 	cmd = ot_cmd_checking(env_parms, buf);
 	parm_list = NULL;
 	parm_list = ot_parm_parsing(parm_list, buf, cmd);
+	printf("parm_list : %s",parm_list[1]);
 	err = 0;
 	err = access(parm_list[0], X_OK);
 	if (err != 0)

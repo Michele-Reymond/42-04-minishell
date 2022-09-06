@@ -16,7 +16,7 @@
 void	other_basic(char *buf, t_tab *t)
 {
 	char	**paths;
-
+	
 	paths = ft_split(getenv("PATH"), ':');
 	launch_child_process(buf, paths, t->env);
 	tabfree(paths);
