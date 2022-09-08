@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ms_b_other_launch.c                                :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mreymond <mreymond@student.42.fr>          +#+  +:+       +#+        */
+/*   By: vroch <vroch@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/26 12:37:07 by vroch             #+#    #+#             */
-/*   Updated: 2022/08/26 14:59:54 by mreymond         ###   ########.fr       */
+/*   Updated: 2022/09/08 13:33:04 by vroch            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,7 @@
 void	other_basic(char *buf, t_tab *t)
 {
 	char	**paths;
-	
+
 	paths = ft_split(getenv("PATH"), ':');
 	launch_child_process(buf, paths, t->env);
 	tabfree(paths);
@@ -38,7 +38,7 @@ void	other_with_fork(char *buf, t_tab *t)
 	char	**paths;
 	pid_t	pid;
 
-	paths = ft_split(getenv("PATH"), ':');
+	paths = pathextraction();
 	pid = fork();
 	if (pid < 0)
 	{
@@ -63,7 +63,7 @@ void	other_redir_and_fork(char *buf, t_tab *t, int fd, int std)
 	char	**paths;
 	pid_t	pid;
 
-	paths = ft_split(getenv("PATH"), ':');
+	paths = pathextraction();
 	pid = fork();
 	if (pid < 0)
 	{
@@ -89,7 +89,7 @@ void	other_doors_and_fork(char *buf, t_tab *t, t_doors doors)
 	char	**paths;
 	pid_t	pid;
 
-	paths = ft_split(getenv("PATH"), ':');
+	paths = pathextraction();
 	pid = fork();
 	if (pid < 0)
 	{

@@ -32,7 +32,6 @@ SRC_NAME = 	minishell.c \
 			ms_b_export_vars.c \
 			ms_b_cd.c \
 			ms_b_pwd.c \
-			ms_b_other.c \
 			ms_b_other_launch.c \
 			ms_b_other_utils.c \
 			ms_b_exit.c \

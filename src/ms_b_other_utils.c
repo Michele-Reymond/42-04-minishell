@@ -6,7 +6,7 @@
 /*   By: vroch <vroch@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/26 12:37:07 by vroch             #+#    #+#             */
-/*   Updated: 2022/09/06 13:43:39 by vroch            ###   ########.fr       */
+/*   Updated: 2022/09/08 13:31:01 by vroch            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,6 @@ void	exec_cmd(char **paths, char *first_cmd, char **envp, char **flags)
 	while (paths[++i] != NULL)
 	{	
 		cmd = ft_strjoin(paths[i], first_cmd);
-		printf("cmd : %s\n", cmd);
 		ret = execve(cmd, flags, envp);
 		ft_free(cmd);
 	}
@@ -33,7 +32,7 @@ void	exec_cmd(char **paths, char *first_cmd, char **envp, char **flags)
 	}
 	if (ret < 0)
 	{
-		printf("minishell: %s", &first_cmd[1]);
+		printf("minishell: %s ", &first_cmd[1]);
 		printf(ERROR_CMD_NOT_FOUND);
 		ft_free(first_cmd);
 		tabfree(paths);
@@ -69,4 +68,17 @@ void	status_of_child(int status)
 		if (g_exit_status != 131)
 			g_exit_status += 128;
 	}
+}
+
+char	**pathextraction(void)
+{
+	char	*currentpath;
+	char 	**paths;
+
+	currentpath = getenv("PATH");
+	currentpath = ft_strjoin(currentpath, ":");
+	currentpath = ft_strjoin(currentpath, getcwd (NULL, 0));
+	paths = ft_split(currentpath, ':');
+	free (currentpath);
+	return (paths);
 }
