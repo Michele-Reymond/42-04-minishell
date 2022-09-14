@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ms_signals.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mreymond <mreymond@student.42.fr>          +#+  +:+       +#+        */
+/*   By: vroch <vroch@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/20 16:41:41 by mreymond          #+#    #+#             */
-/*   Updated: 2022/08/30 22:51:29 by mreymond         ###   ########.fr       */
+/*   Updated: 2022/09/06 12:50:43 by vroch            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,7 @@ void    on_sigquit(int sig, siginfo_t *info, void *context)
 {
 	(void)info;
 	(void)context;
-	printf ("signal quit ctrl backslash:%d\n",sig);
+	//printf ("signal quit ctrl backslash:%d\n",sig);
 	if (sig == 3)
 	{
 		write(1, "\n", 1);
@@ -30,7 +30,7 @@ void    on_sigint(int sig, siginfo_t *info, void *context)
 {
 	(void)info;
 	(void)context;
-	printf ("signal init ctrl_c:%d\n",sig);
+	//printf ("signal init ctrl_c:%d\n",sig);
 	if (sig == 2)
 	{
 		write(1, "\n", 1);

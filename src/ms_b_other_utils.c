@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ms_b_other_utils.c                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mreymond <mreymond@student.42.fr>          +#+  +:+       +#+        */
+/*   By: vroch <vroch@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/26 12:37:07 by vroch             #+#    #+#             */
-/*   Updated: 2022/08/26 15:01:47 by mreymond         ###   ########.fr       */
+/*   Updated: 2022/09/14 08:15:11 by vroch            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,7 @@ void	exec_cmd(char **paths, char *first_cmd, char **envp, char **flags)
 
 	i = -1;
 	while (paths[++i] != NULL)
-	{
+	{	
 		cmd = ft_strjoin(paths[i], first_cmd);
 		ret = execve(cmd, flags, envp);
 		ft_free(cmd);
@@ -68,4 +68,17 @@ void	status_of_child(int status)
 		if (g_exit_status != 131)
 			g_exit_status += 128;
 	}
+}
+
+char	**pathextraction(void)
+{
+	char	*currentpath;
+	char 	**paths;
+
+	currentpath = getenv("PATH");
+	currentpath = ft_strjoin(currentpath, ":");
+	currentpath = ft_strjoin(currentpath, getcwd (NULL, 0));
+	paths = ft_split(currentpath, ':');
+	free (currentpath);
+	return (paths);
 }

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mreymond <mreymond@student.42.fr>          +#+  +:+       +#+        */
+/*   By: vroch <vroch@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/20 10:48:46 by mreymond          #+#    #+#             */
-/*   Updated: 2022/08/30 23:25:11 by mreymond         ###   ########.fr       */
+/*   Updated: 2022/09/08 13:30:56 by vroch            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,6 +24,7 @@
 # include <dirent.h>
 # include <fcntl.h>
 # include <signal.h>
+# include <termios.h>
 # include "libft/libft.h"
 
 // __________ Macros __________
@@ -126,6 +127,8 @@ typedef struct s_tab
 	char	**env;
 	char	**exp;
 	t_parse	p;
+	struct termios	save;
+	struct termios  curr;
 }	t_tab;
 
 // ________ Prototypes _________
@@ -311,6 +314,7 @@ void		other_redir_and_fork(char *buf, t_tab *t, int fd, int std);
 void		other_doors_and_fork(char *buf, t_tab *t, t_doors doors);
 void		status_of_child(int status);
 void		launch_child_process(char *buff, char **paths, char **envp);
+char		**pathextraction(void);
 
 //			Variables
 t_var		str_to_var(char *str);
