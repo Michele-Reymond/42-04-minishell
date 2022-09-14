@@ -6,7 +6,7 @@
 /*   By: vroch <vroch@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/20 10:48:46 by mreymond          #+#    #+#             */
-/*   Updated: 2022/09/08 13:30:56 by vroch            ###   ########.fr       */
+/*   Updated: 2022/09/14 10:06:46 by vroch            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -124,11 +124,11 @@ typedef struct s_redir
 // tableaux utils dans tous minishell
 typedef struct s_tab
 {
-	char	**env;
-	char	**exp;
-	t_parse	p;
+	char			**env;
+	char			**exp;
+	t_parse			p;
 	struct termios	save;
-	struct termios  curr;
+	struct termios	curr;
 }	t_tab;
 
 // ________ Prototypes _________

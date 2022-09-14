@@ -6,7 +6,7 @@
 /*   By: vroch <vroch@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/27 11:28:42 by mreymond          #+#    #+#             */
-/*   Updated: 2022/09/08 11:12:59 by vroch            ###   ########.fr       */
+/*   Updated: 2022/09/14 10:22:43 by vroch            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -104,8 +104,6 @@ char	**update_var(char **old, t_var var, int pos, bool quotes)
 	new = malloc(sizeof(char *) * (tab_len(old) + 1));
 	while (old[i] != NULL)
 	{
-		// VR. mise en commentaire
-		//printf("%s\n",old[i]);
 		if (!ft_strncmp(old[i], var.key, ft_strlen(var.key)))
 		{
 			if (quotes)

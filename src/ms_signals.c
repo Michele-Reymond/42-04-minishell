@@ -6,17 +6,20 @@
 /*   By: vroch <vroch@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/20 16:41:41 by mreymond          #+#    #+#             */
-/*   Updated: 2022/09/06 12:50:43 by vroch            ###   ########.fr       */
+/*   Updated: 2022/09/14 10:22:02 by vroch            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-void    on_sigquit(int sig, siginfo_t *info, void *context)
+/* **************************************************************************
+ *  signal quit ctrl backslash
+ */
+
+void	on_sigquit(int sig, siginfo_t *info, void *context)
 {
 	(void)info;
 	(void)context;
-	//printf ("signal quit ctrl backslash:%d\n",sig);
 	if (sig == 3)
 	{
 		write(1, "\n", 1);
@@ -25,12 +28,14 @@ void    on_sigquit(int sig, siginfo_t *info, void *context)
 		rl_redisplay();
 	}
 }
+/* **************************************************************************
+ *  signal init ctrl_c
+ */
 
-void    on_sigint(int sig, siginfo_t *info, void *context)
+void	on_sigint(int sig, siginfo_t *info, void *context)
 {
 	(void)info;
 	(void)context;
-	//printf ("signal init ctrl_c:%d\n",sig);
 	if (sig == 2)
 	{
 		write(1, "\n", 1);
@@ -39,9 +44,11 @@ void    on_sigint(int sig, siginfo_t *info, void *context)
 		rl_redisplay();
 	}
 }
+/* **************************************************************************
+ *  gestionnaire de signauxs
+ */
 
-//gestionnaire de signaux
-void    signal_handler(void)
+void	signal_handler(void)
 {
 	struct sigaction	sia;
 
@@ -51,6 +58,5 @@ void    signal_handler(void)
 	sigaction(SIGQUIT, &sia, NULL);
 	sia.sa_sigaction = on_sigint;
 	sigaction(SIGINT, &sia, NULL);
-
-	return;	
+	return ();
 }

@@ -6,7 +6,7 @@
 /*   By: vroch <vroch@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/26 12:37:07 by vroch             #+#    #+#             */
-/*   Updated: 2022/09/14 08:15:11 by vroch            ###   ########.fr       */
+/*   Updated: 2022/09/14 10:08:06 by vroch            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -73,7 +73,7 @@ void	status_of_child(int status)
 char	**pathextraction(void)
 {
 	char	*currentpath;
-	char 	**paths;
+	char	**paths;
 
 	currentpath = getenv("PATH");
 	currentpath = ft_strjoin(currentpath, ":");

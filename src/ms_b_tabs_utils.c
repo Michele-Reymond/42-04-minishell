@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ms_b_tabs_utils.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mreymond <mreymond@student.42.fr>          +#+  +:+       +#+        */
+/*   By: vroch <vroch@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/27 11:26:36 by mreymond          #+#    #+#             */
-/*   Updated: 2022/08/26 15:02:28 by mreymond         ###   ########.fr       */
+/*   Updated: 2022/09/14 10:15:35 by vroch            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,8 +23,8 @@ void	display_tab(char **tab)
 		i++;
 	}
 }
-
 // displaying all vars exept variable without value
+
 void	display_env(char **tab)
 {
 	int	i;
@@ -33,8 +33,6 @@ void	display_env(char **tab)
 	while (tab[i] != NULL)
 	{
 		if (ft_strchr(tab[i], '=') != NULL)
-			// if specific to VR. - remove for normal usage
-			//if(!ft_strncmp(tab[i],"PWD",3) || !ft_strncmp(tab[i],"OLDPWD",6)) 		
 			printf("%s\n", tab[i]);
 		i++;
 	}
