@@ -6,7 +6,7 @@
 /*   By: vroch <vroch@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/20 10:47:58 by mreymond          #+#    #+#             */
-/*   Updated: 2022/09/06 13:29:16 by vroch            ###   ########.fr       */
+/*   Updated: 2022/09/14 08:13:30 by vroch            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,13 +22,13 @@ static	t_tab	main_termios(t_tab t)
 	return (t);
 }
 
-static char	*main_readline(char *tmp, char *cmd, t_tab t)
+static char	*main_readline(char *tmp, char *cmd, t_tab *t)
 {
 	if (strlen(cmd) > 0)
 	{
 		add_history(tmp);
 		free(tmp);
-		monitor(cmd, &t);
+		monitor(cmd, t);
 	}
 	tmp = readline("🌸 >> ");
 	return (tmp);
@@ -52,7 +52,7 @@ int	main(int argc, char **argv, char **envp)
 	while (tmp != NULL)
 	{
 		cmd = exit_status_convert(tmp, symbol);
-		tmp = main_readline(tmp, cmd, t);
+		tmp = main_readline(tmp, cmd, &t);
 	}
 	tcsetattr(STDIN_FILENO, 0, &t.save);
 	exit(g_exit_status);

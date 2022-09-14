@@ -6,7 +6,7 @@
 /*   By: vroch <vroch@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/26 12:37:07 by vroch             #+#    #+#             */
-/*   Updated: 2022/09/08 13:31:01 by vroch            ###   ########.fr       */
+/*   Updated: 2022/09/14 08:15:11 by vroch            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,7 +32,7 @@ void	exec_cmd(char **paths, char *first_cmd, char **envp, char **flags)
 	}
 	if (ret < 0)
 	{
-		printf("minishell: %s ", &first_cmd[1]);
+		printf("minishell: %s: ", &first_cmd[1]);
 		printf(ERROR_CMD_NOT_FOUND);
 		ft_free(first_cmd);
 		tabfree(paths);
