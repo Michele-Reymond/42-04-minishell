@@ -6,28 +6,32 @@
 /*   By: mreymond <mreymond@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/26 12:37:07 by vroch             #+#    #+#             */
-/*   Updated: 2022/09/20 17:21:15 by mreymond         ###   ########.fr       */
+/*   Updated: 2022/09/20 20:02:37 by mreymond         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-char	*ft_getenv(char **env)
+static void	exec_neg(char **paths, char *first_cmd, char **envp, char **flags)
 {
-	int		pos;
-	char	**tmp;
-	char	*path;
+	char	**new_flags;
+	int		ret;
 
-	pos = var_exist(env, "PATH");
-	if (!ft_strncmp(env[pos], "PATH", 4) && (env[pos][4] == '='))
+	ret = execve(first_cmd, flags, envp);
+	if (ret < 0 && ft_strrchr(flags[0], '/'))
 	{
-		tmp = ft_split(env[pos], '=');
-		path = ft_strdup(tmp[1]);
-		tabfree(tmp);
+		new_flags = add_to_tab_begin(flags, "/usr/bin/env");
+		ret = execve("/usr/bin/env", new_flags, envp);
+		tabfree(new_flags);
 	}
-	else
-		path = ft_strdup("");
-	return (path);
+	if (ret < 0)
+	{
+		printf("minishell: %s: ", first_cmd);
+		printf(ERROR_CMD_NOT_FOUND);
+		ft_free(first_cmd);
+		tabfree(paths);
+		exit(errno);
+	}
 }
 
 void	exec_cmd(char **paths, char *first_cmd, char **envp, char **flags)
@@ -42,26 +46,12 @@ void	exec_cmd(char **paths, char *first_cmd, char **envp, char **flags)
 	{	
 		tmp = ft_strjoin("/", first_cmd);
 		cmd = ft_strjoin(paths[i], tmp);
-		// printf("%s\n", cmd);
 		ret = execve(cmd, flags, envp);
 		ft_free(cmd);
 		ft_free(tmp);
 	}
 	if (ret < 0)
-	{
-		cmd = first_cmd;
-		// printf("%s\n", cmd);
-		// display_tab(flags);
-		ret = execve(cmd, flags, envp);
-	}
-	if (ret < 0)
-	{
-		printf("minishell: %s: ", first_cmd);
-		printf(ERROR_CMD_NOT_FOUND);
-		ft_free(first_cmd);
-		tabfree(paths);
-		exit(errno);
-	}
+		exec_neg(paths, first_cmd, envp, flags);
 	ft_free(first_cmd);
 }
 

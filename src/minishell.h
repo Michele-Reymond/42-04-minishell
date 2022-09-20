@@ -6,7 +6,7 @@
 /*   By: mreymond <mreymond@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/20 10:48:46 by mreymond          #+#    #+#             */
-/*   Updated: 2022/09/20 16:27:52 by mreymond         ###   ########.fr       */
+/*   Updated: 2022/09/20 19:33:23 by mreymond         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -337,6 +337,7 @@ char		**tabsort(char **tab);
 void		display_tab(char **tab);
 char		**new_tab(void);
 char		**add_to_tab(char **oldtab, char *str_to_add);
+char		**add_to_tab_begin(char **oldtab, char *str_to_add);
 char		**tabjoin(char **tab1, char **tab2);
 
 //			Signaux
