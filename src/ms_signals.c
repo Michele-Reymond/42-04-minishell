@@ -6,15 +6,14 @@
 /*   By: vroch <vroch@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/20 16:41:41 by mreymond          #+#    #+#             */
-/*   Updated: 2022/09/20 10:25:46 by vroch            ###   ########.fr       */
+/*   Updated: 2022/09/20 10:52:44 by vroch            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
 /* **************************************************************************
- *  signal quit ctrl backslash -- rl_on_new_line(); a new pas executer lors
- *  cat + ctrl-c
+ *  signal quit ctrl backslash --
  */
 
 void	on_sigquit(int sig, siginfo_t *info, void *context)
@@ -30,18 +29,17 @@ void	on_sigquit(int sig, siginfo_t *info, void *context)
 	}
 }
 /* **************************************************************************
- *  signal init ctrl_c
+ *  signal init ctrl_c --  rl_on_new_line(); a new pas executer lors
+ *  cat + ctrl-c
  */
 
 void	on_sigint(int sig, siginfo_t *info, void *context)
 {
 	(void)info;
 	(void)context;
-	int	pid;
 	if (sig == 2)
 	{
 		write(1, "\n", 1);
-		pid = getpid();
 		rl_on_new_line();
 		rl_replace_line("", 0);
 		rl_redisplay();
