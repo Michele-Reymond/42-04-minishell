@@ -6,7 +6,7 @@
 /*   By: vroch <vroch@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/20 16:41:41 by mreymond          #+#    #+#             */
-/*   Updated: 2022/09/20 10:52:44 by vroch            ###   ########.fr       */
+/*   Updated: 2022/09/20 12:19:59 by vroch            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,10 +37,15 @@ void	on_sigint(int sig, siginfo_t *info, void *context)
 {
 	(void)info;
 	(void)context;
+	int	pid;
 	if (sig == 2)
 	{
+		pid = getpid();
 		write(1, "\n", 1);
-		rl_on_new_line();
+		if (info->si_pid == pid)
+		{
+			rl_on_new_line();
+		}
 		rl_replace_line("", 0);
 		rl_redisplay();
 	}
