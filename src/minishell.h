@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: vroch <vroch@student.42.fr>                +#+  +:+       +#+        */
+/*   By: mreymond <mreymond@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/20 10:48:46 by mreymond          #+#    #+#             */
-/*   Updated: 2022/09/14 10:06:46 by vroch            ###   ########.fr       */
+/*   Updated: 2022/09/20 16:27:52 by mreymond         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -145,6 +145,7 @@ int			launch_builtins_with_doors(char *cmd, t_tab *t, t_doors doors);
 void		rl_replace_line(const char *text, int clear_undo);
 void		rl_redisplay(void);
 char		**tokenize(char *buff);
+char		*ft_getenv(char **env);
 
 //			Parsing
 int			how_many_in_str(char *str, char c);
@@ -314,7 +315,7 @@ void		other_redir_and_fork(char *buf, t_tab *t, int fd, int std);
 void		other_doors_and_fork(char *buf, t_tab *t, t_doors doors);
 void		status_of_child(int status);
 void		launch_child_process(char *buff, char **paths, char **envp);
-char		**pathextraction(void);
+char		**pathextraction(char **env);
 
 //			Variables
 t_var		str_to_var(char *str);
