@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ms_b_export.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mreymond <mreymond@student.42.fr>          +#+  +:+       +#+        */
+/*   By: vroch <vroch@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/20 10:43:17 by mreymond          #+#    #+#             */
-/*   Updated: 2022/08/26 14:54:24 by mreymond         ###   ########.fr       */
+/*   Updated: 2022/09/14 10:23:19 by vroch            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,8 +21,6 @@ void	display_export(char **env)
 	i = 0;
 	while (env[i] != NULL)
 	{
-		// if specific to VR. - remove for normal us
-		// if(!ft_strncmp(env[i],"PWD",3) || !ft_strncmp(env[i],"OLDPWD",6)) 
 		printf("declare -x %s\n", env[i]);
 		i++;
 	}
