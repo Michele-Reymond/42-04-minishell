@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ms_b_variables.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: vroch <vroch@student.42.fr>                +#+  +:+       +#+        */
+/*   By: mreymond <mreymond@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/27 11:28:42 by mreymond          #+#    #+#             */
-/*   Updated: 2022/09/14 10:22:43 by vroch            ###   ########.fr       */
+/*   Updated: 2022/09/20 15:42:17 by mreymond         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -90,7 +90,7 @@ t_tab	*unset_var(t_tab *t, char **token)
 	tabfree(t->env);
 	tabfree(t->exp);
 	t->env = new;
-	t->exp = tabsort(t->env);
+	t->exp = make_export(t->env);
 	return (t);
 }
 

@@ -6,7 +6,7 @@
 /*   By: mreymond <mreymond@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/09 10:50:43 by mreymond          #+#    #+#             */
-/*   Updated: 2022/08/30 20:44:51 by mreymond         ###   ########.fr       */
+/*   Updated: 2022/09/20 15:54:05 by mreymond         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,7 @@ void	launch_b_child(char *cmd, t_tab *t, int fd, int std)
 	if (t->exp != NULL)
 		tabfree(t->exp);
 	close(fd);
-	exit (0);
+	exit(0);
 }
 
 void	parent_in_builtins(char *cmd, t_tab *t, t_tprint tp)
