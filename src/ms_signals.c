@@ -6,7 +6,7 @@
 /*   By: vroch <vroch@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/20 16:41:41 by mreymond          #+#    #+#             */
-/*   Updated: 2022/09/20 12:19:59 by vroch            ###   ########.fr       */
+/*   Updated: 2022/09/20 13:25:07 by vroch            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,9 +35,10 @@ void	on_sigquit(int sig, siginfo_t *info, void *context)
 
 void	on_sigint(int sig, siginfo_t *info, void *context)
 {
+	int	pid;
+
 	(void)info;
 	(void)context;
-	int	pid;
 	if (sig == 2)
 	{
 		pid = getpid();

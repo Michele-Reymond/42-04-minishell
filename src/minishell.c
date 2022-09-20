@@ -6,18 +6,21 @@
 /*   By: vroch <vroch@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/20 10:47:58 by mreymond          #+#    #+#             */
-/*   Updated: 2022/09/20 11:28:13 by vroch            ###   ########.fr       */
+/*   Updated: 2022/09/20 13:16:28 by vroch            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
-
+/*
+ * enlever le ctrl-c visible : t.curr.c_lflag &= ~ECHOCTL;
+ * pour rendre visisble le ctrl-c : t.curr.c_lflag |= ECHOCTL
+ */
 static	t_tab	main_termios(t_tab t)
 {
 	t.p.cmds = NULL;
 	tcgetattr(STDIN_FILENO, &t.curr);
 	tcgetattr(STDIN_FILENO, &t.save);
-	t.curr.c_lflag &= ~ECHOCTL;
+	t.curr.c_lflag |= ECHOCTL;
 	tcsetattr(STDIN_FILENO, 0, &t.curr);
 	return (t);
 }
