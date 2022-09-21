@@ -6,7 +6,7 @@
 /*   By: mreymond <mreymond@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/09 10:50:43 by mreymond          #+#    #+#             */
-/*   Updated: 2022/08/30 20:44:27 by mreymond         ###   ########.fr       */
+/*   Updated: 2022/09/21 11:23:07 by mreymond         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,7 +37,7 @@ void	launch_multiple_redir(t_redir *r, t_tab *t, char **cmds)
 	cmd = ft_strdup(r[0].cmd);
 	free(r);
 	tabfree(cmds);
-	if (access(".heredoc", F_OK) == 0)
+	if (access(".heredoc", F_OK) == 0 && *cmd != '\0')
 	{
 		newcmd = ft_strjoin(cmd, " .heredoc");
 		free(cmd);
@@ -78,7 +78,7 @@ void	launch_multiple_redir_in_pipes(t_redir *r, t_tab *t, char **cmds)
 	char	*newcmd;
 
 	doors = set_doors_in_pipes(cmds, r);
-	if (access(".heredoc", F_OK) == 0)
+	if (access(".heredoc", F_OK) == 0 && *(r[0].cmd) != '\0')
 	{
 		newcmd = ft_strjoin(r[0].cmd, " .heredoc");
 		free(r[0].cmd);
@@ -88,7 +88,7 @@ void	launch_multiple_redir_in_pipes(t_redir *r, t_tab *t, char **cmds)
 		launch_builtins_with_doors(r[0].cmd, t, doors);
 	else
 		other_doors_and_fork(r[0].cmd, t, doors);
-	free_all_t_redirs(r, tab_len(cmds));
+	free_all_t_redirs(r, tab_len(cmds) - 1);
 	tabfree(cmds);
 	close(doors.in);
 	close(doors.out);

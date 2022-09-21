@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: vroch <vroch@student.42.fr>                +#+  +:+       +#+        */
+/*   By: mreymond <mreymond@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/20 10:47:58 by mreymond          #+#    #+#             */
-/*   Updated: 2022/09/20 13:16:28 by vroch            ###   ########.fr       */
+/*   Updated: 2022/09/21 13:09:05 by mreymond         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,10 +60,3 @@ int	main(int argc, char **argv, char **envp)
 	tcsetattr(STDIN_FILENO, 0, &t.save);
 	exit(g_exit_status);
 }
-
-// TO DO
-// Verifier toutes les sorties. valeur de exit_status
-// Test only spaces or tabs. (comment faire avec TAB?)
-// Unset the $PATH and check if it is not working anymore
-// signaux
-// appel de minishell dans minishell
