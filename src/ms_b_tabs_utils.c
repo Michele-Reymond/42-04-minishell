@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ms_b_tabs_utils.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: vroch <vroch@student.42.fr>                +#+  +:+       +#+        */
+/*   By: mreymond <mreymond@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/27 11:26:36 by mreymond          #+#    #+#             */
-/*   Updated: 2022/09/14 10:15:35 by vroch            ###   ########.fr       */
+/*   Updated: 2022/09/20 19:38:10 by mreymond         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -78,6 +78,27 @@ char	**add_to_tab(char **oldtab, char *str_to_add)
 	}
 	new[i] = ft_strdup(str_to_add);
 	i++;
+	new[i] = NULL;
+	return (new);
+}
+
+char	**add_to_tab_begin(char **oldtab, char *str_to_add)
+{
+	char	**new;
+	int		i;
+	int		j;
+
+	i = 0;
+	j = 0;
+	new = malloc(sizeof(char *) * (tab_len(oldtab) + 2));
+	new[i] = ft_strdup(str_to_add);
+	i++;
+	while (oldtab[j] != NULL)
+	{
+		new[i] = ft_strdup(oldtab[j]);
+		i++;
+		j++;
+	}
 	new[i] = NULL;
 	return (new);
 }

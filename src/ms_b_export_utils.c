@@ -6,11 +6,29 @@
 /*   By: mreymond <mreymond@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/20 10:43:17 by mreymond          #+#    #+#             */
-/*   Updated: 2022/08/26 14:45:51 by mreymond         ###   ########.fr       */
+/*   Updated: 2022/09/20 19:47:34 by mreymond         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
+
+char	*ft_getenv(char **env)
+{
+	int		pos;
+	char	**tmp;
+	char	*path;
+
+	pos = var_exist(env, "PATH");
+	if (!ft_strncmp(env[pos], "PATH", 4) && (env[pos][4] == '='))
+	{
+		tmp = ft_split(env[pos], '=');
+		path = ft_strdup(tmp[1]);
+		tabfree(tmp);
+	}
+	else
+		path = ft_strdup("");
+	return (path);
+}
 
 void	export_errors(t_var var, int *i, int *j)
 {
