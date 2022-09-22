@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mreymond <mreymond@student.42.fr>          +#+  +:+       +#+        */
+/*   By: vroch <vroch@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/20 10:47:58 by mreymond          #+#    #+#             */
-/*   Updated: 2022/09/21 13:15:13 by mreymond         ###   ########.fr       */
+/*   Updated: 2022/09/22 14:36:12 by vroch            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,7 @@ static	t_tab	main_termios(t_tab t)
 	t.p.cmds = NULL;
 	tcgetattr(STDIN_FILENO, &t.curr);
 	tcgetattr(STDIN_FILENO, &t.save);
-	t.curr.c_lflag |= ECHOCTL;
+	t.curr.c_lflag &= ~ECHOCTL;
 	tcsetattr(STDIN_FILENO, 0, &t.curr);
 	return (t);
 }
