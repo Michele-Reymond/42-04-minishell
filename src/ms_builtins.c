@@ -6,7 +6,7 @@
 /*   By: mreymond <mreymond@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/27 13:06:22 by mreymond          #+#    #+#             */
-/*   Updated: 2022/08/30 20:52:01 by mreymond         ###   ########.fr       */
+/*   Updated: 2022/09/22 14:13:57 by mreymond         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,7 +29,7 @@ int	monitor(char *cmd, t_tab *t)
 		return (free_tp_status_error(tp));
 	t->p = p;
 	free_tp(tp);
-	if (tab_len(p.cmds) == 1 && p.redir == 0)
+	if (tab_len(p.cmds) == 1 && p.redir == 0 && p.pipes == 0)
 	{
 		if (launch_cmds(p.cmds[0], t))
 			other_with_fork(p.cmds[0], t);

@@ -6,7 +6,7 @@
 /*   By: mreymond <mreymond@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/06 11:15:36 by mreymond          #+#    #+#             */
-/*   Updated: 2022/08/26 16:41:48 by mreymond         ###   ########.fr       */
+/*   Updated: 2022/09/22 15:16:52 by mreymond         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,6 +37,8 @@ void	check_files_needs(char *cmd)
 	newcmds = add_to_tab(tmp, cmd);
 	tabfree(tmp);
 	r = stock_redir_infos(newcmds);
+	if (stock_is_ok(r, newcmds))
+		return ;
 	if (r[0].redir[0] == '<' && ft_strlen(r[0].redir) == 1)
 	{
 		if (access(r[0].dest, F_OK) != 0)
@@ -103,6 +105,7 @@ void	launching_pipes_in_parent(t_parse p, pid_t *pid, int **fd)
 		while (i < p.nbr_cmd)
 		{
 			waitpid(pid[i], &status, 0);
+			status_of_child(status);
 			i++;
 		}
 		i = 0;

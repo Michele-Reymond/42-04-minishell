@@ -6,7 +6,7 @@
 /*   By: mreymond <mreymond@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/06 15:58:02 by mreymond          #+#    #+#             */
-/*   Updated: 2022/08/30 20:38:59 by mreymond         ###   ########.fr       */
+/*   Updated: 2022/09/22 15:23:01 by mreymond         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -84,6 +84,8 @@ void	launching_redirs(char *cmd, t_tab *t)
 	{
 		newcmds = a_redir_pro_cmd(cmd);
 		r = stock_redir_infos(newcmds);
+		if (stock_is_ok(r, newcmds))
+			return ;
 		launch_multiple_redir_in_pipes(r, t, newcmds);
 	}
 }
@@ -93,26 +95,16 @@ void	launching_redirs(char *cmd, t_tab *t)
 void	launch_with_redir(t_parse p, t_tab *t)
 {
 	t_redir	*r;
-	t_redir	redir;
 	char	**newcmds;
-	int		len;
 
 	if (tab_len(p.cmds) == 1 && p.redir <= 1)
-	{
-		r = stock_redir_infos(p.cmds);
-		len = tab_len(p.cmds);
-		tabfree(p.cmds);
-		p.cmds = rebuilt_cmds(r, len);
-		t->p.cmds = p.cmds;
-		redir = dup_redir(r[0]);
-		free_all_t_redirs(r, len);
-		launch_redir(redir, t, p.cmds[0]);
-	}
+		launch_one_redir(p, t);
 	else if (p.pipes == 0 && p.redir > 1)
 	{
 		newcmds = a_redir_pro_cmd(p.cmds[0]);
 		r = stock_redir_infos(newcmds);
-		len = tab_len(newcmds);
+		if (stock_is_ok(r, newcmds))
+			return ;
 		launch_multiple_redir(r, t, newcmds);
 	}
 	else

@@ -51,7 +51,7 @@ int	main(int argc, char **argv, char **envp)
 	symbol = NULL;
 	t = main_termios(t);
 	signal_handler();
-	tmp = readline("🌸 >> ");
+	tmp = readline(">> ");
 	while (tmp != NULL)
 	{
 		cmd = exit_status_convert(tmp, symbol);
