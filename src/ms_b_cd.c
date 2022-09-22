@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ms_b_cd.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: vroch <vroch@student.42.fr>                +#+  +:+       +#+        */
+/*   By: mreymond <mreymond@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/20 12:16:50 by vroch             #+#    #+#             */
-/*   Updated: 2022/09/22 16:21:21 by vroch            ###   ########.fr       */
+/*   Updated: 2022/09/22 17:55:53 by mreymond         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,14 +46,12 @@ static char	*ms_b_cd_init(char *new, t_tprint tp, t_tab *t)
 	int			i;
 
 	i = 0;
-	if (tp.tab[1][0] == '~')
-	{
+	if (tab_len(tp.tab) == 1)
+		new = ft_strdup(".");
+	else if (tp.tab[1][0] == '~')
 		new = ms_b_cd_init_tild(new, tp, t, i);
-	}
 	else
-	{
 		new = tp.tab[1];
-	}
 	return (new);
 }
 
@@ -101,13 +99,13 @@ t_tab	*ms_b_cd(t_tprint tp, t_tab *t)
 
 	new = calloc (4, 200);
 	new = ms_b_cd_init(new, tp, t);
-	if (chdir(new) <= 0)
+	if (chdir(new) < 0)
 	{
 		printf("minishell: cd: %s: ", tp.tab[1]);
 		printf(ERROR_FILE);
 		g_exit_status = 1;
 	}
-	else 
+	else
 	{
 		var.key = "OLDPWD";
 		vgetenv = "PWD";
