@@ -6,7 +6,7 @@
 /*   By: mreymond <mreymond@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/06 11:15:36 by mreymond          #+#    #+#             */
-/*   Updated: 2022/09/22 10:34:44 by mreymond         ###   ########.fr       */
+/*   Updated: 2022/09/22 12:59:17 by mreymond         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -103,6 +103,7 @@ void	launching_pipes_in_parent(t_parse p, pid_t *pid, int **fd)
 		while (i < p.nbr_cmd)
 		{
 			waitpid(pid[i], &status, 0);
+			status_of_child(status);
 			i++;
 		}
 		i = 0;

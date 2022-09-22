@@ -6,7 +6,7 @@
 /*   By: mreymond <mreymond@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/09 10:50:43 by mreymond          #+#    #+#             */
-/*   Updated: 2022/09/21 11:23:07 by mreymond         ###   ########.fr       */
+/*   Updated: 2022/09/22 14:08:57 by mreymond         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,6 +22,8 @@ t_doors	make_doors(char **cmds, t_redir *r)
 	while (cmds[i] != NULL)
 	{
 		doors = set_redirection(r[i], doors);
+		if (doors.in == -1 || doors.out == -1)
+			return (doors);
 		i++;
 	}
 	return (doors);
@@ -33,10 +35,12 @@ void	launch_multiple_redir(t_redir *r, t_tab *t, char **cmds)
 	char		*newcmd;
 	char		*cmd;
 
-	doors = make_doors(cmds, r);
 	cmd = ft_strdup(r[0].cmd);
+	doors = make_doors(cmds, r);
 	free(r);
 	tabfree(cmds);
+	if (doors.in == -1 || doors.out == -1)
+		return ;
 	if (access(".heredoc", F_OK) == 0 && *cmd != '\0')
 	{
 		newcmd = ft_strjoin(cmd, " .heredoc");

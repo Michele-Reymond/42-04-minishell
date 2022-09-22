@@ -6,7 +6,7 @@
 /*   By: mreymond <mreymond@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/20 10:48:46 by mreymond          #+#    #+#             */
-/*   Updated: 2022/09/22 10:25:50 by mreymond         ###   ########.fr       */
+/*   Updated: 2022/09/22 13:56:55 by mreymond         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -296,6 +296,7 @@ t_doors		set_out_d(t_redir r, t_doors doors);
 t_doors		set_in(t_redir r, t_doors doors);
 t_doors		set_in_d(t_redir r, t_doors doors);
 t_doors		set_in_d_in_pipe(t_doors doors);
+t_doors		set_in_p(t_redir r, t_doors doors);
 int			is_redir_next(char **tab);
 void		launch_parent_heredoc(t_redir r, t_tab *t, pid_t pid, int tmpfile);
 int			write_heredoc(char *input, t_redir r, int tmpfile);

@@ -6,7 +6,7 @@
 /*   By: mreymond <mreymond@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/20 13:24:57 by mreymond          #+#    #+#             */
-/*   Updated: 2022/08/26 16:42:11 by mreymond         ###   ########.fr       */
+/*   Updated: 2022/09/22 12:41:54 by mreymond         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -86,7 +86,7 @@ void	exit_and_set_status(t_tab *t, char **cmds)
 
 	e_code = ft_atoll(cmds[1]);
 	if (!(e_code - 1 > -9223372036854775807
-			&& e_code + 1 < 9223372036854775807))
+			&& e_code - 1 < 9223372036854775807))
 	{
 		printf(MINISHELL ERRORS_EXIT "%s: " ERRORS_NUM, cmds[1]);
 		g_exit_status = 255;
@@ -100,7 +100,7 @@ void	exit_and_set_status(t_tab *t, char **cmds)
 		g_exit_status = e_code % 256;
 	else
 	{
-		g_exit_status = 1;
+		g_exit_status = 255;
 		printf(MINISHELL ERRORS_EXIT "%s: " ERRORS_NUM, cmds[1]);
 	}
 	free_tabs(t, cmds);

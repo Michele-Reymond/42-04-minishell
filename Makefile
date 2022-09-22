@@ -65,6 +65,7 @@ SRC_NAME = 	minishell.c \
 			ms_r_launching.c \
 			ms_r_launch.c \
 			ms_r_parsing.c \
+			ms_r_set_in_p.c \
 			ms_r_set_utils.c \
 			ms_r_set.c \
 			ms_r_utils.c \

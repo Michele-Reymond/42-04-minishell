@@ -6,7 +6,7 @@
 /*   By: mreymond <mreymond@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/20 11:38:04 by mreymond          #+#    #+#             */
-/*   Updated: 2022/08/30 21:07:57 by mreymond         ###   ########.fr       */
+/*   Updated: 2022/09/22 14:20:15 by mreymond         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -113,6 +113,13 @@ char	**split_pipes(t_tprint tp, int pipes)
 	t_tprint	splitted;
 	char		**new;
 
+	if (*tp.tab[0] == '|')
+	{
+		printf(ERROR_UNEXPECTED_TOKEN);
+		printf("\'|\'\n");
+		g_exit_status = 258;
+		return (NULL);
+	}
 	splitted = split_pipes_phase_1(tp);
 	if (check_doubles_pipes(splitted))
 		return (NULL);

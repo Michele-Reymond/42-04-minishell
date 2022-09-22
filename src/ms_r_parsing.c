@@ -6,7 +6,7 @@
 /*   By: mreymond <mreymond@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/09 10:50:43 by mreymond          #+#    #+#             */
-/*   Updated: 2022/08/26 15:40:13 by mreymond         ###   ########.fr       */
+/*   Updated: 2022/09/22 14:49:05 by mreymond         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -116,7 +116,13 @@ void	parse_for_redir_infos(char *cmd, t_redir *r, int index)
 	else
 	{
 		pos = var_exist(tp.tab, r->redir);
-		tmp = ft_strdup(tp.tab[pos + 1]);
+		if (tp.tab[pos + 1] != NULL)
+			tmp = ft_strdup(tp.tab[pos + 1]);
+		else
+		{
+			// printf("syntax error near unexpected token `%s'\n", r->redir);
+			tmp = ft_strdup("");
+		}
 		r->dest = ft_strtrim(tmp, " ");
 		free(tmp);
 		r->cmd = stock_cmd_part(tp.tab, pos);

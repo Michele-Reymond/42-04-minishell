@@ -6,7 +6,7 @@
 /*   By: mreymond <mreymond@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/06 15:58:02 by mreymond          #+#    #+#             */
-/*   Updated: 2022/08/30 20:38:59 by mreymond         ###   ########.fr       */
+/*   Updated: 2022/09/22 13:16:29 by mreymond         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -112,7 +112,6 @@ void	launch_with_redir(t_parse p, t_tab *t)
 	{
 		newcmds = a_redir_pro_cmd(p.cmds[0]);
 		r = stock_redir_infos(newcmds);
-		len = tab_len(newcmds);
 		launch_multiple_redir(r, t, newcmds);
 	}
 	else
