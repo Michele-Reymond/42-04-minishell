@@ -6,7 +6,7 @@
 /*   By: mreymond <mreymond@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/10 10:28:30 by mreymond          #+#    #+#             */
-/*   Updated: 2022/08/26 15:16:00 by mreymond         ###   ########.fr       */
+/*   Updated: 2022/09/21 11:15:55 by mreymond         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -90,7 +90,8 @@ void	free_all_t_redirs(t_redir *r, int len)
 		}
 		i++;
 	}
-	free(r);
+	if (r != NULL)
+		free(r);
 }
 
 void	free_redirs(int *nbr1, int *nbr2)
