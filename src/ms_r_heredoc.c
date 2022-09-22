@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ms_r_heredoc.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: vroch <vroch@student.42.fr>                +#+  +:+       +#+        */
+/*   By: mreymond <mreymond@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/09 10:50:43 by mreymond          #+#    #+#             */
-/*   Updated: 2022/09/22 16:34:01 by vroch            ###   ########.fr       */
+/*   Updated: 2022/09/22 17:38:00 by mreymond         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,7 @@ void	launch_heredoc_with_stop(int tmpfile, char *stop)
 {
 	char	*input;
 
+	signal(SIGINT, signal_heredoc_child);
 	input = readline("> ");
 	while (input != NULL)
 	{
@@ -52,8 +53,10 @@ void	launch_heredoc(char *stop)
 		launch_heredoc_with_stop(tmpfile, stop);
 	else
 	{
+		signal(SIGINT, SIG_IGN);
 		waitpid(pid, &status, 0);
 		close(tmpfile);
+		signal(SIGINT, signal_heredoc_parent);
 	}
 }
 
@@ -74,6 +77,7 @@ void	launch_child_heredoc(char *cmd, t_redir r, int tmpfile, t_tab *t)
 	char	*newcmd;
 	int		fd;
 
+	signal(SIGINT, signal_heredoc_child);
 	input = readline("> ");
 	while (input != NULL)
 	{
@@ -117,5 +121,9 @@ void	launch_in_d(t_redir r, t_tab *t, char *cmd)
 	if (pid == 0)
 		launch_child_heredoc(cmd, r, tmpfile, t);
 	else
+	{
+		signal(SIGINT, SIG_IGN);
 		launch_parent_heredoc(r, t, pid, tmpfile);
+		signal(SIGINT, signal_heredoc_parent);
+	}
 }

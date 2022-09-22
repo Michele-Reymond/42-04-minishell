@@ -6,7 +6,7 @@
 /*   By: mreymond <mreymond@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/09 10:50:43 by mreymond          #+#    #+#             */
-/*   Updated: 2022/08/26 15:40:53 by mreymond         ###   ########.fr       */
+/*   Updated: 2022/09/22 17:34:39 by mreymond         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -83,20 +83,19 @@ t_doors	set_in_d(t_redir r, t_doors doors)
 		perror("minishell: ");
 		exit(EXIT_FAILURE);
 	}
+	new.in = tmpfile;
+	new.out = doors.out;
 	pid = fork();
 	pid_errors(pid);
 	if (pid == 0)
-	{
 		launch_child_in_set(r, tmpfile);
-		exit(0);
-	}
 	else
 	{
+		signal(SIGINT, SIG_IGN);
 		waitpid(pid, &status, 0);
-		new.in = tmpfile;
-		new.out = doors.out;
-		return (new);
+		signal(SIGINT, signal_heredoc_parent);
 	}
+	return (new);
 }
 
 t_doors	set_in_d_in_pipe(t_doors doors)
