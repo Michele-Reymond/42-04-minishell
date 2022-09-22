@@ -6,7 +6,7 @@
 /*   By: mreymond <mreymond@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/20 10:48:46 by mreymond          #+#    #+#             */
-/*   Updated: 2022/09/22 15:21:56 by mreymond         ###   ########.fr       */
+/*   Updated: 2022/09/22 17:32:04 by mreymond         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -346,5 +346,7 @@ char		**tabjoin(char **tab1, char **tab2);
 //			Signaux
 void		signal_handler(void);
 void		rl_replace_line(const char *text, int clear_undo);
+void		signal_heredoc_child(int sig);
+void		signal_heredoc_parent(int sig);
 
 #endif

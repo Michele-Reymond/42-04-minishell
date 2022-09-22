@@ -6,7 +6,7 @@
 /*   By: mreymond <mreymond@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/09 10:50:43 by mreymond          #+#    #+#             */
-/*   Updated: 2022/09/22 15:20:45 by mreymond         ###   ########.fr       */
+/*   Updated: 2022/09/22 17:28:17 by mreymond         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,6 +44,7 @@ void	launch_child_in_set(t_redir r, int tmpfile)
 {
 	char	*input;
 
+	signal(SIGINT, signal_heredoc_child);
 	input = readline("> ");
 	while (input != NULL)
 	{

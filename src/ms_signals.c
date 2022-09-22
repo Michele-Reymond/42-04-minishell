@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ms_signals.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: vroch <vroch@student.42.fr>                +#+  +:+       +#+        */
+/*   By: mreymond <mreymond@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/20 16:41:41 by mreymond          #+#    #+#             */
-/*   Updated: 2022/09/20 13:25:07 by vroch            ###   ########.fr       */
+/*   Updated: 2022/09/22 17:24:43 by mreymond         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,4 +65,22 @@ void	signal_handler(void)
 	sigaction(SIGQUIT, &sia, NULL);
 	sia.sa_sigaction = on_sigint;
 	sigaction(SIGINT, &sia, NULL);
+}
+
+void	signal_heredoc_child(int sig)
+{
+	(void)sig;
+	g_exit_status = 1;
+	write(1, "\n", 1);
+	exit(1);
+}
+
+void	signal_heredoc_parent(int sig)
+{
+	(void)sig;
+	g_exit_status = 1;
+	write(1, "\n", 1);
+	rl_replace_line("", 1);
+	rl_on_new_line();
+	rl_redisplay();
 }
