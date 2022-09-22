@@ -6,7 +6,7 @@
 /*   By: mreymond <mreymond@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/09 10:50:43 by mreymond          #+#    #+#             */
-/*   Updated: 2022/08/29 13:33:13 by mreymond         ###   ########.fr       */
+/*   Updated: 2022/09/22 15:16:59 by mreymond         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,6 +21,8 @@ void	read_heredoc(char *cmd)
 	i = 0;
 	newcmds = a_redir_pro_cmd(cmd);
 	r = stock_redir_infos(newcmds);
+	if (stock_is_ok(r, newcmds))
+		return ;
 	while (newcmds[i] != NULL)
 	{
 		if (!ft_strncmp(r[i].redir, "<<", 2))
