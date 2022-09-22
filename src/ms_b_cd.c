@@ -6,7 +6,7 @@
 /*   By: vroch <vroch@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/20 12:16:50 by vroch             #+#    #+#             */
-/*   Updated: 2022/09/06 08:09:08 by vroch            ###   ########.fr       */
+/*   Updated: 2022/09/22 16:21:21 by vroch            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -101,13 +101,13 @@ t_tab	*ms_b_cd(t_tprint tp, t_tab *t)
 
 	new = calloc (4, 200);
 	new = ms_b_cd_init(new, tp, t);
-	if (chdir(new) == -1)
+	if (chdir(new) <= 0)
 	{
 		printf("minishell: cd: %s: ", tp.tab[1]);
 		printf(ERROR_FILE);
 		g_exit_status = 1;
 	}
-	else
+	else 
 	{
 		var.key = "OLDPWD";
 		vgetenv = "PWD";
