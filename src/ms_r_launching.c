@@ -6,7 +6,7 @@
 /*   By: mreymond <mreymond@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/09 10:50:43 by mreymond          #+#    #+#             */
-/*   Updated: 2022/09/22 15:16:18 by mreymond         ###   ########.fr       */
+/*   Updated: 2022/09/22 15:53:29 by mreymond         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,7 +68,7 @@ void	launching_multiredirs(char *cmd, t_tab *t)
 	tabfree(tmp);
 	r = stock_redir_infos(newcmds);
 	if (stock_is_ok(r, newcmds))
-			return ;
+		return ;
 	len = tab_len(newcmds);
 	tabfree(newcmds);
 	newcmds = rebuilt_cmds(r, len);

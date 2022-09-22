@@ -6,11 +6,27 @@
 /*   By: mreymond <mreymond@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/09 10:50:43 by mreymond          #+#    #+#             */
-/*   Updated: 2022/09/22 14:07:00 by mreymond         ###   ########.fr       */
+/*   Updated: 2022/09/22 16:02:16 by mreymond         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
+
+char	**rebuilt_cmds(t_redir *r, int len)
+{
+	char	**cmds;
+	int		i;
+
+	i = 0;
+	cmds = malloc(sizeof(char *) * (len + 1));
+	while (i < len)
+	{
+		cmds[i] = ft_strdup(r[i].cmd);
+		i++;
+	}
+	cmds[i] = NULL;
+	return (cmds);
+}
 
 static int	check_files_in_p(char *file)
 {

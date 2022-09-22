@@ -6,7 +6,7 @@
 /*   By: mreymond <mreymond@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/09 10:50:43 by mreymond          #+#    #+#             */
-/*   Updated: 2022/09/22 15:01:01 by mreymond         ###   ########.fr       */
+/*   Updated: 2022/09/22 16:02:15 by mreymond         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,22 +57,6 @@ char	*stock_cmd_part(char **token, int pos)
 	return (trimmed);
 }
 
-char	**rebuilt_cmds(t_redir *r, int len)
-{
-	char	**cmds;
-	int		i;
-
-	i = 0;
-	cmds = malloc(sizeof(char *) * (len + 1));
-	while (i < len)
-	{
-		cmds[i] = ft_strdup(r[i].cmd);
-		i++;
-	}
-	cmds[i] = NULL;
-	return (cmds);
-}
-
 char	*which_redir_is_it(t_tprint tp, int i)
 {
 	char	*redir;
@@ -95,11 +79,26 @@ char	*which_redir_is_it(t_tprint tp, int i)
 	return (redir);
 }
 
+static int	make_r_dest(t_redir *r, t_tprint tp, int pos)
+{
+	char		*tmp;
+
+	if (tp.tab[pos + 1] != NULL)
+		tmp = ft_strdup(tp.tab[pos + 1]);
+	else
+	{
+		printf("syntax error near unexpected token `%s'\n", r->redir);
+		return (1);
+	}
+	r->dest = ft_strtrim(tmp, " ");
+	free(tmp);
+	return (0);
+}
+
 // for each cmd we parse the cmd with parsing master and stock infos
 int	parse_for_redir_infos(char *cmd, t_redir *r, int index)
 {
 	t_tprint	tp;
-	char		*tmp;
 	int			pos;
 	int			i;
 
@@ -117,15 +116,8 @@ int	parse_for_redir_infos(char *cmd, t_redir *r, int index)
 	else
 	{
 		pos = var_exist(tp.tab, r->redir);
-		if (tp.tab[pos + 1] != NULL)
-			tmp = ft_strdup(tp.tab[pos + 1]);
-		else
-		{
-			printf("syntax error near unexpected token `%s'\n", r->redir);
+		if (make_r_dest(r, tp, pos))
 			return (1);
-		}
-		r->dest = ft_strtrim(tmp, " ");
-		free(tmp);
 		r->cmd = stock_cmd_part(tp.tab, pos);
 	}
 	free_tp(tp);
