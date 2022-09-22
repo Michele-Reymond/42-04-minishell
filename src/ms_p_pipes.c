@@ -6,7 +6,7 @@
 /*   By: mreymond <mreymond@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/20 11:38:04 by mreymond          #+#    #+#             */
-/*   Updated: 2022/08/30 21:07:57 by mreymond         ###   ########.fr       */
+/*   Updated: 2022/09/22 15:49:09 by mreymond         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,18 +59,17 @@ int	check_doubles_pipes(t_tprint tp)
 	while (tp.tab[i] != NULL)
 	{
 		if (tp.tab[i][0] == '|' && tp.tab[i + 1][0] == '|'
-			&& (tp.print[i + 2] == 2 || tp.print[i + 2] == 5)
-			&& (tp.print[i + 2] == 2 || tp.print[i + 2] == 5))
+			&& (tp.print[i + 1] == 2))
 		{
-			printf(ERROR_UNEXPECTED_TOKEN);
-			printf("\'||\'\n");
+			printf(ERROR_UNEXPECTED_TOKEN "\'||\'\n");
 			g_exit_status = 258;
 			return (1);
 		}
-		else if (tp.tab[i][0] == '|' && tab_len(tp.tab) == 2)
+		else if ((tp.tab[i][0] == '|' && tab_len(tp.tab) == 2)
+			|| (tp.tab[i][0] == '|' && tp.tab[i + 1][0] == '|'
+			&& tp.print[i + 1] == 5))
 		{
-			printf(ERROR_UNEXPECTED_TOKEN);
-			printf("\'|\'\n");
+			printf(ERROR_UNEXPECTED_TOKEN "\'|\'\n");
 			g_exit_status = 258;
 			return (1);
 		}
@@ -113,6 +112,19 @@ char	**split_pipes(t_tprint tp, int pipes)
 	t_tprint	splitted;
 	char		**new;
 
+	if (*tp.tab[0] == '|' && ft_strlen(tp.tab[0]) == 1)
+	{
+		printf(ERROR_UNEXPECTED_TOKEN "\'|\'\n");
+		g_exit_status = 258;
+		return (NULL);
+	}
+	else if (*tp.tab[0] == '|' && ft_strlen(tp.tab[0]) == 2
+		&& tp.tab[0][1] == '|')
+	{
+		printf(ERROR_UNEXPECTED_TOKEN "\'||\'\n");
+		g_exit_status = 258;
+		return (NULL);
+	}
 	splitted = split_pipes_phase_1(tp);
 	if (check_doubles_pipes(splitted))
 		return (NULL);

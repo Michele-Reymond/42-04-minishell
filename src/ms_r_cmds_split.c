@@ -6,7 +6,7 @@
 /*   By: mreymond <mreymond@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/09 10:50:43 by mreymond          #+#    #+#             */
-/*   Updated: 2022/08/26 15:31:34 by mreymond         ###   ########.fr       */
+/*   Updated: 2022/09/22 13:28:48 by mreymond         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,7 +64,7 @@ char	**split_out_r(char *str)
 	i = 0;
 	j = 0;
 	start = 0;
-	new = malloc(sizeof(char *) * (how_many_splits_r(str) + 1));
+	new = malloc(sizeof(char *) * ((how_many_splits_r(str) * 2) + 1));
 	while (str[i] != '\0')
 	{
 		start = i;

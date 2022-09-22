@@ -6,7 +6,7 @@
 /*   By: vroch <vroch@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/20 10:47:58 by mreymond          #+#    #+#             */
-/*   Updated: 2022/09/22 14:36:12 by vroch            ###   ########.fr       */
+/*   Updated: 2022/09/22 16:53:44 by vroch            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,7 +51,7 @@ int	main(int argc, char **argv, char **envp)
 	symbol = NULL;
 	t = main_termios(t);
 	signal_handler();
-	tmp = readline("🌸 >> ");
+	tmp = readline(">> ");
 	while (tmp != NULL)
 	{
 		cmd = exit_status_convert(tmp, symbol);

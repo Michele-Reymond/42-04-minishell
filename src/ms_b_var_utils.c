@@ -6,7 +6,7 @@
 /*   By: mreymond <mreymond@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/27 11:49:03 by mreymond          #+#    #+#             */
-/*   Updated: 2022/08/09 10:19:19 by mreymond         ###   ########.fr       */
+/*   Updated: 2022/09/22 12:29:08 by mreymond         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,10 +70,13 @@ t_var	str_to_var(char *str)
 	new_var.value = NULL;
 	if (!str || !(ft_isalpha(str[i]) != 0 || str[i] == '_'))
 		return (new_var);
-	while (str[i] && str[i] != '=')
+	while (str[i] && str[i] != '='
+		&& !(str[i - 1] != '+' && str[i] == '+' && str[i + 1] == '='))
 		i++;
 	new_var.key = malloc(sizeof(char) * (i + 1));
 	ft_strlcpy(new_var.key, str, i + 1);
+	if ((str[i - 1] != '+' && str[i] == '+' && str[i + 1] == '='))
+		i++;
 	if (str[i] != '\0')
 	{
 		i++;

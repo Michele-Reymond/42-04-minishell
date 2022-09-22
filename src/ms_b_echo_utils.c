@@ -6,7 +6,7 @@
 /*   By: mreymond <mreymond@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/20 10:43:17 by mreymond          #+#    #+#             */
-/*   Updated: 2022/08/26 14:38:47 by mreymond         ###   ########.fr       */
+/*   Updated: 2022/09/22 11:43:26 by mreymond         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,8 +17,9 @@ char	*find_key(char *str)
 	int		i;
 	char	*key;
 
-	i = 0;
-	while (str[i] && str[i] != ' ' && str[i] != '	' && str[i] != '\'')
+	i = 1;
+	while (str[i] && str[i] != ' ' && str[i] != '	'
+		&& str[i] != '\'' && str[i] != '$' && str[i] != '=')
 		i++;
 	key = ft_strldup(&str[1], i);
 	return (key);
