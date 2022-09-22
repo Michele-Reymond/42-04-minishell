@@ -6,11 +6,39 @@
 /*   By: mreymond <mreymond@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/09 10:50:43 by mreymond          #+#    #+#             */
-/*   Updated: 2022/09/22 13:56:31 by mreymond         ###   ########.fr       */
+/*   Updated: 2022/09/22 15:20:45 by mreymond         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
+
+void	launch_one_redir(t_parse p, t_tab *t)
+{
+	t_redir	*r;
+	int		len;
+	t_redir	redir;
+
+	r = stock_redir_infos(p.cmds);
+	if (stock_is_ok(r, p.cmds))
+		return ;
+	len = tab_len(p.cmds);
+	tabfree(p.cmds);
+	p.cmds = rebuilt_cmds(r, len);
+	t->p.cmds = p.cmds;
+	redir = dup_redir(r[0]);
+	free_all_t_redirs(r, len);
+	launch_redir(redir, t, p.cmds[0]);
+}
+
+int	stock_is_ok(t_redir	*redir, char **tab)
+{
+	if (redir == NULL)
+	{
+		tabfree(tab);
+		return (1);
+	}
+	return (0);
+}
 
 void	launch_child_in_set(t_redir r, int tmpfile)
 {

@@ -6,7 +6,7 @@
 /*   By: mreymond <mreymond@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/09 10:50:43 by mreymond          #+#    #+#             */
-/*   Updated: 2022/09/22 14:49:05 by mreymond         ###   ########.fr       */
+/*   Updated: 2022/09/22 15:01:01 by mreymond         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,8 @@ t_redir	*stock_redir_infos(char **cmds)
 	r = malloc(sizeof(t_redir) * (tab_len(cmds) + 1));
 	while (cmds[i] != NULL)
 	{
-		parse_for_redir_infos(cmds[i], &r[i], i);
+		if (parse_for_redir_infos(cmds[i], &r[i], i))
+			return (NULL);
 		i++;
 	}
 	return (r);
@@ -95,7 +96,7 @@ char	*which_redir_is_it(t_tprint tp, int i)
 }
 
 // for each cmd we parse the cmd with parsing master and stock infos
-void	parse_for_redir_infos(char *cmd, t_redir *r, int index)
+int	parse_for_redir_infos(char *cmd, t_redir *r, int index)
 {
 	t_tprint	tp;
 	char		*tmp;
@@ -120,12 +121,13 @@ void	parse_for_redir_infos(char *cmd, t_redir *r, int index)
 			tmp = ft_strdup(tp.tab[pos + 1]);
 		else
 		{
-			// printf("syntax error near unexpected token `%s'\n", r->redir);
-			tmp = ft_strdup("");
+			printf("syntax error near unexpected token `%s'\n", r->redir);
+			return (1);
 		}
 		r->dest = ft_strtrim(tmp, " ");
 		free(tmp);
 		r->cmd = stock_cmd_part(tp.tab, pos);
 	}
 	free_tp(tp);
+	return (0);
 }

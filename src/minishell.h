@@ -6,7 +6,7 @@
 /*   By: mreymond <mreymond@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/20 10:48:46 by mreymond          #+#    #+#             */
-/*   Updated: 2022/09/22 13:56:55 by mreymond         ###   ########.fr       */
+/*   Updated: 2022/09/22 15:21:56 by mreymond         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -253,6 +253,7 @@ void		parent_closing_loop(int **fd, int nbr);
 int			*check_redir(char *cmd, char redir);
 void		launch_pipes_with_redir(t_parse p, t_tab *t);
 void		launching_redirs(char *cmd, t_tab *t);
+void		launch_one_redir(t_parse p, t_tab *t);
 void		launch_with_redir(t_parse p, t_tab *t);
 void		which_redir(t_redir *r, char *cmd);
 char		*stock_cmd_part(char **token, int pos);
@@ -290,7 +291,7 @@ void		check_files_in(char *file);
 int			check_files_in_basic(char *file);
 int			check_files_out_basic(char *file);
 void		fork_and_launch_builtin(char *cmd, t_tab *t, int fd, int std);
-void		parse_for_redir_infos(char *cmd, t_redir *r, int index);
+int			parse_for_redir_infos(char *cmd, t_redir *r, int index);
 t_doors		set_out(t_redir r, t_doors doors);
 t_doors		set_out_d(t_redir r, t_doors doors);
 t_doors		set_in(t_redir r, t_doors doors);
@@ -306,6 +307,7 @@ void		launch_multiple_redir_in_pipes(t_redir *r, t_tab *t, char **cmds);
 t_doors		set_doors_in_pipes(char **cmds, t_redir *r);
 void		fork_and_launch_builtin_doors(char *cmd, t_tab *t, t_doors doors);
 void		parent_in_builtins(char *cmd, t_tab *t, t_tprint tp);
+int			stock_is_ok(t_redir	*redir, char **tab);
 
 //			Bin
 int			ms_b_other(char *buf);
