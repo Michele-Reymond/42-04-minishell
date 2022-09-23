@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ms_b_cd.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mreymond <mreymond@student.42.fr>          +#+  +:+       +#+        */
+/*   By: vroch <vroch@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/20 12:16:50 by vroch             #+#    #+#             */
-/*   Updated: 2022/09/22 17:55:53 by mreymond         ###   ########.fr       */
+/*   Updated: 2022/09/23 13:39:19 by vroch            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -84,6 +84,25 @@ static char	*ms_getenv(t_tab *t, char *vgetenv)
 	return (vgetenv);
 }
 
+static void upd_env_cd(t_tab *t)
+{
+		t_var		var;
+		char		*vgetenv;
+
+		var.key = "OLDPWD";
+		vgetenv = "PWD";
+		var.value = ms_getenv(t, vgetenv);
+		t->env = update_env(t->env, var, false);
+		t->exp = update_env(t->exp, var, false);
+		var.key = "PWD";
+		var.value = getcwd(NULL, 0);
+		if (var.value != NULL)
+		{
+			t->env = update_env(t->env, var, false);
+			t->exp = update_env(t->exp, var, false);
+		}
+}
+
 /* **************************************************************************
  *  parameter : buf = full line from readline.
  *  buf is going to be separated from "cd " --> param
@@ -94,8 +113,7 @@ static char	*ms_getenv(t_tab *t, char *vgetenv)
 t_tab	*ms_b_cd(t_tprint tp, t_tab *t)
 {
 	char		*new;
-	t_var		var;
-	char		*vgetenv;
+
 
 	new = calloc (4, 200);
 	new = ms_b_cd_init(new, tp, t);
@@ -107,15 +125,7 @@ t_tab	*ms_b_cd(t_tprint tp, t_tab *t)
 	}
 	else
 	{
-		var.key = "OLDPWD";
-		vgetenv = "PWD";
-		var.value = ms_getenv(t, vgetenv);
-		t->env = update_env(t->env, var, false);
-		t->exp = update_env(t->exp, var, false);
-		var.key = "PWD";
-		var.value = getcwd(NULL, 0);
-		t->env = update_env(t->env, var, false);
-		t->exp = update_env(t->exp, var, false);
+		upd_env_cd(t);
 	}
 	return (t);
 }
