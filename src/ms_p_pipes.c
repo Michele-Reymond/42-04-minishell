@@ -6,7 +6,7 @@
 /*   By: mreymond <mreymond@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/20 11:38:04 by mreymond          #+#    #+#             */
-/*   Updated: 2022/09/22 15:49:09 by mreymond         ###   ########.fr       */
+/*   Updated: 2022/09/23 14:08:13 by mreymond         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -112,13 +112,13 @@ char	**split_pipes(t_tprint tp, int pipes)
 	t_tprint	splitted;
 	char		**new;
 
-	if (*tp.tab[0] == '|' && ft_strlen(tp.tab[0]) == 1)
+	if (*tp.tab && *tp.tab[0] == '|' && ft_strlen(tp.tab[0]) == 1)
 	{
 		printf(ERROR_UNEXPECTED_TOKEN "\'|\'\n");
 		g_exit_status = 258;
 		return (NULL);
 	}
-	else if (*tp.tab[0] == '|' && ft_strlen(tp.tab[0]) == 2
+	else if (*tp.tab && *tp.tab[0] == '|' && ft_strlen(tp.tab[0]) == 2
 		&& tp.tab[0][1] == '|')
 	{
 		printf(ERROR_UNEXPECTED_TOKEN "\'||\'\n");
