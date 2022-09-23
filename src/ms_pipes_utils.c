@@ -6,13 +6,13 @@
 /*   By: mreymond <mreymond@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/06 11:15:36 by mreymond          #+#    #+#             */
-/*   Updated: 2022/09/22 15:16:52 by mreymond         ###   ########.fr       */
+/*   Updated: 2022/09/22 23:03:02 by mreymond         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-void	create_pipes(int **fd, int nbr)
+int	create_pipes(int **fd, int nbr)
 {
 	int	i;
 
@@ -20,9 +20,10 @@ void	create_pipes(int **fd, int nbr)
 	while (i < nbr)
 	{
 		if (pipe(fd[i]) == -1)
-			return ;
+			return (1);
 		i++;
 	}
+	return (0);
 }
 
 void	check_files_needs(char *cmd)
@@ -83,7 +84,7 @@ void	launching_pipes_in_child(t_parse p, t_tab *t, pid_t *pid, int **fd)
 			if (launch_cmds(p.cmds[i], t))
 				other_basic(p.cmds[i], t);
 			closing_loop_out(fd, i, p.pipes);
-			while (k++ < p.pipes - 1)
+			while (k++ < p.pipes - 1 && fd[k])
 				free(fd[k]);
 			free(fd);
 			free(pid);
@@ -109,7 +110,7 @@ void	launching_pipes_in_parent(t_parse p, pid_t *pid, int **fd)
 			i++;
 		}
 		i = 0;
-		while (i < p.pipes)
+		while (i < p.pipes && fd[i])
 		{
 			free(fd[i]);
 			i++;

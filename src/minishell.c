@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: vroch <vroch@student.42.fr>                +#+  +:+       +#+        */
+/*   By: mreymond <mreymond@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/20 10:47:58 by mreymond          #+#    #+#             */
-/*   Updated: 2022/09/22 18:30:32 by vroch            ###   ########.fr       */
+/*   Updated: 2022/09/23 13:03:28 by mreymond         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,7 +33,7 @@ static char	*main_readline(char *tmp, char *cmd, t_tab *t)
 		free(tmp);
 		monitor(cmd, t);
 	}
-	tmp = readline("🌸 >> ");
+	tmp = readline(">> ");
 	return (tmp);
 }
 
@@ -51,7 +51,7 @@ int	main(int argc, char **argv, char **envp)
 	symbol = NULL;
 	t = main_termios(t);
 	signal_handler();
-	tmp = readline("🌸 >> ");
+	tmp = readline(">> ");
 	while (tmp != NULL)
 	{
 		cmd = exit_status_convert(tmp, symbol);

@@ -6,13 +6,11 @@
 /*   By: mreymond <mreymond@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/20 10:43:17 by mreymond          #+#    #+#             */
-/*   Updated: 2022/09/22 12:13:57 by mreymond         ###   ########.fr       */
+/*   Updated: 2022/09/23 12:11:39 by mreymond         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
-
-//pour le parsing voir l'onglet parsing de Notion
 
 void	display_export(char **env)
 {

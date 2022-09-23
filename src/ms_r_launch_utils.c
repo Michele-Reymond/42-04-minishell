@@ -6,7 +6,7 @@
 /*   By: mreymond <mreymond@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/09 10:50:43 by mreymond          #+#    #+#             */
-/*   Updated: 2022/09/20 15:54:05 by mreymond         ###   ########.fr       */
+/*   Updated: 2022/09/23 12:49:48 by mreymond         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -77,11 +77,11 @@ void	launch_redir_in_pipe(t_redir r, t_tab *t, char *cmd)
 void	launch_redir(t_redir r, t_tab *t, char *cmd)
 {
 	if (!ft_strncmp(r.redir, ">", 1) && r.redir[1] == '\0')
-		launch_out(r, t, cmd);
+		launch_out_p(r, t, cmd);
 	else if (!ft_strncmp(r.redir, "<", 1) && r.redir[1] == '\0')
 		launch_in_basic(r, t, cmd);
 	else if (!ft_strncmp(r.redir, ">>", 2) && r.redir[2] == '\0')
-		launch_out_d(r, t, cmd);
+		launch_out_d_p(r, t, cmd);
 	else if (!ft_strncmp(r.redir, "<<", 2) && r.redir[2] == '\0')
-		launch_in_d(r, t, cmd);
+		launch_in_d_p(r, t, cmd);
 }
