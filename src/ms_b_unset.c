@@ -6,7 +6,7 @@
 /*   By: mreymond <mreymond@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/20 10:43:17 by mreymond          #+#    #+#             */
-/*   Updated: 2022/09/23 12:19:53 by mreymond         ###   ########.fr       */
+/*   Updated: 2022/09/23 12:36:31 by mreymond         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,11 @@ int	check_unset_identifier(char *str)
 	int	i;
 
 	i = 0;
+	if (str[0] == '\0')
+	{
+		g_exit_status = 1;
+		return (1);
+	}
 	while (str[i] != '\0')
 	{
 		if (!(((ft_isalpha(str[i]) && i == 0) || str[i] == '_')

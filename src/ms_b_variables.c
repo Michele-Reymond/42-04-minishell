@@ -6,7 +6,7 @@
 /*   By: mreymond <mreymond@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/27 11:28:42 by mreymond          #+#    #+#             */
-/*   Updated: 2022/09/23 12:13:00 by mreymond         ###   ########.fr       */
+/*   Updated: 2022/09/23 12:39:14 by mreymond         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,8 @@ int	check_if_exist(char **token, char *env)
 	j = 1;
 	while (token[j] != NULL)
 	{
-		if (!ft_strncmp(env, token[j], ft_strlen(token[j])))
+		if ((token[j][0] != '\0')
+			&& !ft_strncmp(env, token[j], ft_strlen(token[j])))
 		{
 			ok = 1;
 			break ;

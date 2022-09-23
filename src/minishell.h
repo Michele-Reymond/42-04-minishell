@@ -6,7 +6,7 @@
 /*   By: mreymond <mreymond@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/20 10:48:46 by mreymond          #+#    #+#             */
-/*   Updated: 2022/09/23 12:16:48 by mreymond         ###   ########.fr       */
+/*   Updated: 2022/09/23 12:53:16 by mreymond         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -266,6 +266,9 @@ void		launch_in_d(t_redir r, t_tab *t, char *cmd);
 void		launch_in(t_redir r, t_tab *t, char *cmd);
 void		launch_out_d(t_redir r, t_tab *t, char *cmd);
 void		launch_out(t_redir r, t_tab *t, char *cmd);
+void		launch_out_p(t_redir r, t_tab *t, char *cmd);
+void		launch_out_d_p(t_redir r, t_tab *t, char *cmd);
+void		launch_in_d_p(t_redir r, t_tab *t, char *cmd);
 int			is_heredoc(char *cmd);
 void		read_heredoc(char *cmd);
 char		**a_redir_pro_cmd(char *cmd);
@@ -316,6 +319,7 @@ t_doors		set_doors_in_pipes(char **cmds, t_redir *r);
 void		fork_and_launch_builtin_doors(char *cmd, t_tab *t, t_doors doors);
 void		parent_in_builtins(char *cmd, t_tab *t, t_tprint tp);
 int			stock_is_ok(t_redir	*redir, char **tab);
+void		launch_child_heredoc(char *cmd, t_redir r, int tmpfile, t_tab *t);
 
 //			Bin
 int			ms_b_other(char *buf);
