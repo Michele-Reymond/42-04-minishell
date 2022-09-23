@@ -30,6 +30,7 @@ SRC_NAME = 	minishell.c \
 			ms_b_export.c \
 			ms_b_export_utils.c \
 			ms_b_export_vars.c \
+			ms_b_unset.c \
 			ms_b_cd.c \
 			ms_b_pwd.c \
 			ms_b_other_launch.c \
@@ -66,6 +67,7 @@ SRC_NAME = 	minishell.c \
 			ms_r_launch.c \
 			ms_r_parsing.c \
 			ms_r_set_in_p.c \
+			ms_r_set_in_p_utils.c \
 			ms_r_set_utils.c \
 			ms_r_set.c \
 			ms_r_utils.c \

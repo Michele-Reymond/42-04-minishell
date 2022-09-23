@@ -6,7 +6,7 @@
 /*   By: mreymond <mreymond@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/20 10:48:46 by mreymond          #+#    #+#             */
-/*   Updated: 2022/09/22 17:32:04 by mreymond         ###   ########.fr       */
+/*   Updated: 2022/09/23 12:16:48 by mreymond         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -214,6 +214,8 @@ int			how_many_dollars(char **tab, int *print);
 t_tab		*ft_export(t_tab *t, t_tprint tp);
 void		display_export(char **env);
 char		**make_export(char **env);
+int			check_if_exist(char **token, char *env);
+int			check_unset_identifier(char *str);
 char		**parsing_for_export(t_tprint tp);
 int			spaces_count(t_tprint tp);
 t_tab		*unset(t_tab *t, t_tprint tp);
@@ -240,7 +242,7 @@ void		launch_with_pipes(t_parse p, t_tab *t);
 int			count_multi_pipes_cmds(t_tprint tp);
 int			multipipes_split(t_tprint tp, t_tprint *last, int i, int j);
 int			onepipes_split(t_tprint tp, t_tprint *last, int i, int j);
-void		create_pipes(int **fd, int nbr);
+int			create_pipes(int **fd, int nbr);
 void		launching_pipes_in_child(t_parse p, t_tab *t, pid_t *pid, int **fd);
 void		launching_pipes_in_parent(t_parse p, pid_t *pid, int **fd);
 void		check_files_needs(char *cmd);
@@ -298,6 +300,12 @@ t_doors		set_in(t_redir r, t_doors doors);
 t_doors		set_in_d(t_redir r, t_doors doors);
 t_doors		set_in_d_in_pipe(t_doors doors);
 t_doors		set_in_p(t_redir r, t_doors doors);
+t_doors		set_out_p(t_redir r, t_doors doors);
+t_doors		set_in_d_p(t_redir r, t_doors doors);
+t_doors		set_out_d_p(t_redir r, t_doors doors);
+int			check_files_out_in_p(char *file);
+int			check_files_in_p(char *file);
+char		**rebuilt_cmds(t_redir *r, int len);
 int			is_redir_next(char **tab);
 void		launch_parent_heredoc(t_redir r, t_tab *t, pid_t pid, int tmpfile);
 int			write_heredoc(char *input, t_redir r, int tmpfile);

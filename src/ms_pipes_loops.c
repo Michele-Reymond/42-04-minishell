@@ -6,7 +6,7 @@
 /*   By: mreymond <mreymond@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/06 11:15:36 by mreymond          #+#    #+#             */
-/*   Updated: 2022/08/26 15:26:59 by mreymond         ###   ########.fr       */
+/*   Updated: 2022/09/22 22:11:57 by mreymond         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,7 +72,7 @@ void	parent_closing_loop(int **fd, int nbr)
 
 	i = 0;
 	j = 0;
-	while (i < nbr)
+	while (i < nbr && fd[i])
 	{
 		j = 0;
 		while (j < 2)

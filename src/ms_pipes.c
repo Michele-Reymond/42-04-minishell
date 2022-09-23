@@ -6,27 +6,48 @@
 /*   By: mreymond <mreymond@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/06 11:15:36 by mreymond          #+#    #+#             */
-/*   Updated: 2022/09/22 10:38:31 by mreymond         ###   ########.fr       */
+/*   Updated: 2022/09/23 10:44:48 by mreymond         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
+static void	set_p_pipes(int *nbr, int *pipes, int *cmd)
+{
+	*nbr = *nbr - 126;
+	if (*nbr > 126)
+		*pipes = 126;
+	else
+		*pipes = *nbr - 126;
+	*cmd = *pipes + 1;
+}
+
+// Faire en sorte que le dernier de la boucle soit 
+// le pipe vers le premier de la boucle suivant!
 void	launch_with_pipes(t_parse p, t_tab *t)
 {
 	pid_t	*pid;
 	int		**fd;
 	int		i;
+	int		nbr;
 
 	i = -1;
-	pid = malloc(sizeof(pid_t) * p.nbr_cmd);
-	fd = malloc(sizeof(int *) * p.pipes);
-	while (i++ < p.pipes - 1)
-		fd[i] = malloc(sizeof(int) * 2);
-	create_pipes(fd, p.pipes);
-	launching_pipes_in_child(p, t, pid, fd);
-	launching_pipes_in_parent(p, pid, fd);
-	tabfree(t->p.cmds);
+	nbr = p.pipes;
+	if (p.pipes > 126)
+		p.pipes = 126;
+	p.nbr_cmd = p.pipes + 1;
+	while (p.pipes > 0)
+	{
+		pid = malloc(sizeof(pid_t) * p.nbr_cmd);
+		fd = malloc(sizeof(int *) * p.pipes);
+		while (i++ < p.pipes - 1)
+			fd[i] = malloc(sizeof(int) * 2);
+		create_pipes(fd, p.pipes);
+		launching_pipes_in_child(p, t, pid, fd);
+		launching_pipes_in_parent(p, pid, fd);
+		set_p_pipes(&nbr, &p.pipes, &p.nbr_cmd);
+		i = -1;
+	}
 }
 
 void	launching_redirs_in_child(t_parse p, t_tab *t, pid_t *pid, int **fd)

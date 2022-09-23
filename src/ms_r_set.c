@@ -6,7 +6,7 @@
 /*   By: mreymond <mreymond@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/09 10:50:43 by mreymond          #+#    #+#             */
-/*   Updated: 2022/09/22 17:28:17 by mreymond         ###   ########.fr       */
+/*   Updated: 2022/09/23 11:16:52 by mreymond         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -83,13 +83,13 @@ t_doors	set_redirection(t_redir r, t_doors doors)
 	t_doors	new;
 
 	if (!ft_strncmp(r.redir, ">", 1) && r.redir[1] == '\0')
-		new = set_out(r, doors);
+		new = set_out_p(r, doors);
 	else if (!ft_strncmp(r.redir, "<", 1) && r.redir[1] == '\0')
 		new = set_in_p(r, doors);
 	else if (!ft_strncmp(r.redir, ">>", 2) && r.redir[2] == '\0')
-		new = set_out_d(r, doors);
+		new = set_out_d_p(r, doors);
 	else if (!ft_strncmp(r.redir, "<<", 2) && r.redir[2] == '\0')
-		new = set_in_d(r, doors);
+		new = set_in_d_p(r, doors);
 	else
 		new = doors;
 	return (new);
