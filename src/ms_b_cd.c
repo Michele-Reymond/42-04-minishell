@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ms_b_cd.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: vroch <vroch@student.42.fr>                +#+  +:+       +#+        */
+/*   By: mreymond <mreymond@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/20 12:16:50 by vroch             #+#    #+#             */
-/*   Updated: 2022/09/23 13:39:19 by vroch            ###   ########.fr       */
+/*   Updated: 2022/09/23 15:39:13 by mreymond         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -84,23 +84,28 @@ static char	*ms_getenv(t_tab *t, char *vgetenv)
 	return (vgetenv);
 }
 
-static void upd_env_cd(t_tab *t)
+static void	upd_env_cd(t_tab *t)
 {
-		t_var		var;
-		char		*vgetenv;
+	t_var		var;
+	char		*vgetenv;
+	char		**tmp;
 
-		var.key = "OLDPWD";
-		vgetenv = "PWD";
-		var.value = ms_getenv(t, vgetenv);
-		t->env = update_env(t->env, var, false);
-		t->exp = update_env(t->exp, var, false);
-		var.key = "PWD";
-		var.value = getcwd(NULL, 0);
-		if (var.value != NULL)
-		{
-			t->env = update_env(t->env, var, false);
-			t->exp = update_env(t->exp, var, false);
-		}
+	var.key = "OLDPWD";
+	vgetenv = "PWD";
+	var.value = ms_getenv(t, vgetenv);
+	tmp = update_env(t->env, var, false);
+	tabfree(t->env);
+	t->env = tmp;
+	t->exp = make_export(t->env);
+	var.key = "PWD";
+	var.value = getcwd(NULL, 0);
+	if (var.value != NULL)
+	{
+		tmp = update_env(t->env, var, false);
+		tabfree(t->env);
+		t->env = tmp;
+		t->exp = make_export(t->env);
+	}
 }
 
 /* **************************************************************************
@@ -113,7 +118,6 @@ static void upd_env_cd(t_tab *t)
 t_tab	*ms_b_cd(t_tprint tp, t_tab *t)
 {
 	char		*new;
-
 
 	new = calloc (4, 200);
 	new = ms_b_cd_init(new, tp, t);
